@@ -61,7 +61,9 @@ void bi_set_by_string(bigint** x, int sign, char* str, word base) {
 }
 
 void bi_show_hex(bigint* x) {
-
+	if (x->sign == NEGATIVE) printf("-");
+	for (int i = x->wordlen - 1; i >= 0; i--) printf("%02x ", x->a[i]);
+	printf("\n");
 }
 //
 //void bi_show_dec(bigint* x) {
@@ -213,67 +215,72 @@ int compareAB(bigint* x, bigint* y)
 }
 
 
-void bi_leftshift(bigint** x, int r, word* aa, int wordlen)
+void bi_leftshift(bigint** x, int r)
 {
-	int i, j, k, rp, a, W;
-	W = WORD_BITLEN;
-	k = r / W;
-	rp = r % W;
+	int k, rp, a;
+	k = r / WORD_BITLEN;
+	rp = r % WORD_BITLEN;
+	word tmp = 0;
+	word ttmp = 0;
 
-	if (r % W == 0) // r이 W의 배수일 때
+	if (r % WORD_BITLEN == 0) // r이 W의 배수일 때
 	{
-		(*x)->wordlen = wordlen + k;
 		a = (*x)->wordlen;
-		(*x)->a = (word*)realloc(aa, (a * sizeof(word)));
-
-		for (int i = a - 1; i >= 0; i--)
+		(*x)->wordlen += k;
+		(word*)realloc((*x)->a, (*x)->wordlen * sizeof(word));
+		for (int i = a-1; i >= 0; i--)
 			(*x)->a[i + k] = (*x)->a[i];
-		for (j = 0; j < k; j++)
+		for (int j = 0; j < k; j++)
 			(*x)->a[j] = 0x00;
+	
 	}
 	else {
-		(*x)->wordlen = wordlen + 1 + k;
 		a = (*x)->wordlen;
-		(*x)->a = (word*)realloc(aa, (a * sizeof(word)));
-
-		(*x)->a[rp - 1] = (*x)->a[0];
-		(*x)->a[a - 1] = (*x)->a[a - rp];
-		for (i = 1; i < a; i++) {
-			(((*x)->a[i]) << rp) || (((*x)->a[i - 1]) >> W - rp);
+		(*x)->wordlen += 1 + k;
+		(word*)realloc((*x)->a, (*x)->wordlen * sizeof(word));
+		tmp = (*x)->a[0];
+		(*x)->a[0] = (*x)->a[0] << rp;
+		for (int i = 1; i < a; i++) {
+			ttmp = (*x)->a[i];
+			(*x)->a[i] = (*x)->a[i] << rp ^ tmp >> WORD_BITLEN - rp;
+			tmp = ttmp;
+			ttmp = (*x)->a[i + 1];
 		}
+		(*x)->a[a] = tmp >> WORD_BITLEN - rp;
+		for (int i = a+1; i >= 0; i--)
+			(*x)->a[i + k] = (*x)->a[i];
+		for (int j = 0; j < k; j++)
+			(*x)->a[j] = 0x00;
 	}
+	
 }
 
 
-void bi_rightshift(bigint** x, int r, word* aa, int wordlen)
+void bi_rightshift(bigint** x, int r)
 {
-	int i, j, k, rp, a, W;
-	W = WORD_BITLEN;
-	k = r / W;
-	rp = r % W;
+	int i, j, k, rp, a;
+	k = r / WORD_BITLEN;
+	rp = r % WORD_BITLEN;
 
 	a = (*x)->wordlen;
 
-	if (k >= a)
+	if (k >= (*x)->wordlen)
 		for (i = 0; i < a; i++)
 			(*x)->a[i] = 0x00;
 
-	if (r % W == 0) // r이 W의 배수일 때
+	if (r % WORD_BITLEN == 0) // r이 W의 배수일 때
 	{
-		for (i = 0; i < a - k; i++)
+		for (i = 0; i < a - k; i++) 
 			(*x)->a[i] = ((*x)->a[k + i]);
 		for (j = i; j < a; j++)
 			(*x)->a[j] = 0x00;
 	}
 	else {
-		for (i = 0; i < a - k; i++)
-			(*x)->a[i] = ((*x)->a[k + i]); // i = n-k
-		for (j = i; j < a; j++)
-			(*x)->a[j] = 0x00;
-		for (j = 0; j < i - 1; j++) {
-			(*x)->a[j] = ((*x)->a[j + 1] << (W - rp)) || ((*x)->a[j] >> rp);
-		}
-		(*x)->a[i - 1] = ((*x)->a[i - 1] >> rp);
+		for (int i = 0; i < a-k-1; i++)
+			(*x)->a[i] = ((*x)->a[i + 1] >> rp) ^ ((*x)->a[i + 2] << WORD_BITLEN-rp);
+		(*x)->a[a - k-1] = (*x)->a[a - k] >> rp;
+		for (int i = a - k; i < a; i++)
+			(*x)->a[i] = 0x00;
 	}
 }
 
@@ -369,19 +376,39 @@ void SUB_C(bigint* x, bigint* y, bigint** z) {
 }
 
 void ADD(bigint* x, bigint* y, bigint** z) {
+	int a, b;
 
-	if (bi_is_zero(x) == 1) bi_assign(z, x);
-	if (bi_is_zero(y) == 1) bi_assign(z, y);
+	a = x->wordlen;
+	b = y->wordlen;
+
+	if (bi_is_zero(x) == 1) {
+		bi_assign(z, y);
+		return;
+	}
+	if (bi_is_zero(y) == 1) {
+		bi_assign(z, x);
+		return;
+	}
 	if (get_sign_bi(x) == NONNEGATIVE && get_sign_bi(y) == NEGATIVE) {
 		flip_sign_bi(&y);
 		SUB(x, y, z);
+		flip_sign_bi(&y);
+		return;
 	}
 	if (get_sign_bi(x) == NEGATIVE && get_sign_bi(y) == NONNEGATIVE) {
 		flip_sign_bi(&x);
 		SUB(y, x, z);
+		flip_sign_bi(&x);
+		return;
 	}
-	if (x->wordlen >= y->wordlen) M_ADD(x, y, z);
-	else M_ADD(y, x, z);
+	if (a >= b) {
+		M_ADD(x, y, z);
+		return;
+	}
+	else {
+		M_ADD(y, x, z);
+		return;
+	}
 }
 
 void SUB(bigint* x, bigint* y, bigint** z) {
@@ -394,19 +421,22 @@ void SUB(bigint* x, bigint* y, bigint** z) {
 		bi_assign(z, x);
 		return;
 	}
+
 	if (get_sign_bi(x) == NONNEGATIVE && get_sign_bi(y) == NONNEGATIVE && compareAB(x, y) >= 0) {
 		SUB_C(x, y, z);
 		return;
 	}
-	else if((get_sign_bi(x) == NONNEGATIVE) && (get_sign_bi(y) == NONNEGATIVE) && compareAB(x, y) == -1){
+	else if(get_sign_bi(x) == NONNEGATIVE && get_sign_bi(y) == NONNEGATIVE && compareAB(x, y) ==-1) {
 		SUB_C(y, x, z);
 		flip_sign_bi(z);
 		return;
 	}
-	if(get_sign_bi(x) == NEGATIVE && get_sign_bi(y) == NEGATIVE && compareAB(x, y) >= 0) {
+	if (get_sign_bi(x) == NEGATIVE && get_sign_bi(y) == NEGATIVE && compareAB(x, y) >= 0) {
 		flip_sign_bi(&x);
 		flip_sign_bi(&y);
 		SUB_C(y, x, z);
+		flip_sign_bi(&x);
+		flip_sign_bi(&y);
 		return;
 	}
 	else if(get_sign_bi(x) == NEGATIVE && get_sign_bi(y) == NEGATIVE && compareAB(x, y) ==-1) {
@@ -414,20 +444,100 @@ void SUB(bigint* x, bigint* y, bigint** z) {
 		flip_sign_bi(&y);
 		SUB_C(x, y, z);
 		flip_sign_bi(z);
+		flip_sign_bi(&x);
+		flip_sign_bi(&y);
 		return;
 	}
 	if (get_sign_bi(x) == NONNEGATIVE && get_sign_bi(y) == NEGATIVE) {
 		flip_sign_bi(&y);
 		M_ADD(x, y, z);
+		flip_sign_bi(&y);
 		return;
 	}
 	else {
 		flip_sign_bi(&y);
 		M_ADD(x, y, z);
 		flip_sign_bi(z);
+		flip_sign_bi(&y);
 		return;
 	}
 }
+
+void MULC(bigint* x, bigint* y, bigint** z, int i, int j) {
+
+	word a0, a1, b0, b1, c0, c1, t0, t1, t, a = 1;
+
+	a0 = x->a[i] & ((a << (WORD_BITLEN / 2)) - 1);
+	a1 = x->a[i] >> (WORD_BITLEN / 2);
+	b0 = y->a[j] & ((a << (WORD_BITLEN / 2)) - 1);
+	b1 = y->a[j] >> (WORD_BITLEN / 2);
+	t0 = a1 * b0;
+	t1 = a0 * b1;
+	t0 = (t0 + t1) & ((a << WORD_BITLEN) - 1);
+	t1 = t0 < t1;
+
+
+	c0 = a0 * b0;
+	c1 = a1 * b1;
+	t = c0;
+	c0 = ((c0 + (t0 << (WORD_BITLEN / 2))) & ((a << WORD_BITLEN) - 1));
+	c1 = c1 + (t1 << (WORD_BITLEN / 2)) + (t0 >> (WORD_BITLEN / 2)) + (c0 < t);
+	(*z)->a[0] = c0;
+	(*z)->a[1] = c1;
+}
+
+void MUL(bigint* x, bigint* y, bigint** z) {
+
+	if (bi_is_zero(x) == 1 || bi_is_zero(y) == 1) {
+		bi_set_zero(z);
+		return;
+	}
+
+	if (bi_is_one(x) == 1) {
+		bi_assign(z, y);
+		return;
+	}
+
+	if (bi_is_one(x) == 1 && get_sign_bi(x) == 1) {
+		bi_assign(z, y);
+		flip_sign_bi(z);
+		return;
+	}
+
+	if (bi_is_one(y) == 1) {
+		bi_assign(z, x);
+		return;
+	}
+
+	if (bi_is_one(y) == 1 && get_sign_bi(y) == 1) {
+		bi_assign(z, x);
+		flip_sign_bi(z);
+		return;
+	}
+
+	Schoolbook_MUL(x, y, z);
+	(*z)->sign = ((-1) ^ (x->sign + y->sign));
+}
+
+void Schoolbook_MUL(bigint* x, bigint* y, bigint** z) {
+
+	int i, j, c = 0;
+	bigint* tmp = NULL;
+	word t = 0;
+	bi_new(&tmp, 2);
+	bi_new(z, (x->wordlen + y->wordlen));
+
+	for (i = 0; i < x->wordlen; i++)
+		for (j = 0; j < y->wordlen; j++) {
+			MULC(x, y, &tmp, i, j);
+			t = (*z)->a[i + j];
+			(*z)->a[i + j] += tmp->a[0];
+			if ((*z)->a[i + j] < t) c = 1;
+			else c = 0;
+			(*z)->a[i + j + 1] += tmp->a[1] + c;
+		}
+}
+
 
 
 

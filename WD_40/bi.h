@@ -57,8 +57,8 @@ int bi_is_one(bigint* x);
 
 int compareABS(bigint* x, bigint* y);
 int compareAB(bigint* x, bigint* y);
-void bi_leftshift(bigint** x, int r, word* aa, int wordlen);
-void bi_rightshift(bigint** x, int r, word* aa, int wordlen);
+void bi_leftshift(bigint** x, int r);
+void bi_rightshift(bigint** x, int r);
 
 int S_ADDABc(bigint* x, bigint* y, bigint** z, int carry, int r);
 void M_ADD(bigint* x, bigint* y, bigint** z);
@@ -66,3 +66,6 @@ int S_SUBABb(bigint* x, bigint* y, bigint** z, int b, int j);
 void SUB_C(bigint* x, bigint* y, bigint** z);
 void ADD(bigint* x, bigint* y, bigint** z);
 void SUB(bigint* x, bigint* y, bigint** z);
+void MULC(bigint* x, bigint* y, bigint** z, int i, int j);
+void MUL(bigint* x, bigint* y, bigint** z);
+void Schoolbook_MUL(bigint* x, bigint* y, bigint** z);
