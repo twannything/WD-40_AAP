@@ -3,8 +3,37 @@
 
 int main() {
 	
-	bigint* x = NULL;
-	bigint* hd = NULL;
+	bigint* p[5] = { NULL, };
+	bigint* n[5] = { NULL, };
+	bigint* az[5] = { NULL, };
+	bigint* sz[5] = { NULL, };
+	for (int i = 0; i < 5; i++) {
+		bi_gen_rand(&p[i],NONNEGATIVE,3);
+		bi_gen_rand(&n[i],NEGATIVE, 3);
+	}
+
+
+	for (int i = 0; i < 5; i++) {
+		printf("%d-th Nonnegative Big Interger = ", i);
+		bi_show_bin(p[i]);
+	}
+	printf("\n");
+	for (int i = 0; i < 5; i++) {
+		printf("%d-th Negative Big Interger = ", i);
+		bi_show_bin(n[i]);
+	}
+
+	printf("\n*********Result*********\n");
+
+	for (int i = 0; i < 5; i++) {
+		ADD(p[i], n[i], &az[i]);
+		SUB(p[i], n[i], &sz[i]);
+		printf("\n%d-th add result : ", i);
+		bi_show_bin(az[i]);
+		printf("%d-th sub result : ", i);
+		bi_show_bin(sz[i]);
+	}
+
 
 	///*Create BigInt, Delete BigInt, Zerorize BigInt*/
 	//bi_new(&x, 4);
@@ -108,28 +137,28 @@ int main() {
 	//
 	/************** right shift È®ÀÎ ***************/
 	//hd = NULL;
-	word hd_Arr[3] = { 0x12, 0x34, 0x56 };
+	//word hd_Arr[3] = { 0x12, 0x34, 0x56 };
+	////printf("BigInteger : %x%x%x\n", hd->a[2], hd->a[1], hd->a[0]);
+	//bi_set_by_array(&hd, NONNEGATIVE, hd_Arr, sizeof(hd_Arr)/sizeof(hd_Arr[0]));
 	//printf("BigInteger : %x%x%x\n", hd->a[2], hd->a[1], hd->a[0]);
-	bi_set_by_array(&hd, NONNEGATIVE, hd_Arr, sizeof(hd_Arr)/sizeof(hd_Arr[0]));
-	printf("BigInteger : %x%x%x\n", hd->a[2], hd->a[1], hd->a[0]);
-	bi_show_bin(hd);
+	//bi_show_bin(hd);
 
-	bi_rightshift(&hd, 8, hd->a, hd->wordlen);
-	printf("BigInteger : %x%x%x\n", hd->a[2], hd->a[1], hd->a[0]);
-	bi_show_bin(hd);
+	//bi_rightshift(&hd, 8, hd->a, hd->wordlen);
+	//printf("BigInteger : %x%x%x\n", hd->a[2], hd->a[1], hd->a[0]);
+	//bi_show_bin(hd);
 
-	/*Reduction*/
-	bigint* z=NULL;
-	bi_gen_rand(&x, NONNEGATIVE, 5);
-	printf("Rand BigInt = "); bi_show_bin(x);
-	printf("\n");
-	bi_reduction(&z, x, 8);
-	printf("Reduction BigInt = "); bi_show_bin(z); printf("\n");
-	bi_reduction(&z, x, 9);
-	printf("Reduction BigInt = "); bi_show_bin(z); printf("\n");
-	bi_reduction(&z, x, 50);
-	printf("Reduction BigInt = "); bi_show_bin(z); printf("\n");
-	
+	///*Reduction*/
+	//bigint* z=NULL;
+	//bi_gen_rand(&x, NONNEGATIVE, 5);
+	//printf("Rand BigInt = "); bi_show_bin(x);
+	//printf("\n");
+	//bi_reduction(&z, x, 8);
+	//printf("Reduction BigInt = "); bi_show_bin(z); printf("\n");
+	//bi_reduction(&z, x, 9);
+	//printf("Reduction BigInt = "); bi_show_bin(z); printf("\n");
+	//bi_reduction(&z, x, 50);
+	//printf("Reduction BigInt = "); bi_show_bin(z); printf("\n");
+	//
 
 
 
