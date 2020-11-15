@@ -69,6 +69,7 @@ void bi_show_hex(bigint* x) {
 //}
 
 void bi_show_bin(bigint* x) {
+	if (x->sign == NEGATIVE) printf("-");
 	for (int i = x->wordlen-1; i >=0; i--){
 		for (int j = WORD_BITLEN-1; j >= 0; j--) {
 			int mask = 1 << j;
@@ -132,7 +133,7 @@ int get_bit_length(bigint* x) {
 		}
 		else return total;
 	}
-	return;
+	return total;
 }
 
 int bit_of_bi(bigint* x, int j) {
@@ -357,7 +358,7 @@ int S_SUBABb(bigint* x, bigint* y, bigint** z, int b, int j) {
 
 void SUB_C(bigint* x, bigint* y, bigint** z) {
 	bi_new(z, x->wordlen);
-
+	
 	for (int i = y->wordlen; i < (*z)->wordlen; i++)
 		(*z)->a[i] = 0;
 	int b = 0;
@@ -368,22 +369,18 @@ void SUB_C(bigint* x, bigint* y, bigint** z) {
 }
 
 void ADD(bigint* x, bigint* y, bigint** z) {
-	int a, b;
-
-	a = x->wordlen;
-	b = y->wordlen;
 
 	if (bi_is_zero(x) == 1) bi_assign(z, x);
 	if (bi_is_zero(y) == 1) bi_assign(z, y);
 	if (get_sign_bi(x) == NONNEGATIVE && get_sign_bi(y) == NEGATIVE) {
 		flip_sign_bi(&y);
-		SUB_C(x, y, z);
+		SUB(x, y, z);
 	}
 	if (get_sign_bi(x) == NEGATIVE && get_sign_bi(y) == NONNEGATIVE) {
 		flip_sign_bi(&x);
-		SUB_C(y, x, z);
+		SUB(y, x, z);
 	}
-	if (a >= b) M_ADD(x, y, z);
+	if (x->wordlen >= y->wordlen) M_ADD(x, y, z);
 	else M_ADD(y, x, z);
 }
 
@@ -401,18 +398,18 @@ void SUB(bigint* x, bigint* y, bigint** z) {
 		SUB_C(x, y, z);
 		return;
 	}
-	else {
+	else if((get_sign_bi(x) == NONNEGATIVE) && (get_sign_bi(y) == NONNEGATIVE) && compareAB(x, y) == -1){
 		SUB_C(y, x, z);
 		flip_sign_bi(z);
 		return;
 	}
-	if (get_sign_bi(x) == NEGATIVE && get_sign_bi(y) == NEGATIVE && compareAB(x, y) >= 0) {
+	if(get_sign_bi(x) == NEGATIVE && get_sign_bi(y) == NEGATIVE && compareAB(x, y) >= 0) {
 		flip_sign_bi(&x);
 		flip_sign_bi(&y);
 		SUB_C(y, x, z);
 		return;
 	}
-	else {
+	else if(get_sign_bi(x) == NEGATIVE && get_sign_bi(y) == NEGATIVE && compareAB(x, y) ==-1) {
 		flip_sign_bi(&x);
 		flip_sign_bi(&y);
 		SUB_C(x, y, z);
