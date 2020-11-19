@@ -139,10 +139,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="bi.h" />
+    <ClInclude Include="Basic Operation.h" />
+    <ClInclude Include="Arithmetic.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="bi.c" />
+    <ClCompile Include="Basic Operation.c" />
+    <ClCompile Include="Arithmetic.c" />
     <ClCompile Include="main.c" />
   </ItemGroup>
   <ItemGroup>
