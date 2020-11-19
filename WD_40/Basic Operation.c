@@ -278,10 +278,12 @@ void bi_rightshift(bigint** x, int r)
 	}
 	else {
 		for (int i = 0; i < a - k - 1; i++)
-			(*x)->a[i] = ((*x)->a[i + 1] >> rp) ^ ((*x)->a[i + 2] << (WORD_BITLEN - rp));
-		(*x)->a[a - k - 1] = (*x)->a[a - k] >> rp;
+			(*x)->a[i] = ((*x)->a[i + k] >> rp) ^ ((*x)->a[i + k + 1] << (WORD_BITLEN-rp));
+		(*x)->a[a - k - 1] = (*x)->a[a - k-2] >> rp;
 		for (int i = a - k; i < a; i++)
 			(*x)->a[i] = 0x00;
 	}
 	//bi_refine(*x);
 }
+
+

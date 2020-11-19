@@ -51,12 +51,11 @@ int main() {
 	bi_show_bin(p[1]);
 	bi_leftshift(&p[1], WORD_BITLEN + 1);
 	bi_show_bin(p[1]);
-	bi_rightshift(&p[1], WORD_BITLEN - 1);
-	bi_show_bin(p[1]);
-	bi_rightshift(&p[1], WORD_BITLEN);
-	bi_show_bin(p[1]);
-	bi_rightshift(&p[1], WORD_BITLEN + 1);
-	bi_show_bin(p[1]);
+	bi_show_bin(p[2]);
+	bi_rightshift(&p[2], WORD_BITLEN);
+	bi_show_bin(p[2]);
+	bi_rightshift(&p[2], WORD_BITLEN - 1);
+	bi_show_bin(p[2]);
 	
 
 }
