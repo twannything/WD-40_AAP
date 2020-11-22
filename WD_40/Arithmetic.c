@@ -191,14 +191,14 @@ void MULC(bigint* x, bigint* y, bigint** z, int i, int j) {
 	b1 = y->a[j] >> (WORD_BITLEN / 2);
 	t0 = a1 * b0;
 	t1 = a0 * b1;
-	t0 = (t0 + t1) & ((a << WORD_BITLEN) - 1);
+	t0 = (t0 + t1) & (((long long)a << WORD_BITLEN) - 1);
 	t1 = t0 < t1;
 
 
 	c0 = a0 * b0;
 	c1 = a1 * b1;
 	t = c0;
-	c0 = ((c0 + (t0 << (WORD_BITLEN / 2))) & ((a << WORD_BITLEN) - 1));
+	c0 = ((c0 + (t0 << (WORD_BITLEN / 2))) & (((long long)a << WORD_BITLEN) - 1));
 	c1 = c1 + (t1 << (WORD_BITLEN / 2)) + (t0 >> (WORD_BITLEN / 2)) + (c0 < t);
 	(*z)->a[0] = c0;
 	(*z)->a[1] = c1;
@@ -256,7 +256,79 @@ void Schoolbook_MUL(bigint* x, bigint* y, bigint** z) {
 		}
 }
 
+int bit_length(unsigned int a) {
+	int cnt = 32;
+	unsigned int x = 0x80000000;
 
+	for (int i = 0; i < 32; i++) {
+		if ((a & x) != 0) break;
+		else {
+			cnt--;
+			x = x >> 1;
+		}
+		
+	}
+	return cnt;
+}
+void binary_long_division(int a, int b, int* q, int* r) {
+	int aj = 0;
+	for (int i = bit_length(a) - 1; i >= 0; i--) {
+		aj = a & (1 << i) ? 1 : 0;
+		(*r) = ((*r) << 1 ) + aj;
+		if ((*r) >= b) {
+			(*q) = (*q) +( 1 << i);
+			(*r) = (*r) - b;
+		}
+	}
+}
+
+void binary_long_division(bigint* a, bigint* b, bigint** q, bigint** r) {
+	int aj = 0;
+	int len_r = b->wordlen - 1;
+	bigint* tmp;
+	bi_new(r, len_r);
+	bi_new(q, (a->wordlen) - (b->wordlen) - 1);
+	for (int i = (a->wordlen * WORD_BITLEN) - 1; i >= 0; i--) {
+		aj = a->a[i] & ((long long)1 << (WORD_BITLEN - 1)) ? 1 : 0;
+		for (int i = len_r - 1; i >= 0; i--) {
+			for (int j = 0; j < WORD_BITLEN - 1; j++) {
+				(*r)->a[i] = ((*r)->a[i] << 1) + aj;
+			}
+			if (compareAB(r, b) >= 0) {
+				(*q)->a[]
+				SUB(*r, b, &tmp);
+				bi_assign(r, tmp);
+			}
+		}
+		
+		
+			if ((*r)->a[len_r - 1] >= )
+	}
+	for (int i = bit_length(a) - 1; i >= 0; i--) {
+		aj = a & ((long long)1 << i) ? 1 : 0;
+		(*r) = ((*r) << 1) + aj;
+		if ((*r) >= b) {
+			(*q) = (*q) + ((long long)1 << i);
+			(*r) = (*r) - b;
+		}
+	}
+}
+
+//void Divcc(bigint* x, bigint* y, bigint** q, bigint** r) {
+//	int n = get_bit_length(x);
+//	int m = get_bit_length(y);
+//	bigint* tmp;
+//	if (n == m) {
+//		bi_new(q, 1);
+//		bi_new(r, get_bit_length(r) - 1);
+//		(*q)->a[0] = (x->a[n - 1]) / (y->a[m - 1]);
+//		SUB(x,tmp,r );
+//		MUL(y, *q, tmp);
+//	}
+//	else if (n == m + 1) {
+//		
+//	}
+//}
 
 
 

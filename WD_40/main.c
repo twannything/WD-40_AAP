@@ -4,7 +4,7 @@
 
 int main() {
 	
-	bigint* p[5] = { NULL, };
+	/*bigint* p[5] = { NULL, };
 	bigint* n[5] = { NULL, };
 	bigint* az[5] = { NULL, };
 	bigint* sz[5] = { NULL, };
@@ -42,8 +42,6 @@ int main() {
 
 
 
-
-
 	bi_show_bin(p[1]);
 	bi_leftshift(&p[1], WORD_BITLEN - 1);
 	bi_show_bin(p[1]);
@@ -56,7 +54,19 @@ int main() {
 	bi_show_bin(p[2]);
 	bi_rightshift(&p[2], WORD_BITLEN - 1);
 	bi_show_bin(p[2]);
-	
+	*/
 
+	bigint* x[5] = { NULL, };
+	bigint* y[5] = { NULL, };
+	bigint* q[5] = { NULL, };
+	bigint* r[5] = { NULL, };
+	for (int i = 0; i < 5; i++) {
+		bi_gen_rand(&x[i], NONNEGATIVE, 5);
+		bi_gen_rand(&y[i], NONNEGATIVE, 5);
+	}
+
+	for (int i = 0; i < 5; i++) {
+		binary_long_division(x,y,q,r)
+	}
 }
 
