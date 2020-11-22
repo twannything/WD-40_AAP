@@ -1,167 +1,600 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "bi.h"
 
+/**
+* @mainpage BIGINT LIBRARY : WD-40
+* - ÀÛ¼ºÀÚ : ±èÅÂ¿Ï, À¯Çöµµ
+* @date 2020-11-22
+*/
+
+
 int main() {
-	
-	bigint* p[5] = { NULL, };
-	bigint* n[5] = { NULL, };
-	bigint* az[5] = { NULL, };
-	bigint* sz[5] = { NULL, };
-	for (int i = 0; i < 5; i++) {
-		bi_gen_rand(&p[i],NONNEGATIVE,3);
-		bi_gen_rand(&n[i],NEGATIVE, 3);
+
+
+	bigint* x = NULL;
+	bigint* y = NULL;
+	bigint* z = NULL;
+	/*errno_t err;
+	FILE* fp = NULL;
+	err = fopen_s(&fp,"C:\\Users\\user\\source\\repos\\WD_40(1)\\WD_40\\x64\\Release\\data.sage", "w");
+	if (fp == NULL) {
+		puts("File Error\n");
+		return -1;
+	}
+	*/
+	int i = 10;
+	while (i >= 0) {
+
+		bi_gen_rand(&x, 20);
+		bi_gen_rand(&y, 20);
+
+		/*bi_new(&x, 1);
+		word x_arr[6] = { 0xff,0xff, 0xff, 0xff, 0xff, 0xff };
+		bi_set_by_array(&x, NONNEGATIVE, x_arr, sizeof(x_arr) / sizeof(x_arr[0]));
+
+		bi_new(&y, 1);
+		word y_arr[6] = { 0xff,0xff, 0xff, 0xff, 0xff, 0xff };
+		bi_set_by_array(&y, NONNEGATIVE, y_arr, sizeof(y_arr) / sizeof(y_arr[0]));*/
+
+		printf("x=");
+		bi_show_hex(x);
+		printf("y=");
+		bi_show_hex(y);
+		MUL(x, y, &z);
+
+		printf("x * y ==");
+		bi_show_hex(z);
+
+		bi_delete(&x);
+		bi_delete(&y);
+		bi_delete(&z);
+
+		free(x);
+		free(y);
+		free(z);
+
+
+		i--;
 	}
 
+	/*
+	bi_gen_rand(&x, 5);
+		bi_gen_rand(&y, 5);
 
-	for (int i = 0; i < 5; i++) {
-		printf("%d-th Nonnegative Big Interger = ", i);
-		bi_show_bin(p[i]);
-	}
-	printf("\n");
-	for (int i = 0; i < 5; i++) {
-		printf("%d-th Negative Big Interger = ", i);
-		bi_show_bin(n[i]);
-	}
+		printf("x=");
+		bi_show_hex(x);
+		printf("y=");
+		bi_show_hex(y);
+		ADD(x, y, &z);
+		printf("x + y ==");
+		bi_show_hex(z);
 
-	printf("\n*********Result*********\n");
+		bi_delete(&x);
+		bi_delete(&y);
+		bi_delete(&z);
 
-	for (int i = 0; i < 5; i++) {
-		ADD(p[i], n[i], &az[i]);
-		SUB(p[i], n[i], &sz[i]);
-		printf("\n%d-th add result : ", i);
-		bi_show_bin(az[i]);
-		printf("%d-th sub result : ", i);
-		bi_show_bin(sz[i]);
-	}
+		free(x);
+		free(y);
+		free(z);
+
+		bi_gen_rand(&x, 3);
+		bi_gen_rand(&y, 5);
+
+		printf("x=");
+		bi_show_hex(x);
+		printf("y=");
+		bi_show_hex(y);
+		ADD(x, y, &z);
+		printf("x + y ==");
+		bi_show_hex(z);
+
+		bi_delete(&x);
+		bi_delete(&y);
+		bi_delete(&z);
+
+		free(x);
+		free(y);
+		free(z);
+
+		bi_gen_rand(&x, 5);
+		bi_gen_rand(&y, 3);
+
+		printf("x=");
+		bi_show_hex(x);
+		printf("y=");
+		bi_show_hex(y);
+		ADD(x, y, &z);
+		printf("x + y ==");
+		bi_show_hex(z);
+
+		bi_delete(&x);
+		bi_delete(&y);
+		bi_delete(&z);
+
+		free(x);
+		free(y);
+		free(z);
+	*/
+	/* –E¼À È®ÀÎ
+	bi_gen_rand(&x, NONNEGATIVE, 5);
+	bi_gen_rand(&y, NONNEGATIVE, 5);
+
+	printf("x=");
+	bi_show_hex(x);
+	printf("y=");
+	bi_show_hex(y);
+	SUB(x, y, &z);
+	printf("x - y ==");
+	bi_show_hex(z);
+
+	bi_delete(&x);
+	bi_delete(&y);
+	bi_delete(&z);
+
+	free(x);
+	free(y);
+	free(z);
+
+	bi_gen_rand(&x, NONNEGATIVE, 5);
+	bi_gen_rand(&y, NEGATIVE, 5);
+
+	printf("x=");
+	bi_show_hex(x);
+	printf("y=");
+	bi_show_hex(y);
+
+	SUB(x, y, &z);
+	printf("x - y ==");
+	bi_show_hex(z);
+
+	bi_delete(&x);
+	bi_delete(&y);
+	bi_delete(&z);
+
+	free(x);
+	free(y);
+	free(z);
+
+	bi_gen_rand(&x, NEGATIVE, 5);
+	bi_gen_rand(&y, NONNEGATIVE, 5);
+
+	printf("x=");
+	bi_show_hex(x);
+	printf("y=");
+	bi_show_hex(y);
+
+	SUB(x, y, &z);
+	printf("x - y ==");
+	bi_show_hex(z);
+
+	bi_delete(&x);
+	bi_delete(&y);
+	bi_delete(&z);
+
+	free(x);
+	free(y);
+	free(z);
+
+	bi_gen_rand(&x, NEGATIVE, 5);
+	bi_gen_rand(&y, NEGATIVE, 5);
+
+	printf("x=");
+	bi_show_hex(x);
+	printf("y=");
+	bi_show_hex(y);
+
+	SUB(x, y, &z);
+	printf("x - y ==");
+	bi_show_hex(z);
+
+	bi_delete(&x);
+	bi_delete(&y);
+	bi_delete(&z);
+
+	free(x);
+	free(y);
+	free(z);
+	*/
+
+	/* °ö¼À È®ÀÎ
+	bi_gen_rand(&x, 5);
+		bi_gen_rand(&y, 5);
+
+		printf("x=");
+		bi_show_hex(x);
+		printf("y=");
+		bi_show_hex(y);
+		MUL(x, y, &z);
+		printf("x * y ==");
+		bi_show_hex(z);
+
+		bi_delete(&x);
+		bi_delete(&y);
+		bi_delete(&z);
+
+		free(x);
+		free(y);
+		free(z);
+	*/
+
+	/*
+			bi_gen_rand(&x, 2);
+			bi_gen_rand(&y, 2);
+
+			printf("x=");
+			bi_show_hex(x);
+			printf("y=");
+			bi_show_hex(y);
+			MUL(x, y, &z);
+			printf("x * y ==");
+			bi_show_hex(z);
 
 
-	///*Create BigInt, Delete BigInt, Zerorize BigInt*/
-	//bi_new(&x, 4);
-
-	//printf("sign = %d\n", x->sign);
-	//printf("wordlen = %d\n", x->wordlen);
-	//printf("address = %p\n", x->a);
-	//printf("\n");
-
-	///*Set BigInt by array*/
-	//word arr1[3] = { 0x33,0xff,0xfe };
-	//bi_set_by_array(&x, NONNEGATIVE, arr1, sizeof(arr1)/sizeof(arr1[0]));
-	//printf("sign = %d\n", x->sign);
-	//printf("wordlen = %d\n", x->wordlen);
-	//printf("address = %p\n", x->a);
-	//printf("\n");
-
-	///*Set BigInt by string*/
-
-	///*Show Bigint Binary*/
-	//printf("Binary Big Integer = ");
-	//bi_show_bin(x);
-	//printf("\n");
-
-	///*Show Bigint hex, dec*/
-
-	///*Refine BigInt*/
-	//word arr2[4] = { 0x00,0x33,0xff,0xfe };
-	//bi_set_by_array(&x, NONNEGATIVE, arr2, sizeof(arr2) / sizeof(arr2[0]));
-	//printf("sign = %d\n", x->sign);
-	//printf("wordlen = %d\n", x->wordlen);
-	//printf("address = %p\n", x->a);
-	//printf("Before Refine = ");
-	//bi_show_bin(x);
-	//bi_refine(x);
-	//printf("refine BigInt = ");
-	//bi_show_bin(x);
-	//printf("\n");
-
-	///*Assign BigInt*/
-	//bigint* y = NULL;
-	//bi_assign(&y, x);
-	//printf("sign = %d\n", y->sign);
-	//printf("wordlen = %d\n", y->wordlen);
-	//printf("address = %p\n", y->a);
-	//printf("\n");
-
-	///*Genearate Random BigInt*/
-	//bi_gen_rand(&x, NONNEGATIVE, 5);
-	//printf("Rand BigInt = "); bi_show_bin(x);
-	//printf("\n");
-	//printf("sign = %d\n", x->sign);
-	//printf("wordlen = %d\n", x->wordlen);
-	//printf("address = %p\n", x->a);
-	//printf("\n");
+			//printf("\nif ((x * y) != z):\n");
+			//printf("\tprint(False)\n");
+			//printf("\n");
 
 
-	///*Get Word Length, Bit Length, j-th Bit of BigInt*/
-	//printf("bit length = %d\n", get_bit_length(x));
-	//printf("\n");
-	//printf("0-th bit = %d\n", bit_of_bi(x, 0));
-	//printf("8-th bit = %d\n", bit_of_bi(x, 8));
-	//printf("11-th bit = %d\n", bit_of_bi(x, 11));
+			bi_delete(&x);
+			bi_delete(&y);
+			bi_delete(&z);
 
-	///*Get Sign, Flip Sign, of Bit*/
-	//printf("Sign of BigInt x = %d\n", get_sign_bi(x));
-	//flip_sign_bi(&x);
-	//printf("Flip Sign of x = %d\n", get_sign_bi(x));
-	//printf("\n");
-	///*Set One, Set Zero, Is Zero, Is One*/
-	//printf("Set One BigInt x\n");
-	//bi_set_one(&x);
-	//printf("sign = %d\n", x->sign);
-	//printf("wordlen = %d\n", x->wordlen);
-	//printf("address = %p\n", x->a);
-	//bi_show_bin(x); printf("\n");
-	//printf("Set Zero BigInt x\n");
-	//bi_set_zero(&x);
-	//printf("sign = %d\n", x->sign);
-	//printf("wordlen = %d\n", x->wordlen);
-	//printf("address = %p\n", x->a);
-	//bi_show_bin(x); printf("\n");
-	//printf("Is BigInt x One? : True(1), False(0)\n%d", bi_is_one(x));
-	//printf("\n");
-	//printf("Is BigInt x Zero? : True(1), False(0)\n%d", bi_is_zero(x));
-	//printf("\n");
-	///*Compare*/
+			free(x);
+			free(y);
+			free(z);
 
-	///*Left/Right Shift*/
-	//bi_new(&hd, 2);
-	//hd->a[0] = 0xab; // 10111011
-	//hd->a[1] = 0xcd; // 11101011
-
-	//bi_set_by_array(&x, NONNEGATIVE, hd->a, hd->wordlen);
-	//printf("biginteger : %x%x\n", hd->a[1], hd->a[0]);
-	//bi_show_bin(hd);
-
-	//bi_leftshift(&hd, 8, hd->a, hd->wordlen);
-	//printf("biginteger : %x%x%x\n", hd->a[2], hd->a[1], hd->a[0]);
-	//bi_show_bin(hd);
-	//
-	/************** right shift È®ÀÎ ***************/
-	//hd = NULL;
-	//word hd_Arr[3] = { 0x12, 0x34, 0x56 };
-	////printf("BigInteger : %x%x%x\n", hd->a[2], hd->a[1], hd->a[0]);
-	//bi_set_by_array(&hd, NONNEGATIVE, hd_Arr, sizeof(hd_Arr)/sizeof(hd_Arr[0]));
-	//printf("BigInteger : %x%x%x\n", hd->a[2], hd->a[1], hd->a[0]);
-	//bi_show_bin(hd);
-
-	//bi_rightshift(&hd, 8, hd->a, hd->wordlen);
-	//printf("BigInteger : %x%x%x\n", hd->a[2], hd->a[1], hd->a[0]);
-	//bi_show_bin(hd);
-
-	///*Reduction*/
-	//bigint* z=NULL;
-	//bi_gen_rand(&x, NONNEGATIVE, 5);
-	//printf("Rand BigInt = "); bi_show_bin(x);
-	//printf("\n");
-	//bi_reduction(&z, x, 8);
-	//printf("Reduction BigInt = "); bi_show_bin(z); printf("\n");
-	//bi_reduction(&z, x, 9);
-	//printf("Reduction BigInt = "); bi_show_bin(z); printf("\n");
-	//bi_reduction(&z, x, 50);
-	//printf("Reduction BigInt = "); bi_show_bin(z); printf("\n");
-	//
+			*/
 
 
 
-	//This is second Test
+
+			/*  compare È®ÀÎ
+			*
+			*
+				bi_gen_rand(&x, NONNEGATIVE, 5);
+				bi_gen_rand(&y, NONNEGATIVE, 5);
+
+				if (compareAB(x, y) == 1) {// x > y
+					printf("x=");
+					bi_show_hex(x);
+					printf("y=");
+					bi_show_hex(y);
+					printf("x > y\n");
+
+				}
+				else if (compareAB(x, y) == -1)
+				{
+					printf("x=");
+					bi_show_hex(x);
+					printf("y=");
+					bi_show_hex(y);
+					printf("x < y\n");
+				}
+				else if (compareAB(x, y) == 0) // x < y
+				{
+					printf("x=");
+					bi_show_hex(x);
+					printf("y=");
+					bi_show_hex(y);
+					printf("x == y\n");
+				}
+
+				bi_delete(&x);
+				bi_delete(&y);
+
+				free(x);
+				free(y);
+
+				bi_gen_rand(&x, NONNEGATIVE, 5);
+				bi_gen_rand(&y, NEGATIVE, 5);
+
+				if (compareAB(x, y) == 1) {// x > y
+					printf("x=");
+					bi_show_hex(x);
+					printf("y=");
+					bi_show_hex(y);
+					printf("x > y\n");
+
+				}
+				else if (compareAB(x, y) == -1)
+				{
+					printf("x=");
+					bi_show_hex(x);
+					printf("y=");
+					bi_show_hex(y);
+					printf("x < y\n");
+				}
+				else if (compareAB(x, y) == 0) // x < y
+				{
+					printf("x=");
+					bi_show_hex(x);
+					printf("y=");
+					bi_show_hex(y);
+					printf("x == y\n");
+				}
+
+				bi_delete(&x);
+				bi_delete(&y);
+
+				free(x);
+				free(y);
+
+				bi_gen_rand(&x, NEGATIVE, 5);
+				bi_gen_rand(&y, NONNEGATIVE, 5);
+
+
+				if (compareAB(x, y) == 1) {// x > y
+					printf("x=");
+					bi_show_hex(x);
+					printf("y=");
+					bi_show_hex(y);
+					printf("x > y\n");
+
+				}
+				else if (compareAB(x, y) == -1)
+				{
+					printf("x=");
+					bi_show_hex(x);
+					printf("y=");
+					bi_show_hex(y);
+					printf("x < y\n");
+				}
+				else if (compareAB(x, y) == 0) // x < y
+				{
+					printf("x=");
+					bi_show_hex(x);
+					printf("y=");
+					bi_show_hex(y);
+					printf("x == y\n");
+				}
+
+				bi_delete(&x);
+				bi_delete(&y);
+
+				free(x);
+				free(y);
+
+				bi_gen_rand(&x, NEGATIVE, 5);
+				bi_gen_rand(&y, NEGATIVE, 5);
+
+
+				if (compareAB(x, y) == 1) {// x > y
+					printf("x=");
+					bi_show_hex(x);
+					printf("y=");
+					bi_show_hex(y);
+					printf("x > y\n");
+
+				}
+				else if (compareAB(x, y) == -1)
+				{
+					printf("x=");
+					bi_show_hex(x);
+					printf("y=");
+					bi_show_hex(y);
+					printf("x < y\n");
+				}
+				else if (compareAB(x, y) == 0) // x < y
+				{
+					printf("x=");
+					bi_show_hex(x);
+					printf("y=");
+					bi_show_hex(y);
+					printf("x == y\n");
+				}
+
+				bi_delete(&x);
+				bi_delete(&y);
+
+				free(x);
+				free(y);
+			*/
+
+			//fclose(fp);
+
+			/*
+				fputs("x=", fp);
+				File_print(x, fp);
+				fputs("y=", fp);
+				File_print(y, fp);
+
+				ADD(x, y, &z);
+
+				fputs("x+y==", fp);
+				File_print(z, fp);
+			*/
+
+
+			/*°ö¼Á È®ÀÎ
+			//Schoolbook_MUL(x, y, &z);
+			//printf("x * y = ");
+			//bi_show_hex(z);
+			*/
+
+			/* compare È®ÀÎ
+			*compareAB()
+			*
+			*/
+			///************** left shift È®ÀÎ ***************/
+			//bi_new(&x, 1);
+			//word x_arr[2] = { 0xab, 0xcd }; // 10111011 11101011
+			//bi_set_by_array(&x, NONNEGATIVE, x_arr, sizeof(x_arr) / sizeof(x_arr[0]));
+			//printf("biginteger : ");
+			//for(int i = (x->wordlen - 1); i >= 0; i--)
+			//	printf("%02x", x->a[i]);
+			//printf("\n");
+			//bi_show_bin(x);
+			//bi_leftshift(&x, 8, x->a, x->wordlen);
+			//printf("biginteger : ");
+			//for (int i = x->wordlen - 1; i >= 0; i--)
+			//	printf("%02x", x->a[i]);
+			//printf("\n");
+			//bi_show_bin(x);
+
+			///************** right shift È®ÀÎ ***************/
+			//x = NULL;
+			//bi_new(&x, 1);
+			//word x1_arr[3] = { 0x12, 0x34, 0x56 };
+			//bi_set_by_array(&x, NONNEGATIVE, x1_arr, sizeof(x1_arr)/sizeof(x1_arr[0]));
+			//for (int i = (x->wordlen - 1); i >= 0; i--)
+			//	printf("%02x", x->a[i]);
+			//printf("\n");
+			//bi_show_bin(x);
+			//bi_rightshift(&x, 12, x->a, x->wordlen);
+			//for (int i = (x->wordlen - 1); i >= 0; i--)
+			//	printf("%02x", x->a[i]);
+			//printf("\n");
+			//bi_show_bin(x);
+
+			////// µ¡¼À È®ÀÎ
+			//word arr1[3] = { 0x03, 0xff, 0x43 };
+			////word arr1[3] = { 0x00, };
+			//word arr2[3] = { 0x02, 0xff, 0xae };
+
+			//	
+			//bi_set_by_array(&x, NONNEGATIVE, arr1, sizeof(arr1) / sizeof(arr1[0]));
+			//bi_set_by_array(&y, NONNEGATIVE, arr2, sizeof(arr2) / sizeof(arr2[0]));
+			//flip_sign_bi(&y);
+			//for (int i = x->wordlen - 1; i >= 0; i--)
+			//	printf("%02x", x->a[i]);
+			//printf("\n");
+			//for (int i = y->wordlen - 1; i >= 0; i--)
+			//	printf("%02x", y->a[i]);
+			//printf("\n");
+			//
+			//ADD(x, y, &z);
+
+			//printf("wordlen of z = %d \n", z->wordlen);
+			//	
+			//printf("sign of z = %d \n", z->sign);
+			//for (int i = z->wordlen - 1 ; i >= 0; i--)
+			//	printf("%02x", z->a[i]);
+			//printf("\n");
+
+
+			///*create bigint, delete bigint, zerorize bigint*/
+			//bi_new(&x, 4);
+
+			//printf("sign = %d\n", x->sign);
+			//printf("wordlen = %d\n", x->wordlen);
+			//printf("address = %p\n", x->a);
+			//printf("\n");
+
+			///*set bigint by array*/
+			//word arr1[3] = { 0x33,0xff,0xfe };
+			//bi_set_by_array(&x, nonnegative, arr1, sizeof(arr1)/sizeof(arr1[0]));
+			//printf("sign = %d\n", x->sign);
+			//printf("wordlen = %d\n", x->wordlen);
+			//printf("address = %p\n", x->a);
+			//printf("\n");
+
+			///*set bigint by string*/
+
+			///*show bigint binary*/
+			//printf("binary big integer = ");
+			//bi_show_bin(x);
+			//printf("\n");
+
+			///*show bigint hex, dec*/
+
+			///*refine bigint*/
+			//word arr2[4] = { 0x00,0x33,0xff,0xfe };
+			//bi_set_by_array(&x, nonnegative, arr2, sizeof(arr2) / sizeof(arr2[0]));
+			//printf("sign = %d\n", x->sign);
+			//printf("wordlen = %d\n", x->wordlen);
+			//printf("address = %p\n", x->a);
+			//printf("before refine = ");
+			//bi_show_bin(x);
+			//bi_refine(x);
+			//printf("refine bigint = ");
+			//bi_show_bin(x);
+			//printf("\n");
+
+			///*assign bigint*/
+			//bigint* y = null;
+			//bi_assign(&y, x);
+			//printf("sign = %d\n", y->sign);
+			//printf("wordlen = %d\n", y->wordlen);
+			//printf("address = %p\n", y->a);
+			//printf("\n");
+
+			///*genearate random bigint*/
+			//bi_gen_rand(&x, nonnegative, 5);
+			//printf("rand bigint = "); bi_show_bin(x);
+			//printf("\n");
+			//printf("sign = %d\n", x->sign);
+			//printf("wordlen = %d\n", x->wordlen);
+			//printf("address = %p\n", x->a);
+			//printf("\n");
+
+
+			///*get word length, bit length, j-th bit of bigint*/
+			//printf("bit length = %d\n", get_bit_length(x));
+			//printf("\n");
+			//printf("0-th bit = %d\n", bit_of_bi(x, 0));
+			//printf("8-th bit = %d\n", bit_of_bi(x, 8));
+			//printf("11-th bit = %d\n", bit_of_bi(x, 11));
+
+			///*get sign, flip sign, of bit*/
+			//printf("sign of bigint x = %d\n", get_sign_bi(x));
+			//flip_sign_bi(&x);
+			//printf("flip sign of x = %d\n", get_sign_bi(x));
+			//printf("\n");
+			///*set one, set zero, is zero, is one*/
+			//printf("set one bigint x\n");
+			//bi_set_one(&x);
+			//printf("sign = %d\n", x->sign);
+			//printf("wordlen = %d\n", x->wordlen);
+			//printf("address = %p\n", x->a);
+			//bi_show_bin(x); printf("\n");
+			//printf("set zero bigint x\n");
+			//bi_set_zero(&x);
+			//printf("sign = %d\n", x->sign);
+			//printf("wordlen = %d\n", x->wordlen);
+			//printf("address = %p\n", x->a);
+			//bi_show_bin(x); printf("\n");
+			//printf("is bigint x one? : true(1), false(0)\n%d", bi_is_one(x));
+			//printf("\n");
+			//printf("is bigint x zero? : true(1), false(0)\n%d", bi_is_zero(x));
+			//printf("\n");
+			///*compare*/
+
+			///*left/right shift*/
+			//bi_new(&hd, 2);
+			//hd->a[0] = 0xab; // 10111011
+			//hd->a[1] = 0xcd; // 11101011
+
+			//bi_set_by_array(&x, nonnegative, hd->a, hd->wordlen);
+			//printf("biginteger : %x%x\n", hd->a[1], hd->a[0]);
+			//bi_show_bin(hd);
+
+			//bi_leftshift(&hd, 8, hd->a, hd->wordlen);
+			//printf("biginteger : %x%x%x\n", hd->a[2], hd->a[1], hd->a[0]);
+			//bi_show_bin(hd);
+			//
+			///************** right shift È®ÀÎ ***************/
+			//hd = null;
+			//word hd_arr[3] = { 0x12, 0x34, 0x56 };
+			//printf("biginteger : %x%x%x\n", hd->a[2], hd->a[1], hd->a[0]);
+			//bi_set_by_array(&hd, nonnegative, hd_arr, sizeof(hd_arr)/sizeof(hd_arr[0]));
+			//printf("biginteger : %x%x%x\n", hd->a[2], hd->a[1], hd->a[0]);
+			//bi_show_bin(hd);
+
+			//bi_rightshift(&hd, 8, hd->a, hd->wordlen);
+			//printf("biginteger : %x%x%x\n", hd->a[2], hd->a[1], hd->a[0]);
+			//bi_show_bin(hd);
+
+			///*reduction*/
+			//bigint* z=null;
+			//bi_gen_rand(&x, nonnegative, 5);
+			//printf("rand bigint = "); bi_show_bin(x);
+			//printf("\n");
+			//bi_reduction(&z, x, 8);
+			//printf("reduction bigint = "); bi_show_bin(z); printf("\n");
+			//bi_reduction(&z, x, 9);
+			//printf("reduction bigint = "); bi_show_bin(z); printf("\n");
+			//bi_reduction(&z, x, 50);
+			//printf("reduction bigint = "); bi_show_bin(z); printf("\n");
+
 }
 
