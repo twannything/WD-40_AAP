@@ -124,13 +124,14 @@ void bi_show_hex(bigint* x) {
 * @param bigint* x : 출력한 빅넘버 x
 */
 void bi_show_bin(bigint* x) {
-	if (x->sign == NEGATIVE) printf("-");
+	if (x->sign == NEGATIVE) printf("-0b");
+	else printf("0b");
 	for (int i = x->wordlen - 1; i >= 0; i--) {
 		for (int j = WORD_BITLEN - 1; j >= 0; j--) {
 			int mask = 1 << j;
 			printf("%d", x->a[i] & mask ? 1 : 0);
 		}
-		printf(" ");
+		//printf(" ");
 
 	}
 	//printf("\n");
@@ -366,7 +367,7 @@ void bi_leftshift(bigint** x, int r)
 	word tmp = 0;
 	word ttmp = 0;
 
-	if (r % WORD_BITLEN == 0) // r�� W�� ����� ��
+	if (r % WORD_BITLEN == 0) 
 	{
 		a = (*x)->wordlen;
 		(*x)->wordlen += k;
@@ -416,7 +417,7 @@ void bi_rightshift(bigint** x, int r)
 		for (i = 0; i < a; i++)
 			(*x)->a[i] = 0x00;
 
-	if (r % WORD_BITLEN == 0) // r�� W�� ����� ��
+	if (r % WORD_BITLEN == 0)
 	{
 		for (i = 0; i < a - k; i++)
 			(*x)->a[i] = ((*x)->a[k + i]);

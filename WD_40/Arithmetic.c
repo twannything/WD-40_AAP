@@ -525,10 +525,8 @@ void bi_binary_long_division_test() {
 
 	for (int i = 0; i < 10; i++) {
 		bi_binary_long_division(x[i], y[i], &q[i], &r[i]);
-		bi_show_bin(x[i]); printf("/"); bi_show_bin(y[i]);
-		printf(" == ");
-		bi_show_bin(q[i]); printf("\n");
-		printf("remainder == "); bi_show_bin(r[i]); printf("\n");
+		bi_show_bin(x[i]); printf("=="); bi_show_bin(y[i]); printf("*"); bi_show_bin(q[i]); printf("+"); bi_show_bin(r[i]); printf("\n");
+
 	}
 
 }
