@@ -13,3 +13,5 @@ void SUB(bigint* x, bigint* y, bigint** z);
 void MULC(bigint* x, bigint* y, bigint** z, int i, int j);
 void MUL(bigint* x, bigint* y, bigint** z);
 void Schoolbook_MUL(bigint* x, bigint* y, bigint** z);
+void binary_long_division(int a, int b, int* q, int* r);
+void bi_binary_long_division(bigint* a, bigint* b, bigint** q, bigint** r);

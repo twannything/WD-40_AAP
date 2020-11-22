@@ -37,7 +37,7 @@ void bi_set_by_stirng(bigint** x, int sign, char* str, word base);
 
 void bi_show_hex(bigint* x);
 void bi_show_dec(bigint* x);
-void bi_show_bin(bigint* x);//¤¾¤· 
+void bi_show_bin(bigint* x); 
 void bi_refine(bigint* x);
 void bi_assign(bigint** y, bigint* x);
 
