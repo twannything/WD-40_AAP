@@ -1,12 +1,12 @@
 #define _CRT_SECURE_NO_WARNINGS
-#include "bi.h"
+#include "Basic Operation.h"
+#include "Arithmetic.h"
 
 /**
 * @mainpage BIGINT LIBRARY : WD-40
 * - 작성자 : 김태완, 유현도
-* @date 2020-11-22
+* @date 2020-11-23 05:42
 */
-
 
 int main() {
 
@@ -22,38 +22,28 @@ int main() {
 		return -1;
 	}
 	*/
-	int i = 10;
+	int i = 19;
 	while (i >= 0) {
 
-		bi_gen_rand(&x, 20);
-		bi_gen_rand(&y, 20);
-
-		/*bi_new(&x, 1);
-		word x_arr[6] = { 0xff,0xff, 0xff, 0xff, 0xff, 0xff };
-		bi_set_by_array(&x, NONNEGATIVE, x_arr, sizeof(x_arr) / sizeof(x_arr[0]));
-
-		bi_new(&y, 1);
-		word y_arr[6] = { 0xff,0xff, 0xff, 0xff, 0xff, 0xff };
-		bi_set_by_array(&y, NONNEGATIVE, y_arr, sizeof(y_arr) / sizeof(y_arr[0]));*/
+		bi_gen_rand(&x,5);
+		bi_gen_rand(&y,5); // squaring 에서는 안씀
 
 		printf("x=");
 		bi_show_hex(x);
-		printf("y=");
-		bi_show_hex(y);
-		MUL(x, y, &z);
+		printf("y="); // squaring 에서는 안씀
+		bi_show_hex(y); // squaring 에서는 안씀
+		MUL(x, y,&z);
 
 		printf("x * y ==");
 		bi_show_hex(z);
 
 		bi_delete(&x);
-		bi_delete(&y);
+		bi_delete(&y); // squaring 에서는 안씀
 		bi_delete(&z);
 
 		free(x);
-		free(y);
+		free(y); // squaring 에서는 안씀
 		free(z);
-
-
 		i--;
 	}
 

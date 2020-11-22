@@ -15,15 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="bi.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="bi.c">
+    <ClCompile Include="main.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="main.c">
+    <ClCompile Include="Arithmetic.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Basic Operation.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -31,5 +29,13 @@
     <Text Include="readme.txt">
       <Filter>헤더 파일</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Arithmetic.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Basic Operation.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
