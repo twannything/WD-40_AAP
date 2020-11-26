@@ -1,7 +1,8 @@
 #pragma once
+#define _CRT_SECURE_NO_WARNINGS 
 #include "Arithmetic.h"
 #include "Basic Operation.h"
-
+#define TEST 100
 /**
 * @brief bi_reduction : y를 x의 r승 modular 연산 취해주는 함수
 * @param bigint** y : 빅넘버 y
@@ -164,7 +165,9 @@ void SUB_C(bigint* x, bigint* y, bigint** z) {
 	for (int j = 0; j < (*z)->wordlen; j++) {
 		b = S_SUBABb(x, y, z, b, j);
 	}
+	
 	bi_refine(*z);
+	//free(*z);
 }
 
 
@@ -568,120 +571,6 @@ void bi_binary_long_division(bigint* a, bigint* b, bigint** q, bigint** r) {
 		}
 	}
 	bi_delete(&tmp);
-}
-
-
-void add_test() {
-	bigint* x = NULL;
-	bigint* y = NULL;
-	bigint* z = NULL;
-
-	int i = 20;
-	while (i >= 0) {
-
-		bi_gen_rand(&x, 5);
-		bi_gen_rand(&y, 5); // squaring 에서는 안씀
-
-		printf("x=");
-		bi_show_hex(x);
-		printf("y="); // squaring 에서는 안씀
-		bi_show_hex(y); // squaring 에서는 안씀
-		ADD(x, y, &z);
-
-		printf("x + y ==");
-		bi_show_hex(z);
-
-		bi_delete(&x);
-		bi_delete(&y); // squaring 에서는 안씀
-		bi_delete(&z);
-
-		free(x);
-		free(y); // squaring 에서는 안씀
-		free(z);
-		i--;
-	}
-}
-void sub_test() {
-	bigint* x = NULL;
-	bigint* y = NULL;
-	bigint* z = NULL;
-
-	int i = 20;
-	while (i >= 0) {
-
-		bi_gen_rand(&x, 5);
-		bi_gen_rand(&y, 5); // squaring 에서는 안씀
-
-		printf("x=");
-		bi_show_hex(x);
-		printf("y="); // squaring 에서는 안씀
-		bi_show_hex(y); // squaring 에서는 안씀
-		SUB(x, y, &z);
-
-		printf("x - y ==");
-		bi_show_hex(z);
-
-		bi_delete(&x);
-		bi_delete(&y); // squaring 에서는 안씀
-		bi_delete(&z);
-
-		free(x);
-		free(y); // squaring 에서는 안씀
-		free(z);
-		i--;
-	}
-}
-
-void  mul_test() {
-	bigint* x = NULL;
-	bigint* y = NULL;
-	bigint* z = NULL;
-
-	int i = 20;
-	while (i >= 0) {
-
-		bi_gen_rand(&x, 5);
-		bi_gen_rand(&y, 5); // squaring 에서는 안씀
-
-		printf("x=");
-		bi_show_hex(x);
-		printf("y="); // squaring 에서는 안씀
-		bi_show_hex(y); // squaring 에서는 안씀
-		MUL(x, y, &z);
-
-		printf("x * y ==");
-		bi_show_hex(z);
-
-		bi_delete(&x);
-		bi_delete(&y); // squaring 에서는 안씀
-		bi_delete(&z);
-
-		free(x);
-		free(y); // squaring 에서는 안씀
-		free(z);
-		i--;
-	}
-}
-
-
-void bi_binary_long_division_test() {
-	bigint* x[10] = { NULL, };
-	bigint* y[10] = { NULL, };
-	bigint* q[10] = { NULL, };
-	bigint* r[10] = { NULL, };
-	for (int i = 0; i < 10; i++) {
-		bi_gen_rand(&x[i], 3);
-		bi_gen_rand(&y[i], 2);
-	}
-
-	for (int i = 0; i < 10; i++) {
-		bi_binary_long_division(x[i], y[i], &q[i], &r[i]);
-		bi_show_bin(x[i]); printf("/"); bi_show_bin(y[i]);
-		printf(" == ");
-		bi_show_bin(q[i]); printf("\n");
-		printf("remainder == "); bi_show_bin(r[i]); printf("\n");
-	}
-
 }
 
 

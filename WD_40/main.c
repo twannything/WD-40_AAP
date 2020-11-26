@@ -1,6 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "Basic Operation.h"
 #include "Arithmetic.h"
+#include <vld.h>
 
 /**
 * @mainpage BIGINT LIBRARY : WD-40
@@ -10,42 +11,45 @@
 
 int main() {
 
+	//add_test();
+	//sub_test();
+	mul_test();
 
-	bigint* x = NULL;
-	bigint* y = NULL;
-	bigint* z = NULL;
-	/*errno_t err;
-	FILE* fp = NULL;
-	err = fopen_s(&fp,"C:\\Users\\user\\source\\repos\\WD_40(1)\\WD_40\\x64\\Release\\data.sage", "w");
-	if (fp == NULL) {
-		puts("File Error\n");
-		return -1;
-	}
-	*/
-	int i = 19;
-	while (i >= 0) {
+	//bigint* x = NULL;
+	//bigint* y = NULL;
+	//bigint* z = NULL;
+	///*errno_t err;
+	//FILE* fp = NULL;
+	//err = fopen_s(&fp,"C:\\Users\\user\\source\\repos\\WD_40(1)\\WD_40\\x64\\Release\\data.sage", "w");
+	//if (fp == NULL) {
+	//	puts("File Error\n");
+	//	return -1;
+	//}
+	//*/
+	//int i = 19;
+	//while (i >= 0) {
 
-		bi_gen_rand(&x,5);
-		bi_gen_rand(&y,5); // squaring ¿¡¼­´Â ¾È¾¸
+	//	bi_gen_rand(&x,5);
+	//	bi_gen_rand(&y,5); // squaring ¿¡¼­´Â ¾È¾¸
 
-		printf("x=");
-		bi_show_hex(x);
-		printf("y="); // squaring ¿¡¼­´Â ¾È¾¸
-		bi_show_hex(y); // squaring ¿¡¼­´Â ¾È¾¸
-		MUL(x, y,&z);
+	//	printf("x=");
+	//	bi_show_hex(x);
+	//	printf("y="); // squaring ¿¡¼­´Â ¾È¾¸
+	//	bi_show_hex(y); // squaring ¿¡¼­´Â ¾È¾¸
+	//	MUL(x, y,&z);
 
-		printf("x * y ==");
-		bi_show_hex(z);
+	//	printf("x * y ==");
+	//	bi_show_hex(z);
 
-		bi_delete(&x);
-		bi_delete(&y); // squaring ¿¡¼­´Â ¾È¾¸
-		bi_delete(&z);
+	//	bi_delete(&x);
+	//	bi_delete(&y); // squaring ¿¡¼­´Â ¾È¾¸
+	//	bi_delete(&z);
 
-		free(x);
-		free(y); // squaring ¿¡¼­´Â ¾È¾¸
-		free(z);
-		i--;
-	}
+	//	free(x);
+	//	free(y); // squaring ¿¡¼­´Â ¾È¾¸
+	//	free(z);
+	//	i--;
+	//}
 
 	/*
 	bi_gen_rand(&x, 5);
