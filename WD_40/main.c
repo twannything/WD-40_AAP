@@ -3,9 +3,9 @@
 #include "Arithmetic.h"
 
 int main() {
-	//add_test();
+	ADD_test();
 	//sub_test();
 	//mul_test()
-	bi_binary_long_division_test();
+	//bi_binary_long_division_test();
 }
 

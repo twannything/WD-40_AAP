@@ -32,6 +32,9 @@
     <ClCompile Include="Arithmetic.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="test.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="readme.txt">

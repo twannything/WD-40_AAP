@@ -146,6 +146,7 @@
     <ClCompile Include="Basic Operation.c" />
     <ClCompile Include="Arithmetic.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="test.c" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="readme.txt" />
