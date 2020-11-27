@@ -133,14 +133,14 @@ void  mul_test() {
 		printf("x * y ==");
 		bi_show_hex(z);
 
-		bi_delete(&x);
-		bi_delete(&y); // squaring ¿¡¼­´Â ¾È¾¸
-		bi_delete(&z);
+		//bi_delete(&x);
+		//bi_delete(&y); // squaring ¿¡¼­´Â ¾È¾¸
+		//bi_delete(&z);
 
-		free(x);
-		free(y); // squaring ¿¡¼­´Â ¾È¾¸
-		free(z);
-		i--;
+		//free(x);
+		//free(y); // squaring ¿¡¼­´Â ¾È¾¸
+		//free(z);
+		//i--;
 	}
 }
 

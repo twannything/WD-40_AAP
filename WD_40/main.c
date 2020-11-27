@@ -11,9 +11,9 @@
 
 int main() {
 
-	//add_test();
+	add_test();
 	//sub_test();
-	mul_test();
+	//mul_test();
 
 	//bigint* x = NULL;
 	//bigint* y = NULL;
