@@ -6,7 +6,7 @@
 #include<math.h>
 
 #define _CRT_SECURE_NO_WARNINGS
-#define WORD_BITLEN 8
+#define WORD_BITLEN 64
 
 #if WORD_BITLEN == 64
 typedef unsigned long long word;

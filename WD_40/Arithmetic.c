@@ -12,8 +12,8 @@
 void bi_reduction(bigint** y, bigint* x, int r) {
 	{
 		word a = 1;
-		int k = r / WORD_BITLEN;
-		int rem = r % WORD_BITLEN;
+		long long k = r / WORD_BITLEN;
+		long long rem = r % WORD_BITLEN;
 		if (r > x->wordlen * WORD_BITLEN) {
 			bi_assign(y, x); return;
 		}

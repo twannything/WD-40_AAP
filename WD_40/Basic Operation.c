@@ -109,7 +109,7 @@ void bi_show_hex(bigint* x) {
 #elif (WORD_BITLEN == 32)
 		printf("%08x", x->a[i]);
 #else
-		printf("%16x", x->a[i]);
+		printf("%016llx", x->a[i]);
 #endif
 	}
 	printf("\n");
@@ -223,7 +223,7 @@ int get_word_length(bigint* x) {
  */
 int get_bit_length(bigint* x) {
 	int total = x->wordlen * WORD_BITLEN;
-	int mask = 1;
+	long long mask = 1;
 
 	for (int j = WORD_BITLEN - 1; j > 0; j--) {
 		mask = 1 << j;
@@ -243,7 +243,7 @@ int get_bit_length(bigint* x) {
 int bit_of_bi(bigint* x, int j) {
 	int rem = j % WORD_BITLEN;
 	int j_word = j / WORD_BITLEN;
-	int mask = 1 << rem;
+	long long mask = 1 << rem;
 
 	return (x->a[j_word] & mask) >> rem;
 }
@@ -360,7 +360,7 @@ int compareAB(bigint* x, bigint* y)
 */
 void bi_leftshift(bigint** x, int r)
 {
-	int k, rp, a;
+	long long k, rp, a;
 	k = r / WORD_BITLEN;
 	rp = r % WORD_BITLEN;
 	word tmp = 0;
