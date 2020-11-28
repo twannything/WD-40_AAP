@@ -6,7 +6,7 @@
 #include<math.h>
 
 #define _CRT_SECURE_NO_WARNINGS
-#define WORD_BITLEN 8
+#define WORD_BITLEN 32
 
 #if WORD_BITLEN == 64
 typedef unsigned long long word;
@@ -42,10 +42,10 @@ void bi_delete(bigint** x);
 void bi_new(bigint** x, int wordlen);
 
 void bi_set_by_array(bigint** x, int sign, word* a, int wordlen);
-void bi_set_by_stirng(bigint** x, int sign, char* str, word base);
+//void bi_set_by_stirng(bigint** x, int sign, char* str, word base);
 
 void bi_show_hex(bigint* x);
-void bi_show_dec(bigint* x);
+//void bi_show_dec(bigint* x);
 void bi_show_bin(bigint* x);
 void bi_refine(bigint* x);
 void bi_assign(bigint** y, bigint* x);

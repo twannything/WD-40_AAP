@@ -62,7 +62,7 @@ void bi_new(bigint** x, int wordlen) {
 		bi_delete(x);
 
 	*x = (bigint*)malloc(sizeof(bigint));
-	(*x)->sign = NONNEGATIVE;
+	(*x)->sign = 0;
 	(*x)->wordlen = wordlen;
 	(*x)->a = (word*)calloc(wordlen, sizeof(word));
 }
@@ -74,11 +74,12 @@ void bi_new(bigint** x, int wordlen) {
 * @param int wordlen : x의 워드길이
 */
 void bi_set_by_array(bigint** x, int sign, word* a, int wordlen) {
+	int i, j;
 	if (*x != NULL)
 		bi_delete(x);
 	bi_new(x, wordlen);
 	(*x)->sign = sign;
-	for (int i = 0, j = wordlen - 1; i < wordlen, j >= 0; i++, j--)
+	for (i = 0, j = wordlen - 1; i < wordlen, j >= 0; i++, j--)
 		(*x)->a[i] = a[j];
 }
 /**
@@ -109,7 +110,7 @@ void bi_show_hex(bigint* x) {
 #elif (WORD_BITLEN == 32)
 		printf("%08x", x->a[i]);
 #else
-		printf("%16x", x->a[i]);
+		printf("%llx", x->a[i]);
 #endif
 	}
 	printf("\n");
@@ -141,25 +142,25 @@ void bi_show_bin(bigint* x) {
 * @param bigint* x : 출력한 빅넘버 x
 * @param FILE* fp : 출력값을 적을 파일
 */
-void File_print(bigint* x, FILE* fp) {
-
-
-	if (x->sign == NEGATIVE)
-		fprintf(fp, "-0x");
-	else
-		fprintf(fp, "0x");
-
-	for (int i = (x->wordlen - 1); i >= 0; i--) {
-#if (WORD_BITLEN == 8)
-		fprintf(fp, "%02x", x->a[i]);
-#elif (WORD_BITLEN == 32)
-		fprintf(fp, "%08x", x->a[i]);
-#else
-		fprintf(fp, "%16x", x->a[i]);
-#endif
-	}
-	fprintf(fp, "\n");
-}
+//void File_print(bigint* x, FILE* fp) {
+//
+//
+//	if (x->sign == NEGATIVE)
+//		fprintf(fp, "-0x");
+//	else
+//		fprintf(fp, "0x");
+//
+//	for (int i = (x->wordlen - 1); i >= 0; i--) {
+//#if (WORD_BITLEN == 8)
+//		fprintf(fp, "%02x", x->a[i]);
+//#elif (WORD_BITLEN == 32)
+//		fprintf(fp, "%08x", x->a[i]);
+//#else
+//		fprintf(fp, "%16x", x->a[i]);
+//#endif
+//	}
+//	fprintf(fp, "\n");
+//}
 /**
 * @brief bi_refine : x->a = 0x0000ffff 처럼 앞에 실질적으로 필요없는 메모리가 잡혀있을때 x->a = 0xffff로 줄여주는 함수
 * @param bigint* x : refine 할 빅넘버 x
@@ -223,7 +224,7 @@ int get_word_length(bigint* x) {
  */
 int get_bit_length(bigint* x) {
 	int total = x->wordlen * WORD_BITLEN;
-	int mask = 1;
+	long long mask = 1;
 
 	for (int j = WORD_BITLEN - 1; j > 0; j--) {
 		mask = 1 << j;
@@ -243,7 +244,7 @@ int get_bit_length(bigint* x) {
 int bit_of_bi(bigint* x, int j) {
 	int rem = j % WORD_BITLEN;
 	int j_word = j / WORD_BITLEN;
-	int mask = 1 << rem;
+	long long mask = 1 << rem;
 
 	return (x->a[j_word] & mask) >> rem;
 }
@@ -360,7 +361,7 @@ int compareAB(bigint* x, bigint* y)
 */
 void bi_leftshift(bigint** x, int r)
 {
-	int k, rp, a;
+	long long k, rp, a;
 	k = r / WORD_BITLEN;
 	rp = r % WORD_BITLEN;
 	word tmp = 0;

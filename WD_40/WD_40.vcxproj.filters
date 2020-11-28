@@ -24,6 +24,9 @@
     <ClCompile Include="Basic Operation.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="test.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="readme.txt">
@@ -35,6 +38,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Basic Operation.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="test.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

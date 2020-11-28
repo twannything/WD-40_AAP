@@ -1,6 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "Basic Operation.h"
 #include "Arithmetic.h"
+#include "test.h"
 
 /**
 * @mainpage BIGINT LIBRARY : WD-40
@@ -10,42 +11,97 @@
 
 int main() {
 
+	//add_test();
+	//sub_test();
+	mul_test();
+	//Ka_mul_test();
+	//bi_binary_long_division_test();
+	//Squaring_test();
+	//Exponentiation_test();
 
-	bigint* x = NULL;
-	bigint* y = NULL;
+
+	//bigint* x = NULL;
+	//bigint* z = NULL;
+	//word a[4] = { 0xdb,0xa6,0xb3, 0xeb };
+
+	//bi_set_by_array(&x, NONNEGATIVE, a, 4);
+	//printf("x=");
+	//bi_show_hex(x);
+	//Squaring_Schoolbook(x, &z);
+	//printf("x*x==");
+	//bi_show_hex(z);
+
+
+}
+
+
+
+
+
+
+
+
+
+
+	/* Squaring word Å×½ºÆ®*/
+	
+	/*bigint* x = NULL;
 	bigint* z = NULL;
-	/*errno_t err;
-	FILE* fp = NULL;
-	err = fopen_s(&fp,"C:\\Users\\user\\source\\repos\\WD_40(1)\\WD_40\\x64\\Release\\data.sage", "w");
-	if (fp == NULL) {
-		puts("File Error\n");
-		return -1;
-	}
-	*/
-	int i = 19;
-	while (i >= 0) {
+	word dst[2] = { 0, };
 
-		bi_gen_rand(&x,5);
-		bi_gen_rand(&y,5); // squaring ¿¡¼­´Â ¾È¾¸
-
+	int i = 10;
+	while (i > 0) {
+		bi_gen_rand(&x, 1);
+		bi_new(&z, 2);
 		printf("x=");
 		bi_show_hex(x);
-		printf("y="); // squaring ¿¡¼­´Â ¾È¾¸
-		bi_show_hex(y); // squaring ¿¡¼­´Â ¾È¾¸
-		MUL(x, y,&z);
+		Squaring_word(z->a, x->a[0]);
 
-		printf("x * y ==");
+		printf("x*x==");
 		bi_show_hex(z);
 
-		bi_delete(&x);
-		bi_delete(&y); // squaring ¿¡¼­´Â ¾È¾¸
-		bi_delete(&z);
 
-		free(x);
-		free(y); // squaring ¿¡¼­´Â ¾È¾¸
-		free(z);
+
 		i--;
-	}
+	}*/
+	
+	
+
+	//bigint* x = NULL;
+	//bigint* y = NULL;
+	//bigint* z = NULL;
+	///*errno_t err;
+	//FILE* fp = NULL;
+	//err = fopen_s(&fp,"C:\\Users\\user\\source\\repos\\WD_40(1)\\WD_40\\x64\\Release\\data.sage", "w");
+	//if (fp == NULL) {
+	//	puts("File Error\n");
+	//	return -1;
+	//}
+	//*/
+	//int i = 19;
+	//while (i >= 0) {
+
+	//	bi_gen_rand(&x,5);
+	//	bi_gen_rand(&y,5); // squaring ¿¡¼­´Â ¾È¾¸
+
+	//	printf("x=");
+	//	bi_show_hex(x);
+	//	printf("y="); // squaring ¿¡¼­´Â ¾È¾¸
+	//	bi_show_hex(y); // squaring ¿¡¼­´Â ¾È¾¸
+	//	MUL(x, y,&z);
+
+	//	printf("x * y ==");
+	//	bi_show_hex(z);
+
+	//	bi_delete(&x);
+	//	bi_delete(&y); // squaring ¿¡¼­´Â ¾È¾¸
+	//	bi_delete(&z);
+
+	//	free(x);
+	//	free(y); // squaring ¿¡¼­´Â ¾È¾¸
+	//	free(z);
+	//	i--;
+	//}
 
 	/*
 	bi_gen_rand(&x, 5);
@@ -586,5 +642,5 @@ int main() {
 			//bi_reduction(&z, x, 50);
 			//printf("reduction bigint = "); bi_show_bin(z); printf("\n");
 
-}
+
 
