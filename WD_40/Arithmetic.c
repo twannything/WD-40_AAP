@@ -621,24 +621,31 @@ void binary_long_division(int a, int b, int* q, int* r) {
 void bi_binary_long_division(bigint* a, bigint* b, bigint** q, bigint** r) {
 	int aj = 0;
 	bigint* tmp = NULL;
-	bi_new(&tmp, (b->wordlen) + 1);
+	bi_new(&tmp, b->wordlen + 1);
 	bi_new(r, b->wordlen - 1);
 	bi_new(q, (a->wordlen) - (b->wordlen) + 1);
 
-	for (int i = (a->wordlen) - 1; i >= 0; i--) {
-		for (int j = WORD_BITLEN - 1; j >= 0; j--) {
-			aj = a->a[i] & (long long)1 << j ? 1 : 0;
-			bi_leftshift(&tmp, 1);
-			bi_leftshift(q, 1);
-			tmp->a[0] += aj;
-			if (compareAB(tmp, b) >= 0) {
-				SUB(tmp, b, r);
-				(*q)->a[0]++;
-				bi_assign(&tmp, (*r));
+	if (compareAB(b, a) == 1) {
+		bi_set_zero(q);
+		bi_assign(r, a);
+		return;
+	}
+	else {
+		for (int i = (a->wordlen) - 1; i >= 0; i--) {
+			for (int j = WORD_BITLEN - 1; j >= 0; j--) {
+				aj = a->a[i] & ((unsigned long long)1 << j) ? 1 : 0;
+				bi_leftshift(&tmp, (unsigned long long)1); tmp->a[0] += aj;
+				bi_leftshift(q, (unsigned long long)1);
+				if (compareAB(tmp, b) >= 0) {
+					SUB(tmp, b, r);
+					(*q)->a[0]++;
+					bi_assign(&tmp, (*r));
+				}
 			}
 		}
+		bi_assign(r, tmp);
+		bi_delete(&tmp);
 	}
-	bi_delete(&tmp);
 }
 
 void left_to_right(bigint* x, bigint** z,int n) {

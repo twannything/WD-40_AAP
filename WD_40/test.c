@@ -106,21 +106,20 @@ void Ka_mul_test() {
 }
 
 void bi_binary_long_division_test() {
-	bigint* x[10] = { NULL, };
-	bigint* y[10] = { NULL, };
-	bigint* q[10] = { NULL, };
-	bigint* r[10] = { NULL, };
-	for (int i = 0; i < 10; i++) {
-		bi_gen_rand(&x[i], 3);
-		bi_gen_rand(&y[i], 2);
-	}
 
-	for (int i = 0; i < 10; i++) {
-		bi_binary_long_division(x[i], y[i], &q[i], &r[i]);
-		bi_show_bin(x[i]); printf("/"); bi_show_bin(y[i]);
-		printf(" == ");
-		bi_show_bin(q[i]); printf("\n");
-		printf("remainder == "); bi_show_bin(r[i]); printf("\n");
+	for (int i = 0; i < 100; i++) {
+		bigint* x = NULL;
+		bigint* y = NULL;
+		bigint* q = NULL;
+		bigint* r = NULL;
+		bi_gen_rand(&x, 3);
+		bi_gen_rand(&y, 3);
+		bi_binary_long_division(x, y, &q, &r);
+		bi_show_hex(x); printf("=="); printf("("); bi_show_hex(y);
+		printf(" * ");
+		bi_show_hex(q); printf(")"); printf("+");
+		bi_show_hex(r); printf("\n");
+
 	}
 
 }

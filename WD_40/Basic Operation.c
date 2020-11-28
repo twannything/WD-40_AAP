@@ -113,7 +113,6 @@ void bi_show_hex(bigint* x) {
 		printf("%llx", x->a[i]);
 #endif
 	}
-	printf("\n");
 }
 
 //
@@ -126,13 +125,12 @@ void bi_show_hex(bigint* x) {
 */
 void bi_show_bin(bigint* x) {
 	if (x->sign == NEGATIVE) printf("-");
+	printf("0b");
 	for (int i = x->wordlen - 1; i >= 0; i--) {
 		for (int j = WORD_BITLEN - 1; j >= 0; j--) {
 			int mask = 1 << j;
 			printf("%d", x->a[i] & mask ? 1 : 0);
 		}
-		printf(" ");
-
 	}
 	//printf("\n");
 }
@@ -205,7 +203,7 @@ void bi_assign(bigint** y, bigint* x) {
 */
 void bi_gen_rand(bigint** x, int wordlen) {
 	bi_new(x, wordlen);
-	(*x)->sign = rand() % 2;
+	(*x)->sign = NONNEGATIVE;
 	array_rand((*x)->a, wordlen);
 
 	bi_refine(*x);
