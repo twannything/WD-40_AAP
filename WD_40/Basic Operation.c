@@ -110,7 +110,7 @@ void bi_show_hex(bigint* x) {
 #elif (WORD_BITLEN == 32)
 		printf("%08x", x->a[i]);
 #else
-		printf("%llx", x->a[i]);
+		printf("%016llx", x->a[i]);
 #endif
 	}
 }

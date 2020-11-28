@@ -7,7 +7,7 @@
 void add_test();
 void sub_test();
 void mul_test();
+void Ka_mul_test();
 void bi_binary_long_division_test();
 void Squaring_test();
 void Exponentiation_test();
-void Ka_mul_test();

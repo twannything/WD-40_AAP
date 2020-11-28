@@ -1,28 +1,35 @@
 #include "Arithmetic.h"
 #include "Basic Operation.h"
+#define TEST 100
 
 void add_test() {
-
-	int i = 40;
-
+	int i = TEST;
 	while (i >= 0) {
 		bigint* x = NULL;
 		bigint* y = NULL;
 		bigint* z = NULL;
 
+		//bi_gen_rand(&x, 5);
+		//bi_gen_rand(&y, 5);
 		bi_gen_rand(&x, (rand() % 7) + 1);
 		bi_gen_rand(&y, (rand() % 7) + 1);
 
 		printf("x=");
 		bi_show_hex(x);
-		printf("y="); // squaring 에서는 안씀.
-		bi_show_hex(y); // squaring 에서는 
+		printf("\n");
+		printf("y="); 
+		bi_show_hex(y);
+		printf("\n");
 		ADD(x, y, &z);
 
 		printf("x + y ==");
 		bi_show_hex(z);
+		printf("\n");
 
 		i--;
+		bi_delete(&x);
+		bi_delete(&y); // squaring 에서는 안씀
+		bi_delete(&z);
 	}
 
 }
@@ -40,12 +47,15 @@ void sub_test() {
 
 		printf("x=");
 		bi_show_hex(x);
-		printf("y="); // squaring 에서는 안씀
-		bi_show_hex(y); // squaring 에서는 안씀
+		printf("\n");
+		printf("y=");
+		bi_show_hex(y);
+		printf("\n");
 		SUB(x, y, &z);
 
 		printf("x - y ==");
 		bi_show_hex(z);
+		printf("\n");
 
 		i--;
 	}
@@ -54,7 +64,7 @@ void sub_test() {
 void  mul_test() {
 
 
-	int i = 20;
+	int i = 40;
 	while (i >= 0) {
 		bigint* x = NULL;
 		bigint* y = NULL;
@@ -62,17 +72,23 @@ void  mul_test() {
 
 		//bi_gen_rand(&x, 3);
 		//bi_gen_rand(&y, 3);
-		bi_gen_rand(&x, (rand() % 2) + 1);
-		bi_gen_rand(&y, (rand() % 2) + 1);
+		bi_gen_rand(&x, (rand() % 7) + 1);
+		bi_gen_rand(&y, (rand() % 7) + 1);
 
 		printf("x=");
 		bi_show_hex(x);
+		printf("\n");
 		printf("y=");
 		bi_show_hex(y);
+		printf("\n");
 		MUL(x, y, &z);
 
 		printf("x * y ==");
 		bi_show_hex(z);
+		printf("\n");
+		bi_delete(&x);
+		bi_delete(&y); // squaring 에서는 안씀
+		bi_delete(&z);
 
 		i--;
 	}
@@ -112,7 +128,7 @@ void bi_binary_long_division_test() {
 		bigint* y = NULL;
 		bigint* q = NULL;
 		bigint* r = NULL;
-		bi_gen_rand(&x, 3);
+		bi_gen_rand(&x, 5);
 		bi_gen_rand(&y, 3);
 		bi_binary_long_division(x, y, &q, &r);
 		bi_show_hex(x); printf("=="); printf("("); bi_show_hex(y);
@@ -127,18 +143,20 @@ void bi_binary_long_division_test() {
 void Squaring_test() {
 	
 
-	int i = 3;
+	int i = 100;
 	while (i >= 0) {
 		bigint* x = NULL;
 		bigint* z = NULL;
 
 		//bi_gen_rand(&x, 2);
-		bi_gen_rand(&x, (rand() % 10) + 1);
+		bi_gen_rand(&x, (rand()%7)+1);
 		printf("x=");
 		bi_show_hex(x);
+		printf("\n");
 		Squaring_Schoolbook(x, &z);
 		printf("x ^ 2 ==");
 		bi_show_hex(z);
+		printf("\n");
 
 		i--;
 	}

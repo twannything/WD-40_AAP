@@ -67,8 +67,10 @@ void M_ADD(bigint* x, bigint* y, bigint** z) {
 		bi_delete(z);
 
 	bi_new(z, x->wordlen + 1);
+	
+	y->a = (word*)realloc(y->a, (x->wordlen * sizeof(word)));
 
-	if (x->wordlen > y->wordlen)
+	//if (x->wordlen >= y->wordlen)
 		for (int i = y->wordlen; i < x->wordlen; i++)
 			y->a[i] = 0;
 	 
@@ -163,10 +165,11 @@ void SUB_C(bigint* x, bigint* y, bigint** z) {
 	
 	bi_new(z, x->wordlen);
 
-	if (x->wordlen > y->wordlen)
-		for (int i = y->wordlen; i < x->wordlen; i++)
-			y->a[i] = 0;
-	
+	y->a = (word*)realloc(y->a, (x->wordlen * sizeof(word)));
+
+	for (int i = y->wordlen; i < x->wordlen; i++)
+		y->a[i] = 0;
+
 	/*for (int i = y->wordlen; i < (*z)->wordlen; i++)
 		(*z)->a[i] = 0;*/
 
@@ -264,7 +267,7 @@ void MULC(word x, word y, word* tmp) {
 	word a0, a1, b0, b1, c0, c1, t0, t1, t;
 
 	a0 = x & MASKMUL;
-	a1 = x >> (sizeof(word) * 4);
+	a1 = x >> (sizeof(word) * 4); // 8 = 1 *4 ->  
 	b0 = y & MASKMUL;
 	b1 = y >> (sizeof(word) * 4);
 	t0 = a1 * b0;
@@ -363,11 +366,11 @@ void Schoolbook_MUL(bigint* x, bigint* y, bigint** z) {
 	word* tmp_arr = NULL;
 	tmp_arr = (word*)calloc(sizeof(word), (len_long + 1));
 
-	for (i = 0; i < len_short; i++) {
-		for (j = 0; j < len_long; j++) {
+	for (i = 0; i < len_long; i++) {
+		for (j = 0; j < len_short; j++) {
 			if (len_short == y->wordlen)
-				MULC(x->a[j], y->a[i], tmp);
-			else MULC(x->a[i], y->a[j], tmp);
+				MULC(x->a[i], y->a[j], tmp);
+			else MULC(x->a[j], y->a[i], tmp);
 
 			tmp_arr[j] += c;
 			c = (tmp_arr[j] < c);
@@ -377,7 +380,6 @@ void Schoolbook_MUL(bigint* x, bigint* y, bigint** z) {
 
 			tmp_arr[j + 1] += c;
 			c = (tmp_arr[j + 1] < c);
-
 			tmp_arr[j + 1] += tmp[1];
 			c += (tmp_arr[j + 1] < tmp[1]);
 		}
@@ -389,7 +391,7 @@ void Schoolbook_MUL(bigint* x, bigint* y, bigint** z) {
 			(*z)->a[i + k] += tmp_arr[k];
 			c += ((*z)->a[i + k] < tmp_arr[k]);
 		}
-		memset(tmp_arr, 0, len_long + 1);
+		memset(tmp_arr, 0, ((len_long + 1)*sizeof(word)));
 	}
 	free(tmp_arr);
 }
@@ -513,6 +515,9 @@ void Squaring_Schoolbook(bigint* x, bigint** z) {
 	bi_new(&t2, 2);
 	bi_new(z, (2 * x->wordlen));
 
+	 word* tmp_arr = NULL;
+	 tmp_arr = (word*)calloc(sizeof(word), (1 +  x->wordlen));
+
 	for (j = 0; j < x->wordlen; j++) {
 		Squaring_word(t1->a, x->a[j]);
 		
@@ -528,28 +533,58 @@ void Squaring_Schoolbook(bigint* x, bigint** z) {
 		c1->a[(2 * j) + 1] += t1->a[1];
 		c += (c1->a[(2 * j) + 1] < t1->a[1]);
 		
-
-
 		for (i = j + 1; i < x->wordlen; i++) {
 			MULC(x->a[j], x->a[i], t2->a);
 
-			c2->a[j + i] += cc;
-			cc = (c2->a[j + i] < cc);
+			c2->a[i + j+1] += cc;
+			cc = (c2->a[i + j] < cc);
 
-			c2->a[j + i] += t2->a[0];
-			cc += (c2->a[j + i] < t2->a[0]);
+			c2->a[i + j] += t2->a[0];
+			cc += (c2->a[i + j] < t2->a[0]);
 
-			c2->a[j + i + 1] += cc;
-			cc = (c2->a[j + i + 1] < cc);
+			c2->a[i + j + 1] += cc;
+			cc = (c2->a[i + j + 1] < cc);
 
-			c2->a[j + i + 1] += t2->a[1];
-			cc += (c2->a[j + i + 1] < t2->a[1]);
+			c2->a[i + j + 1] += t2->a[1];
+			cc += (c2->a[i + j + 1] < t2->a[1]);
 		}
+		/*cc = 1 ÀÎ °æ¿ì. 
+		 01 88 4a 09 0b 
+		*/		 
+		/*for (i = j + 1; i < x->wordlen; i++) {
+			MULC(x->a[j], x->a[i], t2->a);
+
+			tmp_arr[i] += cc;
+			cc = (tmp_arr[i] < cc);
+			
+			tmp_arr[i] += t2->a[0];
+			cc += (tmp_arr[i] < t2->a[0]);
+
+			tmp_arr[i + 1] += cc;
+			cc = (tmp_arr[i + 1] < cc);
+
+			tmp_arr[i + 1] += t2->a[1];
+			cc += (tmp_arr[i + 1] < t2->a[1]);
+
+		}
+		cc = 0;
+		for (int k = 0; k < x->wordlen + 1; k++) {
+			c2->a[i + k] += cc;
+			cc = (c2->a[i + k] < cc);
+			
+			c2->a[i + k] += tmp_arr[k];
+			cc += (c2->a[i + k] < tmp_arr[k]);
+		}
+		memset(tmp_arr, 0, ((1+ x->wordlen) * sizeof(word)));*/
 	}
 	bi_leftshift(&c2, 1);
 	ADD(c1, c2, z);
 }
 
+//void Squaring_Schoolbook(bigint* x, bigint** z) {
+//
+//	int i, j, c = 0;
+//	if (*z != NULL)
 //void Squaring_Schoolbook(bigint* x, bigint** z) {
 //
 //	int i, j, c = 0;
