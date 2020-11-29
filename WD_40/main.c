@@ -13,10 +13,10 @@ int main() {
 
 	//add_test();
 	//sub_test();
-	mul_test();
+	//mul_test();
 	//Ka_mul_test();
 	//bi_binary_long_division_test();
-	//Squaring_test();
+	Squaring_test();
 	//Exponentiation_test();
 
 

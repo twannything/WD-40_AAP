@@ -528,12 +528,10 @@ void Squaring_Schoolbook(bigint* x, bigint** z) {
 		c1->a[(2 * j) + 1] += t1->a[1];
 		c += (c1->a[(2 * j) + 1] < t1->a[1]);
 		
-
-
 		for (i = j + 1; i < x->wordlen; i++) {
 			MULC(x->a[j], x->a[i], t2->a);
 
-			c2->a[j + i] += cc;
+			c2->a[j + i + 1] += cc;
 			cc = (c2->a[j + i] < cc);
 
 			c2->a[j + i] += t2->a[0];

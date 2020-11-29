@@ -128,7 +128,7 @@ void bi_binary_long_division_test() {
 void Squaring_test() {
 	
 
-	int i = 3;
+	int i = 20;
 	while (i >= 0) {
 		bigint* x = NULL;
 		bigint* z = NULL;
