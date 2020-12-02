@@ -40,8 +40,13 @@
     <ClInclude Include="Basic Operation.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="test.h">
+    <ClInclude Include="conf.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\Desktop\README.md">
+      <Filter>헤더 파일</Filter>
+    </None>
   </ItemGroup>
 </Project>

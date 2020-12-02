@@ -145,7 +145,7 @@
   <ItemGroup>
     <ClInclude Include="Arithmetic.h" />
     <ClInclude Include="Basic Operation.h" />
-    <ClInclude Include="test.h" />
+    <ClInclude Include="conf.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Arithmetic.c" />
@@ -155,6 +155,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\Desktop\README.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

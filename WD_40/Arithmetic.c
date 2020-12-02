@@ -2,7 +2,7 @@
 #include "Arithmetic.h"
 #include "Basic Operation.h"
 /**
-* @brief bi_reduction : y를 x의 r승 modular 연산 취해주는 함수
+* @brief bi_reduction : function of x^r mod y
 * @param bigint** y : 빅넘버 y
 * @param bigint* x : 빅넘버 x
 * @param int r : x의 지수
@@ -42,7 +42,7 @@ void bi_reduction(bigint** y, bigint* x, int r) {
 * @param int r : 더한 값을 z의 r번째 배열에 저장
 * return d (carry 값)
 */
-int S_ADDABc(word x, word y, bigint** z, unsigned int carry, int r) {
+int S_ADDABc(word x, word y, bigint** z, int carry, int r) {
 
 	int d = 0;
 
@@ -67,7 +67,8 @@ void M_ADD(bigint* x, bigint* y, bigint** z) {
 		bi_delete(z);
 
 	bi_new(z, x->wordlen + 1);
-	
+	if ((y) == NULL)
+		return;
 	y->a = (word*)realloc(y->a, (x->wordlen * sizeof(word)));
 
 	//if (x->wordlen >= y->wordlen)
@@ -81,7 +82,7 @@ void M_ADD(bigint* x, bigint* y, bigint** z) {
 
 	(*z)->a[x->wordlen] = c;
 
-	if ((*z)->a[x->wordlen] == 0) bi_refine(*z);
+	if ((*z)->a[x->wordlen] == 0) bi_refine(z);
 }
 /**
 * @brief ADD : 덧셈에서 사용되는 모든 경우를 처리하는 함수
@@ -177,7 +178,7 @@ void SUB_C(bigint* x, bigint* y, bigint** z) {
 	for (int j = 0; j < (*z)->wordlen; j++) {
 		b = S_SUBABb(x, y, z, b, j);
 	}
-	bi_refine(*z);
+	bi_refine(z);
 }
 
 
@@ -477,6 +478,11 @@ void karatsuba_MUL(bigint* x, bigint* y, bigint** z) {
 	ADD(*z, S, z);
 }
 
+/**
+* @brief Squaring_word : 빅넘버 제곱연산에 사용되는 한 word 끼리의 제곱
+* @param word* dst : 제곱의 결과를 저장하는 역할
+* @param word a : 제곱하고자하는 a (1word)
+*/
 void Squaring_word(word* dst, word a) {
 
 	word a0 = a & MASKMUL;
@@ -499,12 +505,110 @@ void Squaring_word(word* dst, word a) {
 		dst[1] += 1;
 }
 
+//void Squaring_Schoolbook(bigint* x, bigint** z) {
+//
+//
+//	if (x->a[0] == 0x01) {
+//		bi_new(z, 1);
+//		(*z)->a[0] = 0x01;
+//		return;
+//	}
+//	int i, j;
+//	unsigned int c = 0;
+//	unsigned int cc = 0;
+//
+//	bigint* c1 = NULL;
+//	bigint* c2 = NULL;
+//	bigint* t1 = NULL;
+//	bigint* t2 = NULL;
+//	bi_new(&c1, 2 * x->wordlen);
+//	bi_new(&c2, 2 * x->wordlen);
+//	bi_new(&t1, 2);
+//	bi_new(&t2, 2);
+//	bi_new(z, (2 * x->wordlen));
+//
+//	word* tmp_arr = NULL;
+//	tmp_arr = (word*)calloc(sizeof(word), (1 + x->wordlen));
+//
+//	for (j = 0; j < x->wordlen; j++) {
+//		Squaring_word(t1->a, x->a[j]);
+//
+//		c1->a[2 * j] += c;
+//		c = (c1->a[2 * j] < c);
+//
+//		c1->a[2 * j] += t1->a[0];
+//		c += (c1->a[2 * j] < t1->a[0]);
+//
+//		c1->a[(2 * j) + 1] += c;
+//		c = (c1->a[(2 * j) + 1] < c);
+//
+//		c1->a[(2 * j) + 1] += t1->a[1];
+//		c += (c1->a[(2 * j) + 1] < t1->a[1]);
+//
+//		for (i = j + 1; i < x->wordlen; i++) {
+//			MULC(x->a[j], x->a[i], t2->a);
+//
+//			c2->a[i + j + 1] += cc;
+//			cc = (c2->a[i + j] < cc);
+//
+//			c2->a[i + j] += t2->a[0];
+//			cc += (c2->a[i + j] < t2->a[0]);
+//
+//			c2->a[i + j + 1] += cc;
+//			cc = (c2->a[i + j + 1] < cc);
+//
+//			c2->a[i + j + 1] += t2->a[1];
+//			cc += (c2->a[i + j + 1] < t2->a[1]);
+//			if (cc == 1) {
+//				c2->a[i + j + 2] += cc;
+//				cc = 0;
+//			}
+//
+//			printf("i + j = %d,  t2 = ", (i + j));
+//			bi_show_hex(t2);
+//			printf("\n");
+//
+//			printf("c2 = ");
+//			bi_show_hex(c2);
+//			printf("\n");
+//		}
+//	}
+//	bi_leftshift(&c2, 1);
+//
+//	printf("c1 = ");
+//	bi_show_hex(c1);
+//	printf("\n");
+//	printf("c2 = ");
+//	bi_show_hex(c2);
+//	printf("\n");
+//
+//
+//	ADD(c1, c2, z);
+//
+//	bi_delete(&c1);
+//	bi_delete(&c2);
+//	bi_delete(&t1);
+//	bi_delete(&t2);
+//}
+
+/**
+* @brief Squaring_Schoolbook : 스쿨북 방식의 빅넘버 제곱연산
+* @param bigint* x  : 제곱하고자하는 빅넘버 x
+* @param bigint** z  : 제곱의 결과를 저장하는 빅넘버 z
+*/
+
 void Squaring_Schoolbook(bigint* x, bigint** z) {
 
+
+	if (bi_is_one(x)) {
+		bi_new(z, 1);
+		(*z)->a[0] = 0x01;
+		return;
+	}
 	int i, j;
 	unsigned int c = 0;
 	unsigned int cc = 0;
-	
+
 	bigint* c1 = NULL;
 	bigint* c2 = NULL;
 	bigint* t1 = NULL;
@@ -515,12 +619,12 @@ void Squaring_Schoolbook(bigint* x, bigint** z) {
 	bi_new(&t2, 2);
 	bi_new(z, (2 * x->wordlen));
 
-	 word* tmp_arr = NULL;
-	 tmp_arr = (word*)calloc(sizeof(word), (1 +  x->wordlen));
+	word* tmp_arr = NULL;
+	tmp_arr = (word*)calloc(sizeof(word), (1 + x->wordlen));
 
 	for (j = 0; j < x->wordlen; j++) {
 		Squaring_word(t1->a, x->a[j]);
-		
+
 		c1->a[2 * j] += c;
 		c = (c1->a[2 * j] < c);
 
@@ -532,11 +636,11 @@ void Squaring_Schoolbook(bigint* x, bigint** z) {
 
 		c1->a[(2 * j) + 1] += t1->a[1];
 		c += (c1->a[(2 * j) + 1] < t1->a[1]);
-		
+
 		for (i = j + 1; i < x->wordlen; i++) {
 			MULC(x->a[j], x->a[i], t2->a);
 
-			c2->a[i + j+1] += cc;
+			c2->a[i + j + 1] += cc;
 			cc = (c2->a[i + j] < cc);
 
 			c2->a[i + j] += t2->a[0];
@@ -547,86 +651,32 @@ void Squaring_Schoolbook(bigint* x, bigint** z) {
 
 			c2->a[i + j + 1] += t2->a[1];
 			cc += (c2->a[i + j + 1] < t2->a[1]);
+			if (cc == 1) {
+				c2->a[i + j + 2] += cc;
+				if (c2->a[i + j + 2] < cc) {
+					c2->a[i + j + 3] += cc;
+					if (c2->a[i + j + 3] < cc) {
+						c2->a[i + j + 4] += cc;
+					}
+				}
+			}
+			cc = 0;
 		}
-		/*cc = 1 인 경우. 
-		 01 88 4a 09 0b 
-		*/		 
-		/*for (i = j + 1; i < x->wordlen; i++) {
-			MULC(x->a[j], x->a[i], t2->a);
-
-			tmp_arr[i] += cc;
-			cc = (tmp_arr[i] < cc);
-			
-			tmp_arr[i] += t2->a[0];
-			cc += (tmp_arr[i] < t2->a[0]);
-
-			tmp_arr[i + 1] += cc;
-			cc = (tmp_arr[i + 1] < cc);
-
-			tmp_arr[i + 1] += t2->a[1];
-			cc += (tmp_arr[i + 1] < t2->a[1]);
-
-		}
-		cc = 0;
-		for (int k = 0; k < x->wordlen + 1; k++) {
-			c2->a[i + k] += cc;
-			cc = (c2->a[i + k] < cc);
-			
-			c2->a[i + k] += tmp_arr[k];
-			cc += (c2->a[i + k] < tmp_arr[k]);
-		}
-		memset(tmp_arr, 0, ((1+ x->wordlen) * sizeof(word)));*/
 	}
 	bi_leftshift(&c2, 1);
 	ADD(c1, c2, z);
+
+	bi_delete(&c1);
+	bi_delete(&c2);
+	bi_delete(&t1);
+	bi_delete(&t2);
 }
 
-//void Squaring_Schoolbook(bigint* x, bigint** z) {
-//
-//	int i, j, c = 0;
-//	if (*z != NULL)
-//void Squaring_Schoolbook(bigint* x, bigint** z) {
-//
-//	int i, j, c = 0;
-//	if (*z != NULL)
-//		bi_delete(z);
-//
-//	bigint* c1 = NULL;
-//	bigint* c2 = NULL;
-//	bigint* t1 = NULL;
-//	bigint* t2 = NULL;
-//	bi_new(&c1, (2 * x->wordlen));
-//	bi_new(&c2, (2 * x->wordlen));
-//	bi_new(&t1, 2);
-//	bi_new(&t2, 2);
-//	bi_new(z, (2 * x->wordlen));
-//	word dst[2] = { 0, };
-//
-//	for (j = 0; j < x->wordlen; j++) {
-//		Squaring_word(t1->a, x->a[j]);
-//		bi_leftshift(&t1, (16 * j));
-//		ADD(c1, t1, &c1);
-//		for (i = j + 1; i < x->wordlen; i++) {
-//			MULC(x->a[j], x->a[i], t2->a);
-//			bi_leftshift(&t2, (i * j * 8));
-//			ADD(c2, t2, &c2);
-//		}
-//	}
-//	bi_leftshift(&c2, 1);
-//	ADD(c1, c2, z);
-//
-//	bi_delete(&c1);
-//	bi_delete(&c2);
-//	bi_delete(&t1);
-//	bi_delete(&t2);
-//
-//	free(c1);
-//	free(c2);
-//	free(t1);
-//	free(t2);
-//}
 
-
+/**
+* @brief bit_length : 스쿨북 방식의 빅넘버 제곱연산
+* @param unsigned int a :
+*/
 int bit_length(unsigned int a) {
 	int cnt = 32;
 	unsigned int x = 0x80000000;
@@ -641,6 +691,14 @@ int bit_length(unsigned int a) {
 	}
 	return cnt;
 }
+
+/**
+* @brief binary_long_division : 일반적인 이진 롱 디비전
+* @param int a : 나눠질 a = b*q + r
+* @param int b : 나누는 b
+* @param int* q : a를 b로 나눈 몫
+* @param int* r : a를 b로 나눈 나머지
+*/
 void binary_long_division(int a, int b, int* q, int* r) {
 	int aj = 0;
 	for (int i = bit_length(a) - 1; i >= 0; i--) {
@@ -653,12 +711,20 @@ void binary_long_division(int a, int b, int* q, int* r) {
 	}
 }
 
+
+/**
+* @brief binary_long_division : 빅넘버에서의 이진 롱 디비전
+* @param bigint* a : 나눠질 a = b*q + r
+* @param bigint* b : 나누는 b
+* @param bigint** q : a를 b로 나눈 몫
+* @param bigint** r : a를 b로 나눈 나머지
+*/
 void bi_binary_long_division(bigint* a, bigint* b, bigint** q, bigint** r) {
 	int aj = 0;
 	bigint* tmp = NULL;
-	bi_new(&tmp, b->wordlen + 1);
-	bi_new(r, b->wordlen - 1);
-	bi_new(q, (a->wordlen) - (b->wordlen) + 1);
+	bi_new(&tmp, (b->wordlen + 1));
+	bi_new(r, (b->wordlen - 1));
+	bi_new(q, ((a->wordlen) - (b->wordlen) + 1));
 
 	if (compareAB(b, a) == 1) {
 		bi_set_zero(q);
@@ -683,20 +749,151 @@ void bi_binary_long_division(bigint* a, bigint* b, bigint** q, bigint** r) {
 	}
 }
 
-void left_to_right(bigint* x, bigint** z,int n) {
-
-	word* t[2] = { 0x00,  };
-	int l;
-	l = get_bit_length(x);
-	bi_new(z, x->wordlen * n);
-	for (int i = l-1; i > 0; i--) {
-		Squaring_Schoolbook(*z, z);
-		if (bit_of_bi(x, i) == 1)
-			MUL(*z, x, z);
+/**
+* @brief binary_long_division : 빅넘버에서의 롱 디비전에서 사용될 워드단위간의 롱 디비전
+* @param bigint* x : 나눠질 x = b*q + r
+* @param bigint* y : 나누는 y
+* @param bigint** q : a를 b로 나눈 몫
+* @param bigint** r : a를 b로 나눈 나머지
+*/
+void long_division_2word(bigint* x, bigint* y, bigint** q, bigint** r) {
+	bi_set_zero(q);
+	bi_new(r, 1);
+	bigint* tmp1 = NULL;
+	bigint* tmp2 = NULL;
+	(*r)->a[0] = x->a[1];
+	for (int i = WORD_BITLEN - 1; i >= 0; i--) {
+		int ai = (x->a[0] & (unsigned long long)1 << i) ? 1 : 0;
+		if ((*r)->a[0] >= (unsigned long long)1 << (WORD_BITLEN - 1)) {
+			(*q)->a[0] += (unsigned long long)1 << i;
+			//(*r)->a[0] ^= ai;
+			bi_assign(&tmp1, *r);
+			tmp1->a[0] += ai;
+			SUB(y, *r, &tmp2);
+			SUB(tmp1, tmp2, r);
+		}
+		else {
+			bi_leftshift(r, 1);
+			(*r)->a[0] += ai;
+			if (compareAB(*r, y) >= 0) {
+				(*q)->a[0] += (unsigned long long)1 << i;
+				bi_assign(&tmp1, *r);
+				SUB(tmp1, y, r);
+			}
+		}
 	}
+	bi_delete(&tmp1);
+	bi_delete(&tmp2);
+}
+/**
+* @brief int_to_binary : 정수형태의 수를 이진 배열로 표현해주는 함수
+* @param int decimal : 이진수로 표현할 정수 
+* @param int* binary : 이진수로 구성된 배열
+*/
+int int_to_binary(int decimal, int* binary ){
+	
+	int position = 0;
+	while (1)
+	{
+		binary[position] = decimal % 2;    // 2로 나누었을 때 나머지를 배열에 저장
+		decimal = decimal / 2;             // 2로 나눈 몫을 저장
+
+		position++;    // 자릿수 변경
+
+		if (decimal == 0)    // 몫이 0이 되면 반복을 끝냄
+			break;
+	}
+	// 배열의 성분은 역순으로 저장 EX : 6-> 110 이지만 배열에는 011로 저장됨.
+	return position;
+}
+
+/**
+* @brief left_to_right : Left to Right 방식의 빅넘버 지수승 연산
+* @param bigint* x : 거듭제곱할 빅넘버 x
+* @param bigint** t : 결과를 저장할 빅넘버 t
+* @param int n : x를 몇번 제곱할지 정해주는 정수 n
+*/
+void left_to_right(bigint* x, bigint** t, int n) {
+
+	int l;
+	int* ll = NULL;
+	bigint* tmp = NULL;
+	bigint* ttmp = NULL;
+	int r = n / 2 + 1;
+	ll = (int*)calloc(1,r);
+	l = int_to_binary(n, ll);
+	
+	bi_new(t, 1);
+
+	(*t)->a[0] = 0x01;
+
+	for (int i = l - 1; i >= 0; i--) {
+		bi_assign(&tmp, *t);
+		Squaring_Schoolbook(tmp, &ttmp);
+		bi_assign(t, ttmp);
+		if (ll[i] == 1) { 
+			bi_assign(&tmp, *t);
+			MUL(tmp, x, &ttmp);
+			bi_assign(t, ttmp);
+		}
+		else {
+			bi_assign(&tmp, *t);
+			bi_assign(t, ttmp);
+		}
+	}
+	bi_delete(&tmp);
+	bi_delete(&ttmp);
 }
 
 
+
+//void left_to_right(bigint* x, bigint** t, int n) {
+//
+//	int l;
+//	int ll[100] = { 0, };
+//	bigint* tmp = NULL;
+//	bigint* ttmp = NULL;
+//	l = int_to_binary(n, ll);
+//
+//	printf("n의 비트길이 %d \n", l);
+//	for (int i = 0; i < l; i++)
+//		printf("%d", ll[i]);
+//	printf("\n");
+//
+//	bi_new(t, 1);
+//	(*t)->a[0] = 0x01;
+//	
+//	for (int i = l - 1; i >= 0; i--) {
+//		bi_assign(&tmp, *t);
+//		printf("tmp = ");
+//		bi_show_hex(tmp);
+//		printf("\n");
+//		Squaring_Schoolbook(tmp, &ttmp);
+//		printf("t^2 후의 tmp = ");
+//		bi_show_hex(ttmp);
+//		printf("\n");
+//		bi_assign(t, ttmp);
+//		printf("t^2 = "); 
+//		bi_show_hex(*t);
+//		printf("\n");
+//		if (ll[i] == 1) {
+//			bi_assign(&tmp, *t);
+//			printf("tmp = ");
+//			bi_show_hex(tmp);
+//			printf("\n");
+//			MUL(tmp, x, &ttmp);
+//			printf("x*t 후의 tmp = ");
+//			bi_show_hex(ttmp);
+//			printf("\n");
+//			bi_assign(t, ttmp);
+//			printf("t * x = ");
+//			bi_show_hex(*t);
+//			printf("\n");
+//		}
+//	}
+//	bi_delete(&tmp);
+//	bi_delete(&ttmp);
+//}
 
 /**
 * @date 2020-11-28 20:17

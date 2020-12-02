@@ -9,7 +9,6 @@
 * @param word* a : 초기화 할 워드열
 * @param wordlen : 초기화 할 워드열의 길이
 */
-
 void array_init(word* a, int wordlen) {
 	memset(a, 0x00, (wordlen * sizeof(word)));
 }
@@ -62,7 +61,9 @@ void bi_new(bigint** x, int wordlen) {
 		bi_delete(x);
 
 	*x = (bigint*)malloc(sizeof(bigint));
-	(*x)->sign = 0;
+	if ((*x) == NULL )
+		return;
+	(*x)->sign = NONNEGATIVE;
 	(*x)->wordlen = wordlen;
 	(*x)->a = (word*)calloc(wordlen, sizeof(word));
 }
@@ -92,8 +93,6 @@ void bi_set_by_array(bigint** x, int sign, word* a, int wordlen) {
 void bi_set_by_string(bigint** x, int sign, char* str, word base) {
 	if (*x != NULL)
 		bi_delete(x);
-
-
 }
 /**
 * @brief bi_show_hex : (*x)->a 값을 WOREBITLEN에 맞게 16진수 출력
@@ -163,25 +162,27 @@ void bi_show_bin(bigint* x) {
 * @brief bi_refine : x->a = 0x0000ffff 처럼 앞에 실질적으로 필요없는 메모리가 잡혀있을때 x->a = 0xffff로 줄여주는 함수
 * @param bigint* x : refine 할 빅넘버 x
 */
-void bi_refine(bigint* x) {
-	if (x == NULL)
+void bi_refine(bigint** x) {
+	if ((*x) == NULL)
 		return;
 
-	int new_wordlen = x->wordlen;
+	int new_wordlen = (*x)->wordlen;
 	while (new_wordlen > 1) {
-		if (x->a[new_wordlen - 1] != 0)
+		if ((*x)->a[new_wordlen - 1] != 0)
 			break;
 		new_wordlen--;
 	}
+	// 0으로 채워진 워드만큼 워드 길이를 줄인다.
 
-	if (x->wordlen != new_wordlen) {
+	if ((*x)->wordlen != new_wordlen) {
 
-		x->wordlen = new_wordlen;
-		x->a = (word*)realloc(x->a, sizeof(word) * new_wordlen);
+		(*x)->wordlen = new_wordlen;
+		(*x)->a = (word*)realloc((*x)->a, sizeof(word) * new_wordlen);
 	}
-
-	if ((x->wordlen == 1) && (x->a[0] == 0x0))
-		x->sign = NONNEGATIVE;
+	// 줄어든 new_wordlen 만큼 빅넘버 워드 할당
+	if (((*x)->wordlen == 1) && ((*x)->a[0] == 0x0))
+		(*x)->sign = NONNEGATIVE;
+	// 0인 경우, 부호를 양수로 함
 }
 /**
 * @brief bi_assign : 빅넘버 y에 빅넘버x를 복사해주는 함수
@@ -201,12 +202,13 @@ void bi_assign(bigint** y, bigint* x) {
 * @param bigint** x : 생성할 빅넘버 x
 * @param int wordlen : 빅넘버 x의 워드 길이
 */
-void bi_gen_rand(bigint** x, int wordlen) {
+void bi_gen_rand(bigint** x, int sign,int wordlen) {
 	bi_new(x, wordlen);
-	(*x)->sign = NONNEGATIVE;
+	//(*x)->sign = (rand() % 2);
+	(*x)->sign = sign;
 	array_rand((*x)->a, wordlen);
 
-	bi_refine(*x);
+	bi_refine(x);
 }
 /**
 * @brief get_word_length : 빅넘버 x의 wordlen를 리턴
@@ -222,10 +224,10 @@ int get_word_length(bigint* x) {
  */
 int get_bit_length(bigint* x) {
 	int total = x->wordlen * WORD_BITLEN;
-	long long mask = 1;
+	unsigned long long mask = 1;
 
 	for (int j = WORD_BITLEN - 1; j > 0; j--) {
-		mask = 1 << j;
+		mask = mask << j;
 		if ((x->a[x->wordlen - 1] & mask) >> j == 0) {
 			total--;
 		}
@@ -242,7 +244,7 @@ int get_bit_length(bigint* x) {
 int bit_of_bi(bigint* x, int j) {
 	int rem = j % WORD_BITLEN;
 	int j_word = j / WORD_BITLEN;
-	long long mask = 1 << rem;
+	unsigned long long mask = 1 << rem;
 
 	return (x->a[j_word] & mask) >> rem;
 }
@@ -259,7 +261,7 @@ int get_sign_bi(bigint* x) {
 /**
 * @brief flip_sign_bi : x의 부호 반대처리하는 함수
 * @param bigint** x : 빅넘버 x
-*/
+*/ 
 
 void flip_sign_bi(bigint** x) {
 	if ((*x)->sign == NONNEGATIVE)
@@ -322,16 +324,16 @@ int compareABS(bigint* x, bigint* y)
 	n = x->wordlen;
 	m = y->wordlen;
 
-	if (n > m) return 1;
-	else if (n < m) return -1;
+	if (n > m) return 1; // |x| > |y| 
+	else if (n < m) return -1; // |x| < |y|
 	else if (n == m) {
 		for (i = n - 1; i >= 0; i--)
 		{
-			if (x->a[i] > y->a[i]) return 1;
-			else if (x->a[i] < y->a[i]) return -1;
+			if (x->a[i] > y->a[i]) return 1; // |x| > |y|
+			else if (x->a[i] < y->a[i]) return -1; // |x| < |y|
 		}
 	}
-	return 0;
+	return 0; // |x| = |y|
 }
 /**
 * @brief compareAB : x와 y의 크기 비교 : x가 크면 1, 작으면 -1, 같으면 0을 리턴
@@ -343,12 +345,12 @@ int compareAB(bigint* x, bigint* y)
 {
 	int ret;
 
-	if (get_sign_bi(x) == NEGATIVE && get_sign_bi(y) == NONNEGATIVE) return -1;
-	else if (get_sign_bi(x) == NONNEGATIVE && get_sign_bi(y) == NEGATIVE) return 1;
+	if (get_sign_bi(x) == NEGATIVE && get_sign_bi(y) == NONNEGATIVE) return -1; // x < 0 , y > 0 
+	else if (get_sign_bi(x) == NONNEGATIVE && get_sign_bi(y) == NEGATIVE) return 1; // x > 0 , y < 0
 
-	ret = compareABS(x, y); // 둘다 양수이거나 둘다 음수 1 0 -1
-	if (get_sign_bi(x) == NONNEGATIVE) return ret;
-	else return ret * (-1);
+	ret = compareABS(x, y); // x < 0 , y < 0 이거나 x > 0, y > 0 인 경우 compareABS 함수는 절대값 비교
+	if (get_sign_bi(x) == NONNEGATIVE) return ret; // x > 0 , y > 0 인 경우
+	else return ret * (-1); // x < 0 , y < 0 인 경우
 
 }
 
@@ -359,13 +361,13 @@ int compareAB(bigint* x, bigint* y)
 */
 void bi_leftshift(bigint** x, int r)
 {
-	long long k, rp, a;
+	unsigned long long k, rp, a;
 	k = r / WORD_BITLEN;
 	rp = r % WORD_BITLEN;
 	word tmp = 0;
 	word ttmp = 0;
 
-	if (r % WORD_BITLEN == 0) // 
+	if (r % WORD_BITLEN == 0) // word단위의 shift 연산만 있으면될때
 	{
 		a = (*x)->wordlen;
 		(*x)->wordlen += k;
@@ -376,7 +378,7 @@ void bi_leftshift(bigint** x, int r)
 			(*x)->a[j] = 0x00;
 
 	}
-	else {
+	else { // bit단위의 shift 연산
 		a = (*x)->wordlen;
 		(*x)->wordlen += 1 + k;
 		(*x)->a = (word*)realloc((*x)->a, (*x)->wordlen * sizeof(word));
@@ -394,7 +396,7 @@ void bi_leftshift(bigint** x, int r)
 		for (int j = 0; j < k; j++)
 			(*x)->a[j] = 0x00;
 	}
-	bi_refine(*x);
+	bi_refine(x);
 
 }
 
@@ -406,30 +408,30 @@ void bi_leftshift(bigint** x, int r)
 void bi_rightshift(bigint** x, int r)
 {
 	int i, j, k, rp, a;
-	k = r / WORD_BITLEN;
-	rp = r % WORD_BITLEN;
+	k = r / WORD_BITLEN; // shift 해야하는 word의 수
+	rp = r % WORD_BITLEN; // shift 해야하는 bit의 수
 
 	a = (*x)->wordlen;
 
-	if (k >= (*x)->wordlen)
-		for (i = 0; i < a; i++)
-			(*x)->a[i] = 0x00;
+	if (k >= (*x)->wordlen) { // shift 결과가 0 일때
+		bi_set_zero(x);
+		return;
+	}
 
-	if (r % WORD_BITLEN == 0) // 
+	if (r % WORD_BITLEN == 0) // r이 word_bitlen의 배수라면 word단위의 shift만 해주면 됨
 	{
-		for (i = 0; i < a - k; i++)
+		for (i = 0; i < a - k; i++) // word 단위 right shift 과정
 			(*x)->a[i] = ((*x)->a[k + i]);
-		for (j = i; j < a; j++)
+		for (j = i; j < a; j++) // shift 한 만큼 앞의 word를 0으로 set하는 과정
 			(*x)->a[j] = 0x00;
 	}
 	else {
-		for (int i = 0; i < a - k - 1; i++)
-			(*x)->a[i] = ((*x)->a[i + k] >> rp) ^ ((*x)->a[i + k + 1] << (WORD_BITLEN - rp));
-		(*x)->a[a - k - 1] = (*x)->a[a - k - 2] >> rp;
-		for (int i = a - k; i < a; i++)
+		for (int i = 0; i < a - k - 1; i++) // bit 단위 right shift 과정
+		(*x)->a[i] = ((*x)->a[i + k] >> rp) ^ ((*x)->a[i + k + 1] << (WORD_BITLEN - rp));
+		(*x)->a[a - k - 1] = (*x)->a[a - k - 2] >> rp; 
+		for (int i = a - k; i < a; i++) // shift 한 만큼 앞의 word를 0으로 set하는 과정
 			(*x)->a[i] = 0x00;
 	}
-	//bi_refine(*x);
+	bi_refine(x);
 }
-
 

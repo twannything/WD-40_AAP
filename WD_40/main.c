@@ -2,7 +2,7 @@
 #include "Basic Operation.h"
 #include "Arithmetic.h"
 #include "test.h"
-#include <vld.h>
+//#include <vld.h>
 /**
 * @mainpage BIGINT LIBRARY : WD-40
 * - 작성자 : 김태완, 유현도
@@ -10,12 +10,12 @@
 */
 
 int main() {
-	//add_test();
+	add_test();
 	//sub_test();
 	//mul_test();
 	//Ka_mul_test();
 	//bi_binary_long_division_test();
-	Squaring_test();
+	//long_division_2word_test();
+	//Squaring_test();
 	//Exponentiation_test();
-	//bi_binary_long_division_test();
 }
