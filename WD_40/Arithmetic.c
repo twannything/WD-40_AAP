@@ -2,10 +2,10 @@
 #include "Arithmetic.h"
 #include "Basic Operation.h"
 /**
-* @brief bi_reduction : function of x^r mod y
-* @param bigint** y : 빅넘버 y
-* @param bigint* x : 빅넘버 x
-* @param int r : x의 지수
+* @brief bi_reduction : function of x mod r = y
+* @param bigint** y : 결과값을 저장할 빅넘버 y
+* @param bigint* x : 모듈러 연산을 취할 빅넘버 x
+* @param int r : mod r
 */
 void bi_reduction(bigint** y, bigint* x, int r) {
 	{
@@ -71,8 +71,9 @@ void M_ADD(bigint* x, bigint* y, bigint** z) {
 		return;
 	y->a = (word*)realloc(y->a, (x->wordlen * sizeof(word)));
 
-	//if (x->wordlen >= y->wordlen)
-		for (int i = y->wordlen; i < x->wordlen; i++)
+	// word 길이가 차이날 때 차이 만큼 짧은 빅넘버의 left word를 0으로 채워줌
+	if (x->wordlen >= y->wordlen)
+		for (int i = y->wordlen; i < x->wordlen; i++) 
 			y->a[i] = 0;
 	 
 	c = 0;
@@ -92,44 +93,52 @@ void M_ADD(bigint* x, bigint* y, bigint** z) {
 */
 void ADD(bigint* x, bigint* y, bigint** z) {
 
-
+	// x = 0 이면 x + y = y
 	if (bi_is_zero(x) == 1) {
 		bi_assign(z, y);
 		return;
 	}
+	// y = 0 이면 x + y = x
 	if (bi_is_zero(y) == 1) 
 	 {
 		bi_assign(z, x);
 		return;
 	}
+	// x > 0 , y < 0 이면 x + (-y) = x - y
 	if (get_sign_bi(x) == NONNEGATIVE && get_sign_bi(y) == NEGATIVE) {
 		flip_sign_bi(&y);
 		SUB(x, y, z);
 		flip_sign_bi(&y);
 		return;
 	}
+	// x < 0 , y > 0 이면 (-x) + y = -x + y = y - x
 	if (get_sign_bi(x) == NEGATIVE && get_sign_bi(y) == NONNEGATIVE) {
 		flip_sign_bi(&x);
 		SUB(y, x, z);
 		flip_sign_bi(&x);
 		return;
 	}
+	// x < 0 , y < 0 일때
 	if (get_sign_bi(x) == NEGATIVE && get_sign_bi(y) == NEGATIVE) {
+		// |x| > |y| 이면 x + y = - (|x| + |y|)
 		if (x->wordlen >= y->wordlen) {
 			M_ADD(x, y, z);
 			flip_sign_bi(z);
 			return;
 		}
+		// |x| < |y| 이면 x + y = - (|y| + |x|)
 		else {
 			M_ADD(y, x, z);
 			flip_sign_bi(z);
 			return;
 		}
 	}
+	// x >= y > 0 일 때
 	if (x->wordlen >= y->wordlen) {
 		M_ADD(x, y, z);
 		return;
 	}
+	// y > x > 0 일 때
 	else {
 		M_ADD(y, x, z);
 		return;
@@ -168,11 +177,9 @@ void SUB_C(bigint* x, bigint* y, bigint** z) {
 
 	y->a = (word*)realloc(y->a, (x->wordlen * sizeof(word)));
 
-	for (int i = y->wordlen; i < x->wordlen; i++)
+	// wordlen가 차이가 난다면 차이만큼 짧은 빅넘버의 left word를 0으로 추가해줌
+	for (int i = y->wordlen; i < x->wordlen; i++) 
 		y->a[i] = 0;
-
-	/*for (int i = y->wordlen; i < (*z)->wordlen; i++)
-		(*z)->a[i] = 0;*/
 
 	int b = 0;
 	for (int j = 0; j < (*z)->wordlen; j++) {
@@ -189,26 +196,29 @@ void SUB_C(bigint* x, bigint* y, bigint** z) {
 * @param bigint** z : 뺀 값을 저장할 빅넘버 z
 */
 void SUB(bigint* x, bigint* y, bigint** z) {
+	// x = 0 이면 x - y = -y
 	if (bi_is_zero(x) == 1) {
 		bi_assign(z, y);
 		flip_sign_bi(z);
 		return;
 	}
+	// y = 0 이면 x - y = -x
 	if (bi_is_zero(y) == 1) {
 		bi_assign(z, x);
 		return;
 	}
-	/* 둘다 양수 일때 */
+	// x >= y > 0 일 때
 	if (get_sign_bi(x) == NONNEGATIVE && get_sign_bi(y) == NONNEGATIVE && compareAB(x, y) >= 0) {
 		SUB_C(x, y, z);
 		return;
 	}
-	else if (get_sign_bi(x) == NONNEGATIVE && get_sign_bi(y) == NONNEGATIVE && compareAB(x, y) == -1) {
+	// y > x > 0 일 때
+	if (get_sign_bi(x) == NONNEGATIVE && get_sign_bi(y) == NONNEGATIVE && compareAB(x, y) == -1) {
 		SUB_C(y, x, z);
 		flip_sign_bi(z);
 		return;
 	}
-	/* 둘다 음수 일때*/
+	// 0 >= x > y 일 때
 	if (get_sign_bi(x) == NEGATIVE && get_sign_bi(y) == NEGATIVE && compareAB(x, y) >= 0) {
 		flip_sign_bi(&x);
 		flip_sign_bi(&y);
@@ -217,7 +227,8 @@ void SUB(bigint* x, bigint* y, bigint** z) {
 		flip_sign_bi(&y);
 		return;
 	}
-	else if (get_sign_bi(x) == NEGATIVE && get_sign_bi(y) == NEGATIVE && compareAB(x, y) == -1) {
+	// 0 > y > x 일 때
+	if (get_sign_bi(x) == NEGATIVE && get_sign_bi(y) == NEGATIVE && compareAB(x, y) == -1) {
 		flip_sign_bi(&x);
 		flip_sign_bi(&y);
 		SUB_C(x, y, z);
@@ -226,27 +237,28 @@ void SUB(bigint* x, bigint* y, bigint** z) {
 		flip_sign_bi(&y);
 		return;
 	}
-	/* */
+	// x > 0 , y < 0 & |x| > |y| 이면 x - y = x + |y|
 	if (get_sign_bi(x) == NONNEGATIVE && get_sign_bi(y) == NEGATIVE && compareABS(x, y) >= 0) {
 		flip_sign_bi(&y);
 		M_ADD(x, y, z);
 		flip_sign_bi(&y);
 		return;
 	}
-	else if (get_sign_bi(x) == NONNEGATIVE && get_sign_bi(y) == NEGATIVE && compareABS(x, y)== -1) {
+	// x > 0 , y < 0 & |x| < |y| 이면 x - y = |y| + x
+	if (get_sign_bi(x) == NONNEGATIVE && get_sign_bi(y) == NEGATIVE && compareABS(x, y)== -1) {
 		flip_sign_bi(&y);
 		M_ADD(y, x, z);
 		flip_sign_bi(&y);
 		return;
-	}
+	}// x < 0 , y > 0 & |x| > |y| 이면 x - y = -(x + y)
 	if (get_sign_bi(x) == NEGATIVE && get_sign_bi(y) == NONNEGATIVE && compareABS(x, y) >= 0) {
 		flip_sign_bi(&x);
 		M_ADD(x, y, z);
 		flip_sign_bi(&x);
 		flip_sign_bi(z);
 		return;
-	}
-	else if (get_sign_bi(x) == NEGATIVE && get_sign_bi(y) == NONNEGATIVE && compareABS(x, y) == -1) {
+	}// x < 0 , y > 0 & |x| < |y| 이면 x - y = -(y + x)
+	if (get_sign_bi(x) == NEGATIVE && get_sign_bi(y) == NONNEGATIVE && compareABS(x, y) == -1) {
 		flip_sign_bi(&x);
 		M_ADD(y, x, z);
 		flip_sign_bi(z);
@@ -268,7 +280,7 @@ void MULC(word x, word y, word* tmp) {
 	word a0, a1, b0, b1, c0, c1, t0, t1, t;
 
 	a0 = x & MASKMUL;
-	a1 = x >> (sizeof(word) * 4); // 8 = 1 *4 ->  
+	a1 = x >> (sizeof(word) * 4);
 	b0 = y & MASKMUL;
 	b1 = y >> (sizeof(word) * 4);
 	t0 = a1 * b0;
@@ -295,28 +307,29 @@ void MULC(word x, word y, word* tmp) {
 * @param bigint** z : 곱한 값을 저장할 빅넘버 z
 */
 void MUL(bigint* x, bigint* y, bigint** z) {
-
-	if (bi_is_zero(x) == 1 || bi_is_zero(y) == 1) {
+	
+	// x 또는 y 가 0이면 x * y = 0
+	if (bi_is_zero(x) == 1 || bi_is_zero(y) == 1) { 
 		bi_set_zero(z);
 		return;
 	}
-
-	if (bi_is_one(x) == 1) {
+	// x = 1 이면 x * y = y
+	if (bi_is_one(x) == 1) { 
 		bi_assign(z, y);
 		return;
 	}
-
-	if (bi_is_one(x) == 1 && get_sign_bi(x) == NEGATIVE) {
+	// x = -1 이면 x * y = -y
+	if (bi_is_one(x) == 1 && get_sign_bi(x) == NEGATIVE) { 
 		bi_assign(z, y);
 		flip_sign_bi(z);
 		return;
 	}
-
-	if (bi_is_one(y) == 1) {
+	// y = 1 이면 x * y = x
+	if (bi_is_one(y) == 1) { 
 		bi_assign(z, x);
 		return;
 	}
-
+	// y = -1 이면 x * y = -x
 	if (bi_is_one(y) == 1 && get_sign_bi(y) == NEGATIVE) {
 		bi_assign(z, x);
 		flip_sign_bi(z);
@@ -326,18 +339,7 @@ void MUL(bigint* x, bigint* y, bigint** z) {
 	//karatsuba_MUL(x, y, z);
 	Schoolbook_MUL(x, y, z);
 
-	if (get_sign_bi(x) == NEGATIVE && get_sign_bi(y) == NEGATIVE) {
-		(*z)->sign = NONNEGATIVE;
-		return;
-	}
-	if (get_sign_bi(x) == NONNEGATIVE && get_sign_bi(y) == NONNEGATIVE) {
-		(*z)->sign = NONNEGATIVE;
-		return;
-	}
-	else {
-		(*z)->sign = NEGATIVE;
-		return;
-	}
+	(*z)->sign = (x->wordlen + y->wordlen) % 2;
 }
 /**
 * @brief Schoolbook_MUL : 길이가 2이상인 두 빅넘버 x , y를 곱하는 함수
@@ -373,7 +375,7 @@ void Schoolbook_MUL(bigint* x, bigint* y, bigint** z) {
 				MULC(x->a[i], y->a[j], tmp);
 			else MULC(x->a[j], y->a[i], tmp);
 
-			tmp_arr[j] += c;
+			tmp_arr[j] += c; 
 			c = (tmp_arr[j] < c);
 
 			tmp_arr[j] += tmp[0];
@@ -385,8 +387,9 @@ void Schoolbook_MUL(bigint* x, bigint* y, bigint** z) {
 			c += (tmp_arr[j + 1] < tmp[1]);
 		}
 		c = 0;
+		// 결과값을 더하면서 발생하는 carry 처리하면서 z에 저장
 		for (k = 0; k < len_long + 1; k++) {
-			(*z)->a[i + k] += c;
+			(*z)->a[i + k] += c; 
 			c = ((*z)->a[i + k] < c);
 
 			(*z)->a[i + k] += tmp_arr[k];
@@ -600,9 +603,8 @@ void Squaring_word(word* dst, word a) {
 void Squaring_Schoolbook(bigint* x, bigint** z) {
 
 
-	if (bi_is_one(x)) {
-		bi_new(z, 1);
-		(*z)->a[0] = 0x01;
+	if (bi_is_one(x)) {  // x가 1이면 제곱해도 1
+		bi_set_zero(z);
 		return;
 	}
 	int i, j;
@@ -621,8 +623,8 @@ void Squaring_Schoolbook(bigint* x, bigint** z) {
 
 	word* tmp_arr = NULL;
 	tmp_arr = (word*)calloc(sizeof(word), (1 + x->wordlen));
-
-	for (j = 0; j < x->wordlen; j++) {
+	// c1 : 각 워드의 제곱의 연접으로 구성
+	for (j = 0; j < x->wordlen; j++) { 
 		Squaring_word(t1->a, x->a[j]);
 
 		c1->a[2 * j] += c;
@@ -636,8 +638,8 @@ void Squaring_Schoolbook(bigint* x, bigint** z) {
 
 		c1->a[(2 * j) + 1] += t1->a[1];
 		c += (c1->a[(2 * j) + 1] < t1->a[1]);
-
-		for (i = j + 1; i < x->wordlen; i++) {
+		// c2 : 중복이 포함된 워드간의 곱셈 결과의 합으로 구성
+		for (i = j + 1; i < x->wordlen; i++) { 
 			MULC(x->a[j], x->a[i], t2->a);
 
 			c2->a[i + j + 1] += cc;
@@ -651,6 +653,7 @@ void Squaring_Schoolbook(bigint* x, bigint** z) {
 
 			c2->a[i + j + 1] += t2->a[1];
 			cc += (c2->a[i + j + 1] < t2->a[1]);
+			// 괴물쥐급 캐리가 발생하였을 때 예외처리
 			if (cc == 1) {
 				c2->a[i + j + 2] += cc;
 				if (c2->a[i + j + 2] < cc) {
@@ -722,14 +725,26 @@ void binary_long_division(int a, int b, int* q, int* r) {
 void bi_binary_long_division(bigint* a, bigint* b, bigint** q, bigint** r) {
 	int aj = 0;
 	bigint* tmp = NULL;
-	bi_new(&tmp, (b->wordlen + 1));
-	bi_new(r, (b->wordlen - 1));
-	bi_new(q, ((a->wordlen) - (b->wordlen) + 1));
+	bigint* q_tmp = NULL;
+	bigint* one = NULL;
+	bi_set_one(&one);
+	bi_new(&tmp, b->wordlen + 1);
+	bi_new(r, b->wordlen - 1);
+	bi_new(q, (a->wordlen) - (b->wordlen) + 1);
 
-	if (compareAB(b, a) == 1) {
+
+
+	if (b->sign == NEGATIVE) {
+		return;
+	}
+	if (a->sign == NONNEGATIVE && compareAB(b, a) == 1) {
 		bi_set_zero(q);
 		bi_assign(r, a);
 		return;
+	}
+	if (bi_is_zero(b)) {
+		bi_assign(q, a);
+		bi_set_zero(r);
 	}
 	else {
 		for (int i = (a->wordlen) - 1; i >= 0; i--) {
@@ -745,7 +760,15 @@ void bi_binary_long_division(bigint* a, bigint* b, bigint** q, bigint** r) {
 			}
 		}
 		bi_assign(r, tmp);
+		if (a->sign == NEGATIVE) {
+			bi_assign(&q_tmp, *q);
+			flip_sign_bi(&q_tmp);
+			SUB(q_tmp, one, q);
+			SUB(b, tmp, r);
+		}
 		bi_delete(&tmp);
+		bi_delete(&q_tmp);
+		bi_delete(&one);
 	}
 }
 
@@ -795,8 +818,8 @@ int int_to_binary(int decimal, int* binary ){
 	int position = 0;
 	while (1)
 	{
-		binary[position] = decimal % 2;    // 2로 나누었을 때 나머지를 배열에 저장
-		decimal = decimal / 2;             // 2로 나눈 몫을 저장
+		binary[position] = decimal % 2;// 2로 나누었을 때 나머지를 배열에 저장    
+		decimal = decimal / 2;  // 2로 나눈 몫을 저장
 
 		position++;    // 자릿수 변경
 
@@ -816,7 +839,7 @@ int int_to_binary(int decimal, int* binary ){
 void left_to_right(bigint* x, bigint** t, int n) {
 
 	int l;
-	int* ll = NULL;
+	int* ll = { 0x00 };
 	bigint* tmp = NULL;
 	bigint* ttmp = NULL;
 	int r = n / 2 + 1;
@@ -831,12 +854,12 @@ void left_to_right(bigint* x, bigint** t, int n) {
 		bi_assign(&tmp, *t);
 		Squaring_Schoolbook(tmp, &ttmp);
 		bi_assign(t, ttmp);
-		if (ll[i] == 1) { 
+		if (ll[i] == 1) { // n의 i번째 비트가 1일 때
 			bi_assign(&tmp, *t);
 			MUL(tmp, x, &ttmp);
 			bi_assign(t, ttmp);
 		}
-		else {
+		else { // n의 i번째 비트가 0일 때
 			bi_assign(&tmp, *t);
 			bi_assign(t, ttmp);
 		}

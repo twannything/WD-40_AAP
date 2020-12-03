@@ -10,7 +10,7 @@
 */
 
 int main() {
-	add_test();
+	//add_test();
 	//sub_test();
 	//mul_test();
 	//Ka_mul_test();

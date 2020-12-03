@@ -2,17 +2,56 @@
 #include "Basic Operation.h"
 #include "conf.h"
 
+/*
+bi_gen_rand(&x, rand() % 2, 5);
+bi_gen_rand(&y, rand() % 2, 5);
+
+
+
+
+*/
+
+/**
+* @brief add_test : 덧셈 연산의 구현 정확성 테스트 하는 함수
+* @brief 구성 : 빅넘버 x 와 y 그리고 x + y 값을 저장할 빅넘버 z 를 생성
+* @brief x 와 y의 부호 : Random ( NONNEGATIVE or NEGATIVE)
+* @brief x 와 y의 부호 : Random ( NONNEGATIVE or NEGATIVE)
+*/
 void add_test() {
 	
+	/*
+	bigint* x = NULL;
+	bigint* y = NULL;
+	bigint* z = NULL;
+
+	bi_set_zero(&x);
+	bi_gen_rand(&y, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
+
+	printf("x=");
+	bi_show_hex(x);
+	printf("\n");
+	printf("y=");
+	bi_show_hex(y);
+	printf("\n");
+	ADD(x, y, &z);
+
+	printf("x + y ==");
+	bi_show_hex(z);
+	printf("\n");
+
+
+	bi_delete(&x);
+	bi_delete(&y);
+	bi_delete(&z);
+	*/
+
 	for(int i=0;i<TEST;i++) {
 		bigint* x = NULL;
 		bigint* y = NULL;
 		bigint* z = NULL;
 
-		//bi_gen_rand(&x, 5);
-		//bi_gen_rand(&y, 5);
-		bi_gen_rand(&x, rand() % 2, (rand() % 7) + 1);
-		bi_gen_rand(&y, rand() % 2, (rand() % 7) + 1);
+		bi_gen_rand(&x, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
+		bi_gen_rand(&y, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
 
 		printf("x=");
 		bi_show_hex(x);
@@ -28,14 +67,38 @@ void add_test() {
 
 		
 		bi_delete(&x);
-		bi_delete(&y); // squaring 에서는 안씀
+		bi_delete(&y);
 		bi_delete(&z);
 	}
 
 }
 void sub_test() {
 	
+	/*
+	bigint* x = NULL;
+	bigint* y = NULL;
+	bigint* z = NULL;
 
+	bi_set_zero(&x);
+	bi_gen_rand(&y, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
+
+	printf("x=");
+	bi_show_hex(x);
+	printf("\n");
+	printf("y=");
+	bi_show_hex(y);
+	printf("\n");
+	ADD(x, y, &z);
+
+	printf("x + y ==");
+	bi_show_hex(z);
+	printf("\n");
+
+
+	bi_delete(&x);
+	bi_delete(&y);
+	bi_delete(&z);
+	*/
 	int i = TEST;
 	while (i >= 0) {
 		bigint* x = NULL;
@@ -129,7 +192,7 @@ void Ka_mul_test() {
 
 void bi_binary_long_division_test() {
 
-	for (int i = 0; i < 100; i++) {
+	for (int i = 0; i < TEST; i++) {
 		bigint* x = NULL;
 		bigint* y = NULL;
 		bigint* q = NULL;
@@ -137,16 +200,25 @@ void bi_binary_long_division_test() {
 		bi_gen_rand(&x, rand() % 2, 5);
 		bi_gen_rand(&y, rand() % 2, 3);
 		bi_binary_long_division(x, y, &q, &r);
-		bi_show_hex(x); printf("=="); printf("("); bi_show_hex(y);
-		printf(" * ");
-		bi_show_hex(q); printf(")"); printf("+");
-		bi_show_hex(r); printf("\n");
+		if (bi_is_zero(q) && bi_is_zero(r)) {
+			//printf(" Invalid Operation or X is Zero !");
+			bi_delete(&x);
+			bi_delete(&y);
+			bi_delete(&q);
+			bi_delete(&r);
+		}
+		else {
+			bi_show_hex(x); printf("=="); printf("("); bi_show_hex(y);
+			printf(" * ");
+			bi_show_hex(q); printf(")"); printf("+");
+			bi_show_hex(r); printf("\n");
 
-		bi_delete(&x);
-		bi_delete(&y);
-		bi_delete(&q);
-		bi_delete(&r);
-		
+			bi_delete(&x);
+			bi_delete(&y);
+			bi_delete(&q);
+			bi_delete(&r);
+		}
+
 
 	}
 
@@ -179,7 +251,7 @@ void long_division_2word_test() {
 void Squaring_test() {
 	
 
-	int i = 25;
+	int i = TEST;
 
 	while (i >= 0) {
 		bigint* x = NULL;
