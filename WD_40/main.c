@@ -23,10 +23,13 @@ int main() {
 
 	//add_test(fp);
 	//sub_test(fp);
-	mul_test(fp);
+	//mul_test(fp);
 	//Ka_mul_test(fp);
 	//bi_binary_long_division_test(fp);
 	//long_division_2word_test(fp);
+	//divcc_test();
+	div_test();
+	//divc_test();
 	//Squaring_test(fp);
 	//Exponentiation_test(fp);
 	//Exponentiation_bi_test(fp);

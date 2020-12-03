@@ -26,6 +26,9 @@ void karatsuba_MUL(bigint* x, bigint* y, bigint** z);
 void binary_long_division(int a, int b, int* q, int* r);
 void bi_binary_long_division(bigint* a, bigint* b, bigint** q, bigint** r);
 void long_division_2word(bigint* x, bigint* y, bigint** q, bigint** r);
+void divcc(bigint* x, bigint* y, bigint** q, bigint** r);
+void divc(bigint* x, bigint* y, bigint** q, bigint** r);
+void bi_div(bigint* x, bigint* y, bigint** q, bigint** r);
 
 // Chapter 3.6 Á¦°ö ¿¬»ê
 void Squaring_word(word* dst, word a);
@@ -38,6 +41,7 @@ void left_to_right_mod_bi(bigint* x, bigint* y, bigint* b, bigint** t);
 void right_to_left(bigint* x, bigint** z, int n);
 void right_to_left_bi(bigint* x, bigint* y, bigint** t);
 void right_to_left_mod_bi(bigint* x, bigint* y, bigint* b, bigint** t);
+
 
 
 

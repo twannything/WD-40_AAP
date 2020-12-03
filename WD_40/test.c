@@ -291,6 +291,74 @@ void long_division_2word_test() {
 	}
 }
 
+void divcc_test() {
+	for (int i = 0; i < 100; i++) {
+		bigint* x = NULL;
+		bigint* y = NULL;
+		bigint* q = NULL;
+		bigint* r = NULL;
+		bi_gen_rand(&x, NONNEGATIVE, 2);
+		bi_gen_rand(&y, NONNEGATIVE, 2);
+		if (x->a[1] >= y->a[0]/* || (y->a[y->wordlen-1] < (unsigned long long)1 <<(WORD_BITLEN-1))||compareAB(x,y)<1*/) {
+		}
+		else {
+			divcc(x, y, &q, &r);
+			bi_show_hex(x); printf("=="); printf("("); bi_show_hex(y);
+			printf(" * ");
+			bi_show_hex(q); printf(")"); printf("+");
+			bi_show_hex(r); printf("\n");
+		}
+		bi_delete(&x);
+		bi_delete(&y);
+		bi_delete(&q);
+		bi_delete(&r);
+	}
+}
+
+void divc_test() {
+	for (int i = 0; i < 100; i++) {
+		bigint* x = NULL;
+		bigint* y = NULL;
+		bigint* q = NULL;
+		bigint* r = NULL;
+		bi_gen_rand(&x, NONNEGATIVE, 2);
+		bi_gen_rand(&y, NONNEGATIVE, 1);
+		if (x->a[1] >= y->a[0]) {
+		}
+		else {
+			divc(x, y, &q, &r);
+			bi_show_hex(x); printf("=="); printf("("); bi_show_hex(y);
+			printf(" * ");
+			bi_show_hex(q); printf(")"); printf("+");
+			bi_show_hex(r); printf("\n");
+		}
+		bi_delete(&x);
+		bi_delete(&y);
+		bi_delete(&q);
+		bi_delete(&r);
+	}
+}
+
+void div_test() {
+	for (int i = 0; i < 100; i++) {
+		bigint* x = NULL;
+		bigint* y = NULL;
+		bigint* q = NULL;
+		bigint* r = NULL;
+		bi_gen_rand(&x, NONNEGATIVE, (rand() % 6) + 1);
+		bi_gen_rand(&y, NONNEGATIVE, (rand() % 6) + 1);
+		bi_div(x, y, &q, &r);
+		bi_show_hex(x); printf("=="); printf("("); bi_show_hex(y);
+		printf(" * ");
+		bi_show_hex(q); printf(")"); printf("+");
+		bi_show_hex(r); printf("\n");
+		bi_delete(&x);
+		bi_delete(&y);
+		bi_delete(&q);
+		bi_delete(&r);
+	}
+}
+
 void Squaring_test(FILE* fp) {
 
 

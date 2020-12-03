@@ -806,6 +806,114 @@ void long_division_2word(bigint* x, bigint* y, bigint** q, bigint** r) {
 	bi_delete(&tmp1);
 	bi_delete(&tmp2);
 }
+
+void divcc(bigint* x, bigint* y, bigint** q, bigint** r) {
+	int x_len = x->wordlen;
+	int y_len = y->wordlen;
+	bigint* tmp = NULL;
+	bigint* r_tmp = NULL;
+	bigint* q_tmp = NULL;
+	bigint* bq = NULL;
+	bigint* one = NULL;
+	bigint* a = NULL;
+	bigint* b = NULL;
+	bi_new(&b, 1);
+	bi_new(&a, 2);
+
+	bi_set_one(&one);
+	//bi_new(r, y_len);
+	//bi_new(q, x_len - y_len + 1);
+	bi_new(&q_tmp, x_len - y_len + 1);
+	bi_new(&tmp, 1);
+	if (x_len == y_len) {
+		(*q)->a[0] = (x->a[x_len - 1] / y->a[y_len - 1]);
+	}
+	if (x_len == y_len + 1) {
+		if (x->a[x_len - 1] == y->a[y_len - 1])
+			(*q)->a[0] = MASK;
+		else {
+			a->a[a->wordlen - 1] = x->a[x->wordlen - 1];
+			a->a[a->wordlen - 2] = x->a[x->wordlen - 2];
+			b->a[b->wordlen - 1] = y->a[y->wordlen - 1];
+			long_division_2word(a, b, q, &tmp);
+		}
+	}
+	MUL(y, (*q), &bq);
+	SUB(x, bq, r);
+	while ((*r)->sign == NEGATIVE) {
+		SUB(*q, one, &q_tmp);
+		bi_assign(q, q_tmp);
+		ADD(*r, y, &r_tmp);
+		bi_assign(r, r_tmp);
+	}
+	bi_delete(&tmp);
+	bi_delete(&r_tmp);
+	bi_delete(&q_tmp);
+	bi_delete(&bq);
+	bi_delete(&one);
+
+}
+
+void divc(bigint* x, bigint* y, bigint** q, bigint** r) {
+	int x_len = x->wordlen;
+	int y_len = y->wordlen;
+	bigint* y_tmp = NULL;
+	bi_new(r, y_len);
+	bi_assign(&y_tmp, y);
+	unsigned long long k = 0;
+	if (compareAB(y, x) == 1) {
+		bi_set_zero(q);
+		bi_assign(r, x);
+		return;
+	}
+	while (!((y_tmp->a[y_len - 1] & ((unsigned long long)1 << (WORD_BITLEN - 1))) ? 1 : 0)) {
+		y_tmp->a[y_len - 1] = y_tmp->a[y_len - 1] << 1;
+		k++;
+	}
+	bi_delete(&y_tmp);
+	bi_leftshift(&x, k);
+	bi_leftshift(&y, k);
+	divcc(x, y, q, r);
+	bi_rightshift(r, k);
+	bi_rightshift(&x, k);
+	bi_rightshift(&y, k);
+}
+
+void bi_div(bigint* x, bigint* y, bigint** q, bigint** r) {
+	int x_len1 = x->wordlen;
+	int y_len1 = y->wordlen;
+	if (y->sign == NEGATIVE) {
+		printf("Invalid operation!!!!");
+		return;
+	}
+	if (compareAB(y, x) == 1) {
+		bi_set_zero(q);
+		bi_assign(r, x);
+		return;
+	}
+	bigint* r_tmp1 = NULL;
+	bigint* q_tmp1 = NULL;
+	bi_new(r, y_len1);
+	bi_new(&r_tmp1, y_len1);
+	bi_new(q, x_len1 - y_len1 + 1);
+	bi_new(&q_tmp1, 1);
+
+	bi_set_zero(q);
+	bi_set_zero(r);
+
+	for (int i = x_len1 - 1; i >= 0; i--) {
+		bi_leftshift(r, WORD_BITLEN);
+		(*r)->a[0] += x->a[i];
+		bi_assign(&r_tmp1, *r);
+		divc(r_tmp1, y, &q_tmp1, r);
+		bi_leftshift(q, WORD_BITLEN);
+		(*q)->a[0] += q_tmp1->a[0];
+	}
+	bi_delete(&r_tmp1);
+	bi_delete(&q_tmp1);
+}
+
+
 /**
 * @brief int_to_binary : 정수형태의 수를 이진 배열로 표현해주는 함수
 * @param int decimal : 이진수로 표현할 정수 
@@ -1107,6 +1215,11 @@ void left_to_right_mod_bi(bigint* x, bigint* y, bigint* b, bigint** t) {
 * @param bigint* y : mod의 기준이 되는 빅넘버 y
 * @param bigint** z : 결과를 저장할 빅넘버 z = x (mod y)
 */
+
+void right_to_left(bigint* x, bigint** z, int n);
+void right_to_left_bi(bigint* x, bigint* y, bigint** t);
+void right_to_left_mod_bi(bigint* x, bigint* y, bigint* b, bigint** t);
+
 void modular_bi(bigint* x, bigint* y, bigint** z) {
 	
 	// x를 y로 나눈다음에 r만 z 에 저장

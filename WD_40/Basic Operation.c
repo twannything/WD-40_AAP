@@ -410,6 +410,7 @@ void bi_rightshift(bigint** x, int r)
 	int i, j, k, rp, a;
 	k = r / WORD_BITLEN; // shift 해야하는 word의 수
 	rp = r % WORD_BITLEN; // shift 해야하는 bit의 수
+	if (r == 0) return;
 
 	a = (*x)->wordlen;
 
@@ -426,10 +427,10 @@ void bi_rightshift(bigint** x, int r)
 			(*x)->a[j] = 0x00;
 	}
 	else {
-		for (int i = 0; i < a - k - 1; i++) // bit 단위 right shift 과정
-		(*x)->a[i] = ((*x)->a[i + k] >> rp) ^ ((*x)->a[i + k + 1] << (WORD_BITLEN - rp));
-		(*x)->a[a - k - 1] = (*x)->a[a - k - 2] >> rp; 
-		for (int i = a - k; i < a; i++) // shift 한 만큼 앞의 word를 0으로 set하는 과정
+		for (i = 0; i < a - k - 1; i++)  // bit 단위 right shift 과정
+			(*x)->a[i] = ((*x)->a[i + k] >> rp) ^ ((*x)->a[i + k + 1] << (WORD_BITLEN - rp));
+		(*x)->a[a - k - 1] = (*x)->a[a - k - 1] >> rp;
+		for (i = a - k; i < a; i++) // shift 한 만큼 앞의 word를 0으로 set하는 과정 // shift 한 만큼 앞의 word를 0으로 set하는 과정
 			(*x)->a[i] = 0x00;
 	}
 	bi_refine(x);
