@@ -1,7 +1,4 @@
 #pragma once
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "Basic Operation.h"
  
 // Ä«¶óÃ÷¹Ù °ö¼Á, Á¦°ö, ³ª´°¼À, Áö¼ö½Â, 8 32 64 È£È¯, ºÎÈ£ ±æÀÌ Â÷ÀÌ³¯¶§ , 
@@ -36,6 +33,13 @@ void Squaring_Schoolbook(bigint* x, bigint** z);
 
 // Chapter 3.7 Áö¼ö½Â ¿¬»ê
 void left_to_right(bigint* x, bigint** z, int n);
+void left_to_right_bi(bigint* x, bigint* y, bigint** t);
+void left_to_right_mod_bi(bigint* x, bigint* y, bigint* b, bigint** t);
+void right_to_left(bigint* x, bigint** z, int n);
+void right_to_left_bi(bigint* x, bigint* y, bigint** t);
+void right_to_left_mod_bi(bigint* x, bigint* y, bigint* b, bigint** t);
 
-// Chapter 3.8 ¸ðµâ·¯ Áö¼ö½Â ¿¬»ê
 
+
+
+void modular_bi(bigint* x, bigint* y, bigint** z);

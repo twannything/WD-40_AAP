@@ -1,6 +1,7 @@
 #pragma once
 #include "Basic Operation.h"
 
+
 #define ZERORIZE
 
 
@@ -10,7 +11,7 @@
 * @param wordlen : 초기화 할 워드열의 길이
 */
 void array_init(word* a, int wordlen) {
-	memset(a, 0x00, (wordlen * sizeof(word)));
+	memset(a, 0, (wordlen * sizeof(word)));
 }
 
 /**
@@ -139,25 +140,24 @@ void bi_show_bin(bigint* x) {
 * @param bigint* x : 출력한 빅넘버 x
 * @param FILE* fp : 출력값을 적을 파일
 */
-//void File_print(bigint* x, FILE* fp) {
-//
-//
-//	if (x->sign == NEGATIVE)
-//		fprintf(fp, "-0x");
-//	else
-//		fprintf(fp, "0x");
-//
-//	for (int i = (x->wordlen - 1); i >= 0; i--) {
-//#if (WORD_BITLEN == 8)
-//		fprintf(fp, "%02x", x->a[i]);
-//#elif (WORD_BITLEN == 32)
-//		fprintf(fp, "%08x", x->a[i]);
-//#else
-//		fprintf(fp, "%16x", x->a[i]);
-//#endif
-//	}
-//	fprintf(fp, "\n");
-//}
+void File_print(bigint* x, FILE* fp) {
+
+
+	if (x->sign == NEGATIVE)
+		fprintf(fp, "-0x");
+	else
+		fprintf(fp, "0x");
+
+	for (int i = (x->wordlen - 1); i >= 0; i--) {
+#if (WORD_BITLEN == 8)
+		fprintf(fp, "%02x", x->a[i]);
+#elif (WORD_BITLEN == 32)
+		fprintf(fp, "%08x", x->a[i]);
+#else
+		fprintf(fp, "%016llx", x->a[i]);
+#endif
+	}
+}
 /**
 * @brief bi_refine : x->a = 0x0000ffff 처럼 앞에 실질적으로 필요없는 메모리가 잡혀있을때 x->a = 0xffff로 줄여주는 함수
 * @param bigint* x : refine 할 빅넘버 x
@@ -223,14 +223,11 @@ int get_word_length(bigint* x) {
  * @return total
  */
 int get_bit_length(bigint* x) {
-	int total = x->wordlen * WORD_BITLEN;
-	unsigned long long mask = 1;
+	int total = x->wordlen * WORD_BITLEN; // x의 wordlen이 5 이면 total = 5 * WORD_BITLEN 
 
-	for (int j = WORD_BITLEN - 1; j > 0; j--) {
-		mask = mask << j;
-		if ((x->a[x->wordlen - 1] & mask) >> j == 0) {
+	for (int j = total - 1; j > 0; j--) {
+		if (bit_of_bi(x, j) == 0)
 			total--;
-		}
 		else return total;
 	}
 	return total;
@@ -282,6 +279,9 @@ void bi_set_one(bigint** x) {
 * @param : bigint** x : 빅넘버 x
 */
 void bi_set_zero(bigint** x) {
+	if (x != NULL)
+		bi_delete(x);
+
 	bi_new(x, 1);
 	(*x)->sign = NONNEGATIVE;
 	(*x)->a[0] = 0x0;

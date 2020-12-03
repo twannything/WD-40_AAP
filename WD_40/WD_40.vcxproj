@@ -150,6 +150,7 @@
   <ItemGroup>
     <ClCompile Include="Arithmetic.c" />
     <ClCompile Include="Basic Operation.c" />
+    <ClCompile Include="conf.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="test.c" />
   </ItemGroup>

@@ -1,15 +1,5 @@
+#pragma once
 #include "Arithmetic.h"
-#include "Basic Operation.h"
-#include "conf.h"
-
-/*
-bi_gen_rand(&x, rand() % 2, 5);
-bi_gen_rand(&y, rand() % 2, 5);
-
-
-
-
-*/
 
 /**
 * @brief add_test : 덧셈 연산의 구현 정확성 테스트 하는 함수
@@ -17,35 +7,34 @@ bi_gen_rand(&y, rand() % 2, 5);
 * @brief x 와 y의 부호 : Random ( NONNEGATIVE or NEGATIVE)
 * @brief x 와 y의 부호 : Random ( NONNEGATIVE or NEGATIVE)
 */
-void add_test() {
+void add_test(FILE* fp) {
 	
-	/*
-	bigint* x = NULL;
-	bigint* y = NULL;
-	bigint* z = NULL;
+	//// 0 일 때 처리하는지 확인
+	//bigint* x = NULL;
+	//bigint* y = NULL;
+	//bigint* z = NULL;
 
-	bi_set_zero(&x);
-	bi_gen_rand(&y, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
+	//bi_set_zero(&x);
+	//bi_gen_rand(&y, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
 
-	printf("x=");
-	bi_show_hex(x);
-	printf("\n");
-	printf("y=");
-	bi_show_hex(y);
-	printf("\n");
-	ADD(x, y, &z);
+	//printf("x=");
+	//bi_show_hex(x);
+	//printf("\n");
+	//printf("y=");
+	//bi_show_hex(y);
+	//printf("\n");
+	//ADD(x, y, &z);
 
-	printf("x + y ==");
-	bi_show_hex(z);
-	printf("\n");
+	//printf("x + y ==");
+	//bi_show_hex(z);
+	//printf("\n");
 
 
-	bi_delete(&x);
-	bi_delete(&y);
-	bi_delete(&z);
-	*/
-
-	for(int i=0;i<TEST;i++) {
+	//bi_delete(&x);
+	//bi_delete(&y);
+	//bi_delete(&z);
+	
+	for (int i = 0; i < TEST; i++) {
 		bigint* x = NULL;
 		bigint* y = NULL;
 		bigint* z = NULL;
@@ -53,28 +42,42 @@ void add_test() {
 		bi_gen_rand(&x, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
 		bi_gen_rand(&y, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
 
+		fputs("x=", fp);
+		File_print(x, fp);
+		fprintf(fp, "\n");
+
 		printf("x=");
 		bi_show_hex(x);
 		printf("\n");
-		printf("y="); 
+
+		fputs("y=", fp);
+		File_print(y, fp);
+		fprintf(fp, "\n");
+
+		printf("y=");
 		bi_show_hex(y);
 		printf("\n");
-		ADD(x, y, &z);
 
+		ADD(x, y, &z);
+	
 		printf("x + y ==");
 		bi_show_hex(z);
 		printf("\n");
 
+		fputs("print(x + y ==",fp);
+		File_print(z,fp);
+		fputs(")", fp);
+		fprintf(fp, "\n");
 		
 		bi_delete(&x);
 		bi_delete(&y);
 		bi_delete(&z);
 	}
-
 }
-void sub_test() {
-	
+
+void sub_test(FILE* fp) {
 	/*
+	// 0 일때 처리하는 지 확인
 	bigint* x = NULL;
 	bigint* y = NULL;
 	bigint* z = NULL;
@@ -88,9 +91,9 @@ void sub_test() {
 	printf("y=");
 	bi_show_hex(y);
 	printf("\n");
-	ADD(x, y, &z);
+	SUB(x, y, &z);
 
-	printf("x + y ==");
+	printf("x - y ==");
 	bi_show_hex(z);
 	printf("\n");
 
@@ -99,94 +102,133 @@ void sub_test() {
 	bi_delete(&y);
 	bi_delete(&z);
 	*/
-	int i = TEST;
-	while (i >= 0) {
+	
+	for (int i = 0; i <= TEST; i++) {
 		bigint* x = NULL;
 		bigint* y = NULL;
 		bigint* z = NULL;
 
-		bi_gen_rand(&x, rand() % 2, (rand() % 7) + 1);
-		bi_gen_rand(&y, rand() % 2, (rand() % 7) + 1);
+		bi_gen_rand(&x, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
+		bi_gen_rand(&y, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
+
+		fputs("x=", fp);
+		File_print(x, fp);
+		fprintf(fp, "\n");
 
 		printf("x=");
 		bi_show_hex(x);
 		printf("\n");
+
+		fputs("y=", fp);
+		File_print(y, fp);
+		fprintf(fp, "\n");
+
 		printf("y=");
 		bi_show_hex(y);
 		printf("\n");
+
 		SUB(x, y, &z);
 
 		printf("x - y ==");
 		bi_show_hex(z);
 		printf("\n");
 
-		i--;
+		fputs("print(x - y ==", fp);
+		File_print(z, fp);
+		fputs(")", fp);
+		fprintf(fp, "\n");
+
+		bi_delete(&x);
+		bi_delete(&y);
+		bi_delete(&z);
 	}
 }
 
-void  mul_test() {
+void  mul_test(FILE* fp) {
 
 
-	int i = 80;
-	while (i >= 0) {
+	for (int i = 0; i <= TEST; i++) {
 		bigint* x = NULL;
 		bigint* y = NULL;
 		bigint* z = NULL;
 
-		//bi_gen_rand(&x, 3);
-		//bi_gen_rand(&y, 3);
-		bi_gen_rand(&x, rand()%2,(rand() % 14) + 1);
-		bi_gen_rand(&y, rand() % 2, (rand() % 14) + 1);
+		bi_gen_rand(&x, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
+		bi_gen_rand(&y, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
+
+		fputs("x=", fp);
+		File_print(x, fp);
+		fprintf(fp, "\n");
 
 		printf("x=");
 		bi_show_hex(x);
 		printf("\n");
+
+		fputs("y=", fp);
+		File_print(y, fp);
+		fprintf(fp, "\n");
+
 		printf("y=");
 		bi_show_hex(y);
 		printf("\n");
+
 		MUL(x, y, &z);
 
 		printf("x * y ==");
 		bi_show_hex(z);
 		printf("\n");
+
+		fputs("print(x * y ==", fp);
+		File_print(z, fp);
+		fputs(")", fp);
+		fprintf(fp, "\n");
+
 		bi_delete(&x);
 		bi_delete(&y);
 		bi_delete(&z);
-
-		i--;
 	}
 }
 
-void Ka_mul_test() {
+void Ka_mul_test(FILE* fp) {
 
 	
-	int i = 10;
-	while (i >= 0) {
+	for (int i = 0; i <= TEST; i++) {
 		bigint* x = NULL;
 		bigint* y = NULL;
 		bigint* z = NULL;
 
-		bi_gen_rand(&x, rand() % 2, 3);
-		bi_gen_rand(&y, rand() % 2, 3);
-		/*bi_gen_rand(&x, 1);
-		word arr[7] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
-		bi_set_by_array(&x, NONNEGATIVE, arr, 7);*/
-		//bi_gen_rand(&x, (rand() % 7) + 1);
-		//bi_gen_rand(&y, (rand() % 7) + 1);
+		bi_gen_rand(&x, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
+		bi_gen_rand(&y, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
+
+		fputs("x=", fp);
+		File_print(x, fp);
+		fprintf(fp, "\n");
 
 		printf("x=");
 		bi_show_hex(x);
+		printf("\n");
+
+		fputs("y=", fp);
+		File_print(y, fp);
+		fprintf(fp, "\n");
+
 		printf("y=");
 		bi_show_hex(y);
+		printf("\n");
+
 		karatsuba_MUL(x, y, &z);
 
 		printf("x * y ==");
 		bi_show_hex(z);
+		printf("\n");
+
+		fputs("print(x * y ==", fp);
+		File_print(z, fp);
+		fputs(")", fp);
+		fprintf(fp, "\n");
 
 		bi_delete(&x);
-		bi_delete(&y); 
+		bi_delete(&y);
 		bi_delete(&z);
-		i--;
 	}
 }
 
@@ -197,6 +239,7 @@ void bi_binary_long_division_test() {
 		bigint* y = NULL;
 		bigint* q = NULL;
 		bigint* r = NULL;
+
 		bi_gen_rand(&x, rand() % 2, 5);
 		bi_gen_rand(&y, rand() % 2, 3);
 		bi_binary_long_division(x, y, &q, &r);
@@ -248,68 +291,205 @@ void long_division_2word_test() {
 	}
 }
 
-void Squaring_test() {
-	
+void Squaring_test(FILE* fp) {
 
-	int i = TEST;
 
-	while (i >= 0) {
+	for (int i = 0; i <= TEST; i++) {
 		bigint* x = NULL;
 		bigint* z = NULL;
 		/* 원하는 배열을 확인 하고 싶을 때 사용*/
 		/*bi_gen_rand(&x, 1);
 		word arr[7] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 		bi_set_by_array(&x, NONNEGATIVE, arr, 7);*/
-		bi_gen_rand(&x, rand() % 2, (rand() % 14) + 1);
+
+		bi_gen_rand(&x, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
+
+		fputs("x=", fp);
+		File_print(x, fp);
+		fprintf(fp, "\n");
+
 		printf("x=");
 		bi_show_hex(x);
 		printf("\n");
+
 		Squaring_Schoolbook(x, &z);
-		printf("x ^ 2 ==");
+
+		printf("power(x,2) ==");
 		bi_show_hex(z);
 		printf("\n");
+
+		fputs("print(x * x ==", fp);
+		File_print(z, fp);
+		fputs(")", fp);
+		fprintf(fp, "\n");
 
 		bi_delete(&x);
 		bi_delete(&z);
 
-		i--;
 	}
 }
 
-void Exponentiation_test() {
+void Exponentiation_test(FILE* fp) {
 	
 
-	int i = 6;
-	while (i >= 0) {
+	for (int i = 0; i <= TEST; i++) {
+		
 		bigint* x = NULL;
 		bigint* z = NULL;
-
-		/* 원하는 배열을 확인 하고 싶을 때 사용*/
+		
+		/*
+		//원하는 배열을 확인 하고 싶을 때 사용
 		bi_gen_rand(&x, rand() % 2, 1);
 		word arr[1] = { 0x81 };
 		bi_set_by_array(&x, NONNEGATIVE, arr, 1);
+		*/
 
 
 		//bi_gen_rand(&x, 3);
-		//bi_gen_rand(&x, (rand() % 10) + 1);
-		int n = (rand() % 20 + 1);
 		//int n = 10;
+
+		bi_gen_rand(&x, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
+		int n = ((rand() % UPPERBOUND) + LOWERBOUND);
+
+		fputs("x=", fp);
+		File_print(x, fp);
+		fprintf(fp, "\n");
 
 		printf("x=");
 		bi_show_hex(x);
 		printf("\n");
+
+		fputs("n=", fp);
+		fprintf(fp, "%d", n);
+		fprintf(fp, "\n");
+
 		printf("n=%d\n", n);
 
-		//left_to_right(x, &z, 3);
 		left_to_right(x, &z, n);
 
-		//printf("x ^ 3 ==");
-		printf("x ^ n ==");
+		printf("power(x,n) ==");
 		bi_show_hex(z);
 		printf("\n");
 
+		fputs("print(power(x,n) ==", fp);
+		File_print(z, fp);
+		fputs(")", fp);
+		fprintf(fp, "\n");
+
 		bi_delete(&x);
 		bi_delete(&z);
-		i--;
 	}
 }
+
+void Exponentiation_bi_test(FILE* fp) {
+
+
+	for (int i = 0; i <= TEST; i++) {
+		bigint* x = NULL;
+		bigint* y = NULL;
+		bigint* z = NULL;
+		/* 원하는 배열을 확인 하고 싶을 때 사용*/
+		/*bi_gen_rand(&x, 1);
+		word arr[7] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+		bi_set_by_array(&x, NONNEGATIVE, arr, 7);*/
+
+		//bi_gen_rand(&x, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
+		//bi_gen_rand(&y, NONNEGATIVE, (((rand() % UPPERBOUND) + LOWERBOUND) / 5));
+		bi_gen_rand(&x, rand() % 2, 5);
+		bi_gen_rand(&y, NONNEGATIVE, 1);
+
+		fputs("x=", fp);
+		File_print(x, fp);
+		fprintf(fp, "\n");
+
+		printf("x=");
+		bi_show_hex(x);
+		printf("\n");
+
+		fputs("y=", fp);
+		File_print(y, fp);
+		fprintf(fp, "\n");
+
+		printf("y=");
+		bi_show_hex(y);
+		printf("\n");
+
+		left_to_right_bi(x, y, &z);
+
+		printf("power(x,y) ==");
+		bi_show_hex(z);
+		printf("\n");
+
+		fputs("print(power(x,y) ==", fp);
+		File_print(z, fp);
+		fputs(")", fp);
+		fprintf(fp, "\n");
+
+		bi_delete(&x);
+		bi_delete(&y);
+		bi_delete(&z);
+	}
+}
+
+void Exponentiation_Modular_bi_test(FILE* fp) {
+
+
+	for (int i = 0; i <= TEST; i++) {
+		bigint* x = NULL; // 거듭제곱 할 수
+		bigint* y = NULL; // 거듭제곱 횟 수
+		bigint* z = NULL; // 결과 저장 할 수
+		bigint* p = NULL; // mod 연산 할 기준(=법)
+
+		/* 원하는 배열을 확인 하고 싶을 때 사용*/
+		/*bi_gen_rand(&x, 1);
+		word arr[7] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+		bi_set_by_array(&x, NONNEGATIVE, arr, 7);*/
+
+		bi_gen_rand(&x, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
+		bi_gen_rand(&y, NONNEGATIVE, ((rand() % UPPERBOUND) + LOWERBOUND));
+		bi_gen_rand(&p, NONNEGATIVE, ((rand() % UPPERBOUND) + LOWERBOUND));
+		//bi_gen_rand(&y, NONNEGATIVE, 2);
+		//bi_gen_rand(&p, NONNEGATIVE, 2);
+
+		fputs("x=", fp);
+		File_print(x, fp);
+		fprintf(fp, "\n");
+
+		printf("x=");
+		bi_show_hex(x);
+		printf("\n");
+
+		fputs("y=", fp);
+		File_print(y, fp);
+		fprintf(fp, "\n");
+
+		printf("y=");
+		bi_show_hex(y);
+		printf("\n");
+
+		fputs("p=", fp);
+		File_print(p, fp);
+		fprintf(fp, "\n");
+
+		printf("p=");
+		bi_show_hex(p);
+		printf("\n");
+		
+		left_to_right_mod_bi(x, y, p, &z);
+
+		printf("power_mod(x,y,p) ==");
+		bi_show_hex(z);
+		printf("\n");
+
+		fputs("print(power_mod(x,y,p) ==", fp);
+		File_print(z, fp);
+		fputs(")", fp);
+		fprintf(fp, "\n");
+
+		bi_delete(&x);
+		bi_delete(&y);
+		bi_delete(&p);
+		bi_delete(&z);
+	}
+}
+

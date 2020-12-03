@@ -2,9 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include<time.h>
-#include<math.h>
-#include"conf.h"
+#include <time.h>
+#include <math.h>
+#include "conf.h"
 
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -34,9 +34,9 @@ typedef struct {
 }bigint;
 
 // 프로토타입 처리해야함 
-void array_init(word* a, int wordlen);
-void array_copy(word* a, word* b, int wordlen);
-void array_rand(word* dst, int wordlen);
+//void array_init(word* a, int wordlen);
+//void array_copy(word* a, word* b, int wordlen);
+//void array_rand(word* dst, int wordlen);
 
 // Chapter 2.1 빅넘버를 생성하는 함수 & 삭제하는 함수
 void bi_delete(bigint** x);
@@ -48,6 +48,7 @@ void bi_set_by_array(bigint** x, int sign, word* a, int wordlen);
 void bi_show_hex(bigint* x);
 //void bi_show_dec(bigint* x);
 void bi_show_bin(bigint* x);
+void File_print(bigint* x, FILE* fp);
 
 // Chapter 2.3 빅넘버 0000017398213 -> 17398213 으로 만들어 주는 함수
 void bi_refine(bigint** x);
