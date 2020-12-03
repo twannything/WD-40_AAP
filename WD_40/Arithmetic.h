@@ -41,6 +41,9 @@ void left_to_right_mod_bi(bigint* x, bigint* y, bigint* b, bigint** t);
 void right_to_left(bigint* x, bigint** z, int n);
 void right_to_left_bi(bigint* x, bigint* y, bigint** t);
 void right_to_left_mod_bi(bigint* x, bigint* y, bigint* b, bigint** t);
+void Mul_N_Squ(bigint* x, bigint** z, int n);
+void Mul_N_Squ_bi(bigint* x, bigint* y, bigint** t);
+void Mul_N_Squ_mod_bi(bigint* x, bigint* y, bigint* b, bigint** t);
 
 
 

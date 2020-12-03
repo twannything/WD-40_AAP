@@ -33,11 +33,6 @@ typedef struct {
 	word* a; // address for big integer(starting address)
 }bigint;
 
-// 프로토타입 처리해야함 
-//void array_init(word* a, int wordlen);
-//void array_copy(word* a, word* b, int wordlen);
-//void array_rand(word* dst, int wordlen);
-
 // Chapter 2.1 빅넘버를 생성하는 함수 & 삭제하는 함수
 void bi_delete(bigint** x);
 void bi_new(bigint** x, int wordlen);

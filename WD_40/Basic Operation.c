@@ -95,9 +95,10 @@ void bi_set_by_string(bigint** x, int sign, char* str, word base) {
 	if (*x != NULL)
 		bi_delete(x);
 }
+
 /**
 * @brief bi_show_hex : (*x)->a 값을 WOREBITLEN에 맞게 16진수 출력
-* @param bigint* x : 출력한 빅넘버 x
+* @param bigint* x : 출력할 빅넘버 x
 */
 void bi_show_hex(bigint* x) {
 	if (x->sign == NEGATIVE)
@@ -115,9 +116,16 @@ void bi_show_hex(bigint* x) {
 	}
 }
 
-//
+/**
+* @brief bi_show_hex : 빅넘버를 WOREBITLEN에 맞게 10진수 출력
+* @param bigint* x : 출력할 빅넘버 x
+*/
 //void bi_show_dec(bigint* x) {
+//	if (x->sign == NEGATIVE)
+//		printf("-");
+//	
 //	for (int i = 0; i < x->wordlen; i++)
+//
 //}
 /**
 * @brief bi_show_bin : (*x)->a 값을 WOREBITLEN에 맞게 2진수 출력

@@ -17,7 +17,7 @@ void bi_reduction(bigint** y, bigint* x, int r){
 		else if (rem == 0) {
 			bi_new(y, k);
 			for (int i = 0; i < k; i++) {
-				(*y)->a[i] = x->a[i] & ((1 << sizeof(word)) - 1); 
+				(*y)->a[i] = x->a[i] & MASK; 
 				return;
 			}
 		}
@@ -26,7 +26,7 @@ void bi_reduction(bigint** y, bigint* x, int r){
 			for (int i = 0; i < k; i++) {
 				(*y)->a[i] = x->a[i] & ((1 << sizeof(word)) - 1);
 			}
-			(*y)->a[k] = x->a[k] & ((1 << rem) - 1);
+			(*y)->a[k] = x->a[k] & MASK;
 			return;
 		}
 }
@@ -1209,17 +1209,336 @@ void left_to_right_mod_bi(bigint* x, bigint* y, bigint* b, bigint** t) {
 //	bi_delete(&ttmp);
 //}
 
+
+/**
+* @brief right_to_left : Right to Left 방식의 빅넘버 지수승 연산
+* @param bigint* x : 거듭제곱할 빅넘버 x
+* @param bigint** z : 결과를 저장할 빅넘버 z
+* @param int n : x를 몇번 제곱할지 정해주는 정수 n
+*/
+void right_to_left(bigint* x, bigint** z, int n) {
+	
+	int l;
+	int ll[100] = { 0x00 };
+	bigint* tmp = NULL;
+	bigint* t0 = NULL;
+	bigint* t1 = NULL;
+
+	l = int_to_binary(n, ll);
+
+	bi_new(&t0, 1);
+	t0->a[0] = 0x01;
+	bi_assign(&t1, x);
+
+	for (int i = 0; i < l; i++) {
+		if (ll[i] == 1) { // n의 i번째 비트가 1일 때
+			MUL(t1, t0, &tmp);
+			bi_assign(&t0, tmp);
+		}
+		else;
+		Squaring_Schoolbook(t1, &tmp);
+		bi_assign(&t1, tmp);
+	}
+	bi_assign(z, t0);
+	if (x->sign == NEGATIVE && ll[0] == 1)
+		(*z)->sign = NEGATIVE;
+
+	bi_delete(&tmp);
+	bi_delete(&t0);
+	bi_delete(&t1);
+}
+/**
+* @brief right_to_left_bi : Right to Left 방식의 빅넘버승 연산
+* @param bigint* x : 거듭제곱할 빅넘버 x
+* @param bigint* y : x를 몇번 제곱할지 정해주는 빅넘버 y
+* @param bigint** z : 결과를 저장할 빅넘버 z
+*/
+void right_to_left_bi(bigint* x, bigint* y, bigint** z) {
+
+	int l = 0;
+	bigint* tmp = NULL;
+	bigint* t0 = NULL;
+	bigint* t1 = NULL;
+
+	l = get_bit_length(y);
+
+	bi_new(&t0, 1);
+	t0->a[0] = 0x01;
+	bi_assign(&t1, x);
+
+
+	for (int i = 0; i < l; i++) {
+		// y의 i번째 비트가 1일 때
+		if (bit_of_bi(y, i) == 1) {
+			MUL(t1, t0, &tmp);
+			bi_assign(&t0, tmp);
+		}
+		else;
+		Squaring_Schoolbook(t1, &tmp);
+		bi_assign(&t1, tmp);
+	}
+	bi_assign(z, t0);
+
+	bi_delete(&tmp);
+	bi_delete(&t0);
+	bi_delete(&t1);
+
+}
+/**
+* @brief right_to_left_mod_bi : Right to Left 방식의 빅넘버 거듭제곱 나머지 연산
+* @param bigint* x : 거듭제곱할 빅넘버 x
+* @param bigint* y : x를 몇번 제곱할지 정해주는 빅넘버 y
+* @param bigint* b : 모듈러 연산에 기준이 되는 빅넘버
+* @param bigint** z : 결과를 저장할 빅넘버 z
+*/
+void right_to_left_mod_bi(bigint* x, bigint* y, bigint* b, bigint** z) {
+	int l = 0;
+	bigint* tmp = NULL;
+	bigint* ttmp = NULL;
+	bigint* t0 = NULL;
+	bigint* t1 = NULL;
+
+	l = get_bit_length(y);
+
+	bi_new(&t0, 1);
+	t0->a[0] = 0x01;
+	bi_assign(&t1, x);
+
+
+	for (int i = 0; i < l; i++) {
+		// y의 i번째 비트가 1일 때
+		if (bit_of_bi(y, i) == 1) {
+			MUL(t1, t0, &tmp);
+			modular_bi(tmp, b, &ttmp);
+			bi_assign(&t0, ttmp);
+		}
+		else;
+		Squaring_Schoolbook(t1, &tmp);
+		modular_bi(tmp, b, &ttmp);
+		bi_assign(&t1, ttmp);
+	}
+	bi_assign(z, t0);
+	bi_refine(z);
+
+	bi_delete(&tmp);
+	bi_delete(&ttmp);
+	bi_delete(&t0);
+	bi_delete(&t1);
+}
+
+/**
+* @brief Mul_N_Squ : Montgomery Ladder 방식의 빅넘버 지수승 연산
+* @param bigint* x : 거듭제곱할 빅넘버 x
+* @param bigint** z : 결과를 저장할 빅넘버 z
+* @param int n : x를 몇번 제곱할지 정해주는 정수 n
+*/
+void Mul_N_Squ(bigint* x, bigint** z, int n) {
+
+	int l;
+	int ll[100] = { 0x00 };
+	bigint* tmp = NULL;
+	bigint* t0 = NULL;
+	bigint* t1 = NULL;
+
+	l = int_to_binary(n, ll);
+
+	bi_set_one(&t0);
+	bi_assign(&t1, x);
+	for (int i = l - 1; i >= 0; i--) {
+		// n의 i번째 비트가 1일 때
+		if (ll[i] == 1) {
+			MUL(t1, t0, &tmp);
+			bi_assign(&t0, tmp);
+			Squaring_Schoolbook(t1, &tmp);
+			bi_assign(&t1, tmp);
+		}
+		// n의 i번째 비트가 0일 때
+		else {
+			MUL(t1, t0, &tmp);
+			bi_assign(&t1, tmp);
+			Squaring_Schoolbook(t0, &tmp);
+			bi_assign(&t0, tmp);
+			
+		}
+	}
+	bi_assign(z, t0);
+	bi_refine(z);
+
+
+	if (x->sign == NEGATIVE && ll[0] == 1)
+		(*z)->sign = NEGATIVE;
+
+	bi_delete(&tmp);
+	bi_delete(&t0);
+	bi_delete(&t1);
+}
+//void Mul_N_Squ(bigint* x, bigint** z, int n) {
+//
+//	int l;
+//	int ll[100] = { 0x00 };
+//	bigint* tmp = NULL;
+//	bigint* t0 = NULL;
+//	bigint* t1 = NULL;
+//
+//	l = int_to_binary(n, ll);
+//
+//	printf("n의 비트길이 %d \n", l);
+//	for (int i = 0; i < l; i++)
+//		printf("%d", ll[i]);
+//	printf("\n\n");
+//
+//	bi_set_one(&t0);
+//	printf("최초 t0 = ");
+//	bi_show_hex(t0);
+//	printf("\n\n");
+//	bi_assign(&t1, x);
+//	printf("최초 t1 = ");
+//	bi_show_hex(t1);
+//	printf("\n\n");
+//	for (int i = l - 1; i >= 0; i--) {
+//		// n의 i번째 비트가 1일 때
+//		if (ll[i] == 1) {
+//			printf("n의 %d번째 비트 = 1\n\n", ll[i]);
+//			MUL(t1, t0, &tmp);
+//			bi_assign(&t0, tmp);
+//			printf("t0 = t1 * t0 = ");
+//			bi_show_hex(t0);
+//			printf("\n\n");
+//			Squaring_Schoolbook(t1, &tmp);
+//			bi_assign(&t1, tmp);
+//			printf("t1 = t1 ^ 2 = ");
+//			bi_show_hex(t1);
+//			printf("\n\n");
+//		}
+//		// n의 i번째 비트가 0일 때
+//		else {
+//			printf("n의 %d번째 비트 = 0\n\n", ll[i]);
+//			MUL(t1, t0, &tmp);
+//			bi_assign(&t1, tmp);
+//			printf("t1 = t1 * t0 = ");
+//			bi_show_hex(t1);
+//			printf("\n\n");
+//			Squaring_Schoolbook(t0, &tmp);
+//			bi_assign(&t0, tmp);
+//			printf("t0 = t0 ^ 2 = ");
+//			bi_show_hex(t0);
+//			printf("\n\n");
+//		}
+//	}
+//	bi_assign(z, t0);
+//	bi_refine(z);
+//
+//
+//	if (x->sign == NEGATIVE && ll[0] == 1)
+//		(*z)->sign = NEGATIVE;
+//
+//	bi_delete(&tmp);
+//	bi_delete(&t0);
+//	bi_delete(&t1);
+//}
+
+/**
+* @brief Mul_N_Squ_bi : Montgomery Ladder 방식의 빅넘버승 연산
+* @param bigint* x : 거듭제곱할 빅넘버 x
+* @param bigint* y : x를 몇번 제곱할지 정해주는 빅넘버 y
+* @param bigint** z : 결과를 저장할 빅넘버 z
+*/
+void Mul_N_Squ_bi(bigint* x, bigint* y, bigint** z){
+
+	int l;
+	bigint* tmp = NULL;
+	bigint* t0 = NULL;
+	bigint* t1 = NULL;
+
+	l = get_bit_length(y);
+
+	bi_set_one(&t0);
+	bi_assign(&t1, x);
+	for (int i = l - 1; i >= 0; i--) {
+		// n의 i번째 비트가 1일 때
+		if (bit_of_bi(y, i) == 1) {
+			MUL(t1, t0, &tmp);
+			bi_assign(&t0, tmp);
+			Squaring_Schoolbook(t1, &tmp);
+			bi_assign(&t1, tmp);
+		}
+		// n의 i번째 비트가 0일 때
+		else {
+			MUL(t1, t0, &tmp);
+			bi_assign(&t1, tmp);
+			Squaring_Schoolbook(t0, &tmp);
+			bi_assign(&t0, tmp);
+
+		}
+	}
+	bi_assign(z, t0);
+	bi_refine(z);
+
+
+	if (x->sign == NEGATIVE && bit_of_bi(y, 0) == 1)
+		(*z)->sign = NEGATIVE;
+
+	bi_delete(&tmp);
+	bi_delete(&t0);
+	bi_delete(&t1);
+
+}
+
+/**
+* @brief Mul_N_Squ_mod_bi : Montgomery Ladder 방식의 빅넘버 거듭제곱 나머지 연산
+* @param bigint* x : 거듭제곱할 빅넘버 x
+* @param bigint* y : x를 몇번 제곱할지 정해주는 빅넘버 y
+* @param bigint* b : 모듈러 연산에 기준이 되는 빅넘버
+* @param bigint** z : 결과를 저장할 빅넘버 z
+*/
+void Mul_N_Squ_mod_bi(bigint* x, bigint* y, bigint* b, bigint** z) {
+
+	int l;
+	bigint* tmp = NULL;
+	bigint* ttmp = NULL;
+	bigint* t0 = NULL;
+	bigint* t1 = NULL;
+
+	l = get_bit_length(y);
+
+	bi_set_one(&t0);
+	bi_assign(&t1, x);
+	for (int i = l - 1; i >= 0; i--) {
+		// n의 i번째 비트가 1일 때
+		if (bit_of_bi(y, i) == 1) {
+			MUL(t1, t0, &tmp);
+			modular_bi(tmp, b, &ttmp);
+			bi_assign(&t0, ttmp);
+			Squaring_Schoolbook(t1, &tmp);
+			modular_bi(tmp, b, &ttmp);
+			bi_assign(&t1, ttmp);
+		}
+		// n의 i번째 비트가 0일 때
+		else {
+			MUL(t1, t0, &tmp);
+			modular_bi(tmp, b, &ttmp);
+			bi_assign(&t1, ttmp);
+			Squaring_Schoolbook(t0, &tmp);
+			modular_bi(tmp, b, &ttmp);
+			bi_assign(&t0, ttmp);
+		}
+	}
+	bi_assign(z, t0);
+	bi_refine(z);
+
+	bi_delete(&tmp);
+	bi_delete(&t0);
+	bi_delete(&t1);
+}
+
+
+
 /**
 * @brief modular : 빅넘버 Modular 연산
 * @param bigint* x : mod 연산을 취할 빅넘버 x
 * @param bigint* y : mod의 기준이 되는 빅넘버 y
 * @param bigint** z : 결과를 저장할 빅넘버 z = x (mod y)
 */
-
-void right_to_left(bigint* x, bigint** z, int n);
-void right_to_left_bi(bigint* x, bigint* y, bigint** t);
-void right_to_left_mod_bi(bigint* x, bigint* y, bigint* b, bigint** t);
-
 void modular_bi(bigint* x, bigint* y, bigint** z) {
 	
 	// x를 y로 나눈다음에 r만 z 에 저장
@@ -1269,9 +1588,10 @@ void modular_bi(bigint* x, bigint* y, bigint** z) {
 //	bi_show_hex(*z);
 //	printf("\n\n");
 //
-//	bi_delete(&q);
+//	bi_delete(&q);W
 //	bi_delete(&r);
 //}
+
 
 /**
 * @date 2020-11-28 20:17

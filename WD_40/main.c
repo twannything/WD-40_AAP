@@ -28,10 +28,16 @@ int main() {
 	//bi_binary_long_division_test(fp);
 	//long_division_2word_test(fp);
 	//divcc_test();
-	div_test();
+	//div_test();
 	//divc_test();
 	//Squaring_test(fp);
-	//Exponentiation_test(fp);
-	//Exponentiation_bi_test(fp);
+	//L2R_test(fp);
+	//L2R_bi_test(fp);
 	//Exponentiation_Modular_bi_test(fp);
+	//R2L_test(fp);
+	//R2L_bi_test(fp);
+	//R2L_Modular_bi_test(fp);
+	//Mul_N_Squ_test(fp);
+	//Mul_N_Squ_bi_test(fp);
+	Mul_N_Squ_mod_bi_test(fp);
 }
