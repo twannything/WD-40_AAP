@@ -52,6 +52,7 @@ int S_ADDABc(word x, word y, bigint** z, int carry, int r) {
 
 	return d;
 }
+
 /**
 * @brief M_ADD : 길이가 2이상인 두 빅넘버 x,y를 더하는 함수 x의 wordlen이 항상 y의 wordlen 이상이라고 가정
 * @param bigint* x : 더하고자하는 빅넘버 x
@@ -601,8 +602,11 @@ void Squaring_word(word* dst, word a) {
 
 void Squaring_Schoolbook(bigint* x, bigint** z) {
 
+	if ((*z) != NULL)
+		bi_delete(z);
 
-	if (bi_is_one(x)) {  // x가 1이면 제곱해도 1
+	// x가 1이면 제곱해도 1
+	if (bi_is_one(x)) { 
 		bi_set_one(z);
 		return;
 	}
@@ -614,11 +618,16 @@ void Squaring_Schoolbook(bigint* x, bigint** z) {
 	bigint* c2 = NULL;
 	bigint* t1 = NULL;
 	bigint* t2 = NULL;
-	bi_new(&c1, 2 * x->wordlen);
-	bi_new(&c2, 2 * x->wordlen);
+	printf("1\n");
+	bi_new(&c1,(2 * x->wordlen));
+	printf("12\n");
+	bi_new(&c2, (2 * x->wordlen));
+	printf("11\n");
 	bi_new(&t1, 2);
 	bi_new(&t2, 2);
+	printf("111\n");
 	bi_new(z, (2 * x->wordlen));
+	printf("1111\n");
 
 	word* tmp_arr = NULL;
 	tmp_arr = (word*)calloc(sizeof(word), (1 + x->wordlen));
@@ -731,7 +740,7 @@ void bi_binary_long_division(bigint* a, bigint* b, bigint** q, bigint** r) {
 	bi_new(r, b->wordlen);
 	bi_new(q, (a->wordlen) - (b->wordlen) + 1);
 
-	if (b->sign == NEGATIVE) {
+	if (b->sign == NEGATIVE || bi_is_zero(b)) {
 		return;
 	}
 	if (a->sign == NONNEGATIVE && compareAB(b, a) == 1) {
@@ -739,7 +748,7 @@ void bi_binary_long_division(bigint* a, bigint* b, bigint** q, bigint** r) {
 		bi_assign(r, a);
 		return;
 	}
-	if (bi_is_zero(b)) {
+	if (bi_is_one(b)) {
 		bi_assign(q, a);
 		bi_set_zero(r);
 
@@ -882,22 +891,33 @@ void divc(bigint* x, bigint* y, bigint** q, bigint** r) {
 void bi_div(bigint* x, bigint* y, bigint** q, bigint** r) {
 	int x_len1 = x->wordlen;
 	int y_len1 = y->wordlen;
+	bigint* r_tmp1 = NULL;
+	bigint* q_tmp1 = NULL;
+	bigint* q_tmp = NULL;
+	bigint* one = NULL;
+	bigint* tmp = NULL;
+	bi_set_one(&one);
+
 	if (y->sign == NEGATIVE) {
-		printf("Invalid operation!!!!");
+		bi_set_zero(q);
+		bi_set_zero(r);//printf("Invalid operation!!!!");
 		return;
 	}
-	if (compareAB(y, x) == 1) {
+	if (x->sign == NONNEGATIVE && compareAB(y, x) == 1) {
 		bi_set_zero(q);
 		bi_assign(r, x);
 		return;
 	}
-	bigint* r_tmp1 = NULL;
-	bigint* q_tmp1 = NULL;
-	bi_new(r, y_len1);
-	bi_new(&r_tmp1, y_len1);
-	bi_new(q, x_len1 - y_len1 + 1);
-	bi_new(&q_tmp1, 1);
 
+	if (bi_is_one(y)) {
+		bi_assign(q, x);
+		bi_set_zero(r);
+	}
+
+	//bi_new(r, y_len1);
+	bi_new(&r_tmp1, y_len1);
+	//bi_new(q, x_len1 - y_len1 + 1);
+	bi_new(&q_tmp1, 1);
 	bi_set_zero(q);
 	bi_set_zero(r);
 
@@ -909,6 +929,18 @@ void bi_div(bigint* x, bigint* y, bigint** q, bigint** r) {
 		bi_leftshift(q, WORD_BITLEN);
 		(*q)->a[0] += q_tmp1->a[0];
 	}
+
+	if (x->sign == NEGATIVE) {
+		bi_assign(&q_tmp, *q);
+		bi_assign(&tmp, *r);
+		flip_sign_bi(&q_tmp);
+		SUB(q_tmp, one, q);
+		SUB(y, tmp, r);
+
+	}
+	bi_delete(&q_tmp);
+	bi_delete(&tmp);
+	bi_delete(&one);
 	bi_delete(&r_tmp1);
 	bi_delete(&q_tmp1);
 }
@@ -942,84 +974,79 @@ int int_to_binary(int decimal, int* binary ){
 * @param bigint** t : 결과를 저장할 빅넘버 t
 * @param int n : x를 몇번 제곱할지 정해주는 정수 n
 */
-void left_to_right(bigint* x, bigint** t, int n) {
-
-	int l;
-	int ll[100] = { 0x00 };
-	bigint* tmp = NULL;
-	bigint* ttmp = NULL;
-	
-	l = int_to_binary(n, ll);
-	
-	bi_new(t, 1);
-
-	(*t)->a[0] = 0x01;
-
-	for (int i = l - 1; i >= 0; i--) {
-		bi_assign(&tmp, *t);
-		Squaring_Schoolbook(tmp, &ttmp);
-		bi_assign(t, ttmp);
-		if (ll[i] == 1) { // n의 i번째 비트가 1일 때
-			bi_assign(&tmp, *t);
-			MUL(tmp, x, &ttmp);
-			bi_assign(t, ttmp);
-		}
-		else { // n의 i번째 비트가 0일 때
-			bi_assign(&tmp, *t);
-			bi_assign(t, ttmp);
-		}
-	}
-	bi_delete(&tmp);
-	bi_delete(&ttmp);
-}
-
 //void left_to_right(bigint* x, bigint** t, int n) {
 //
 //	int l;
-//	int ll[100] = { 0, };
+//	int ll[100] = { 0x00 };
 //	bigint* tmp = NULL;
 //	bigint* ttmp = NULL;
-//	l = int_to_binary(n, ll);
-//
-//	printf("n의 비트길이 %d \n", l);
-//	for (int i = 0; i < l; i++)
-//		printf("%d", ll[i]);
-//	printf("\n");
-//
-//	bi_new(t, 1);
-//	(*t)->a[0] = 0x01;
 //	
+//	l = int_to_binary(n, ll);
+//	
+//	bi_new(t, 1);
+//
+//	(*t)->a[0] = 0x01;
+//
 //	for (int i = l - 1; i >= 0; i--) {
 //		bi_assign(&tmp, *t);
-//		printf("tmp = ");
-//		bi_show_hex(tmp);
-//		printf("\n");
 //		Squaring_Schoolbook(tmp, &ttmp);
-//		printf("t^2 후의 tmp = ");
-//		bi_show_hex(ttmp);
-//		printf("\n");
 //		bi_assign(t, ttmp);
-//		printf("t^2 = "); 
-//		bi_show_hex(*t);
-//		printf("\n");
-//		if (ll[i] == 1) {
+//		if (ll[i] == 1) { // n의 i번째 비트가 1일 때
 //			bi_assign(&tmp, *t);
-//			printf("tmp = ");
-//			bi_show_hex(tmp);
-//			printf("\n");
 //			MUL(tmp, x, &ttmp);
-//			printf("x*t 후의 tmp = ");
-//			bi_show_hex(ttmp);
-//			printf("\n");
 //			bi_assign(t, ttmp);
-//			printf("t * x = ");
-//			bi_show_hex(*t);
-//			printf("\n");
+//		}
+//		else { // n의 i번째 비트가 0일 때
+//			bi_assign(&tmp, *t);
+//			bi_assign(t, ttmp);
 //		}
 //	}
 //	bi_delete(&tmp);
 //	bi_delete(&ttmp);
 //}
+
+void left_to_right(bigint* x, bigint** t, int n) {
+
+	int l;
+	int ll[100] = { 0, };
+	bigint* tmp = NULL;
+	bigint* ttmp = NULL;
+	l = int_to_binary(n, ll);
+
+	printf("n의 비트길이 %d \n", l);
+	for (int i = 0; i < l; i++)
+		printf("%d", ll[i]);
+	printf("\n\n");
+
+	bi_set_one(&tmp);
+	
+	for (int i = l - 1; i >= 0; i--) {
+		printf("%d번째 t ^ 2 단계 시작\n\n", i);
+		printf("t = ");
+		bi_show_hex(tmp);
+		printf("\n");
+		Squaring_Schoolbook(tmp, &ttmp);
+		printf("t^2 = ");
+		bi_show_hex(ttmp);
+		printf("\n");
+		if (ll[i] == 1) {
+			printf("y의 %d번째 비트 == 1 이므로 t * x 단계 시작\n\n", i);
+			MUL(ttmp, x, &tmp);
+			printf("t * x 후의 t = ");
+			bi_show_hex(tmp);
+			printf("\n");
+			bi_assign(&ttmp, tmp);
+		}
+		else;
+	}
+	bi_assign(t, ttmp);
+	bi_refine(t);
+
+
+
+	bi_delete(&tmp);
+	bi_delete(&ttmp);
+}
 
 /**
 * @brief left_to_right_bi : Left to Right 방식의 빅넘버 거듭제곱 연산
@@ -1051,7 +1078,7 @@ void left_to_right_bi(bigint* x, bigint* y, bigint** t) {
 		// y의 i번째 비트가 0일 때
 		else;
 	}
-	// x가 음수이고, 홀수번 제곱할때
+	// x가 음수이고, 홀수번 제곱할때 z는 음수가 된다.
 	if (x->sign == NEGATIVE && bit_of_bi(y, 0) == 1)
 		(*t)->sign = NEGATIVE;
 
@@ -1146,7 +1173,7 @@ void left_to_right_mod_bi(bigint* x, bigint* y, bigint* b, bigint** t) {
 		else;
 	}
 
-	// x가 음수이고, 홀수번 제곱할때
+	// x가 음수이고, 홀수번 제곱할때 z는 음수가 된다. 
 	/*if (x->sign == NEGATIVE && bit_of_bi(y, 0) == 1)
 		(*t)->sign = NEGATIVE;*/
 
@@ -1231,7 +1258,8 @@ void right_to_left(bigint* x, bigint** z, int n) {
 	bi_assign(&t1, x);
 
 	for (int i = 0; i < l; i++) {
-		if (ll[i] == 1) { // n의 i번째 비트가 1일 때
+		// n의 i번째 비트가 1일 때
+		if (ll[i] == 1) { 
 			MUL(t1, t0, &tmp);
 			bi_assign(&t0, tmp);
 		}
@@ -1242,6 +1270,7 @@ void right_to_left(bigint* x, bigint** z, int n) {
 	bi_assign(z, t0);
 	if (x->sign == NEGATIVE && ll[0] == 1)
 		(*z)->sign = NEGATIVE;
+	bi_refine(z);
 
 	bi_delete(&tmp);
 	bi_delete(&t0);
@@ -1262,8 +1291,7 @@ void right_to_left_bi(bigint* x, bigint* y, bigint** z) {
 
 	l = get_bit_length(y);
 
-	bi_new(&t0, 1);
-	t0->a[0] = 0x01;
+	bi_set_one(&t0);
 	bi_assign(&t1, x);
 
 
@@ -1278,6 +1306,7 @@ void right_to_left_bi(bigint* x, bigint* y, bigint** z) {
 		bi_assign(&t1, tmp);
 	}
 	bi_assign(z, t0);
+	bi_refine(z);
 
 	bi_delete(&tmp);
 	bi_delete(&t0);
@@ -1554,7 +1583,7 @@ void modular_bi(bigint* x, bigint* y, bigint** z) {
 	/*if (*z != NULL)
 		bi_delete(z);*/
 	
-	bi_binary_long_division(x, y, &q, &r);
+	bi_div(x, y, &q, &r);
 	bi_assign(z, r);
 
 	bi_delete(&q);

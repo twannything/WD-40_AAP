@@ -1,7 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "Basic Operation.h"
 #include "Arithmetic.h"
-//#include <vld.h>
+//#include <vld.h> // 메모리 누수를 확인 하고 싶을때 사용
 
 /**
 * @mainpage BIGINT LIBRARY : WD-40

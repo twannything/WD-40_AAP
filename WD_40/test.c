@@ -4,8 +4,9 @@
 /**
 * @brief add_test : 덧셈 연산의 구현 정확성 테스트 하는 함수
 * @brief 구성 : 빅넘버 x 와 y 그리고 x + y 값을 저장할 빅넘버 z 를 생성
-* @brief x 와 y의 부호 : Random ( NONNEGATIVE or NEGATIVE)
-* @brief x 와 y의 부호 : Random ( NONNEGATIVE or NEGATIVE)
+* @brief x 와 y의 부호 : NONNEGATIVE or NEGATIVE
+* @brief x 와 y의 wordlen : LOWERBOUND ~ UPPERBOUND
+* @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
 */
 void add_test(FILE* fp) {
 	
@@ -39,8 +40,8 @@ void add_test(FILE* fp) {
 		bigint* y = NULL;
 		bigint* z = NULL;
 
-		bi_gen_rand(&x, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
-		bi_gen_rand(&y, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
+		bi_gen_rand(&x, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
+		bi_gen_rand(&y, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 
 		fputs("x=", fp);
 		File_print(x, fp);
@@ -75,6 +76,13 @@ void add_test(FILE* fp) {
 	}
 }
 
+/**
+* @brief sub_test : 뺄셈 연산의 구현 정확성 테스트 하는 함수
+* @brief 구성 : 빅넘버 x 와 y 그리고 x - y 값을 저장할 빅넘버 z 를 생성
+* @brief x 와 y의 부호 : NONNEGATIVE or NEGATIVE
+* @brief x 와 y의 wordlen : LOWERBOUND ~ UPPERBOUND
+* @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
+*/
 void sub_test(FILE* fp) {
 	/*
 	// 0 일때 처리하는 지 확인
@@ -108,8 +116,8 @@ void sub_test(FILE* fp) {
 		bigint* y = NULL;
 		bigint* z = NULL;
 
-		bi_gen_rand(&x, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
-		bi_gen_rand(&y, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
+		bi_gen_rand(&x, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
+		bi_gen_rand(&y, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 
 		fputs("x=", fp);
 		File_print(x, fp);
@@ -144,16 +152,75 @@ void sub_test(FILE* fp) {
 	}
 }
 
+/**
+* @brief mul_test : 뺄셈 연산의 구현 정확성 테스트 하는 함수
+* @brief 구성 : 빅넘버 x 와 y 그리고 x * y 값을 저장할 빅넘버 z 를 생성
+* @brief x 와 y의 부호 : NONNEGATIVE or NEGATIVE
+* @brief x 와 y의 wordlen : LOWERBOUND ~ UPPERBOUND
+* @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
+*/
 void  mul_test(FILE* fp) {
 
+	/*
+	// 0 일때 처리하는 지 확인
+	bigint* x = NULL;
+	bigint* y = NULL;
+	bigint* z = NULL;
 
+	bi_set_zero(&x);
+	bi_gen_rand(&y, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
+
+	printf("x=");
+	bi_show_hex(x);
+	printf("\n");
+	printf("y=");
+	bi_show_hex(y);
+	printf("\n");
+	MUL(x, y, &z);
+
+	printf("x * y ==");
+	bi_show_hex(z);
+	printf("\n");
+
+
+	bi_delete(&x);
+	bi_delete(&y);
+	bi_delete(&z);
+	*/
+
+	/*
+	// 1 일때 처리하는 지 확인
+	bigint* x = NULL;
+	bigint* y = NULL;
+	bigint* z = NULL;
+
+	bi_set_one(&x);
+	bi_gen_rand(&y, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
+
+	printf("x=");
+	bi_show_hex(x);
+	printf("\n");
+	printf("y=");
+	bi_show_hex(y);
+	printf("\n");
+	MUL(x, y, &z);
+
+	printf("x * y ==");
+	bi_show_hex(z);
+	printf("\n");
+
+
+	bi_delete(&x);
+	bi_delete(&y);
+	bi_delete(&z);
+	*/
 	for (int i = 0; i <= TEST; i++) {
 		bigint* x = NULL;
 		bigint* y = NULL;
 		bigint* z = NULL;
 
-		bi_gen_rand(&x, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
-		bi_gen_rand(&y, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
+		bi_gen_rand(&x, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
+		bi_gen_rand(&y, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 
 		fputs("x=", fp);
 		File_print(x, fp);
@@ -188,6 +255,13 @@ void  mul_test(FILE* fp) {
 	}
 }
 
+/**
+* @brief karatsuba_MUL : 카라츠바 곱셈 연산의 구현 정확성 테스트 하는 함수
+* @brief 구성 : 빅넘버 x 와 y 그리고 x * y 값을 저장할 빅넘버 z 를 생성
+* @brief x 와 y의 부호 : NONNEGATIVE or NEGATIVE
+* @brief x 와 y의 wordlen : LOWERBOUND ~ UPPERBOUND
+* @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
+*/
 void Ka_mul_test(FILE* fp) {
 
 	
@@ -196,8 +270,8 @@ void Ka_mul_test(FILE* fp) {
 		bigint* y = NULL;
 		bigint* z = NULL;
 
-		bi_gen_rand(&x, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
-		bi_gen_rand(&y, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
+		bi_gen_rand(&x, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
+		bi_gen_rand(&y, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 
 		fputs("x=", fp);
 		File_print(x, fp);
@@ -232,7 +306,14 @@ void Ka_mul_test(FILE* fp) {
 	}
 }
 
-void bi_binary_long_division_test() {
+/**
+* @brief bi_binary_long_division_test : 이진 롱 나눗셈 연산의 구현 정확성 테스트 하는 함수
+* @brief 구성 : 빅넘버 x 와 y 그리고 x / y 값의 몫 과 나머지를 저장할 빅넘버 q, r 를 생성
+* @brief x 와 y의 부호 : NONNEGATIVE or NEGATIVE
+* @brief x 와 y의 wordlen : LOWERBOUND ~ UPPERBOUND (?)
+* @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
+*/
+void bi_binary_long_division_test(FILE* fp) {
 
 	for (int i = 0; i < TEST; i++) {
 		bigint* x = NULL;
@@ -267,7 +348,14 @@ void bi_binary_long_division_test() {
 
 }
 
-void long_division_2word_test() {
+/**
+* @brief long_division_2word_test : 롱 나눗셈 한 워드 연산의 구현 정확성 테스트 하는 함수
+* @brief 구성 : 빅넘버 x 와 y 그리고 x / y 값의 몫 과 나머지를 저장할 빅넘버 q, r 를 생성
+* @brief x 와 y의 부호 : NONNEGATIVE
+* @brief x 와 y의 wordlen : LOWERBOUND ~ UPPERBOUND (?)
+* @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
+*/
+void long_division_2word_test(FILE* fp) {
 	for (int i = 0; i < 100; i++) {
 		bigint* x = NULL;
 		bigint* y = NULL;
@@ -291,7 +379,14 @@ void long_division_2word_test() {
 	}
 }
 
-void divcc_test() {
+/**
+* @brief divcc_test : 
+* @brief 구성 : 빅넘버 x 와 y 그리고 x / y 값의 몫 과 나머지를 저장할 빅넘버 q, r 를 생성
+* @brief x 와 y의 부호 : NONNEGATIVE
+* @brief x 와 y의 wordlen : LOWERBOUND ~ UPPERBOUND (?)
+* @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
+*/
+void divcc_test(FILE* fp) {
 	for (int i = 0; i < 100; i++) {
 		bigint* x = NULL;
 		bigint* y = NULL;
@@ -315,7 +410,14 @@ void divcc_test() {
 	}
 }
 
-void divc_test() {
+/**
+* @brief divc_test :
+* @brief 구성 : 빅넘버 x 와 y 그리고 x / y 값의 몫 과 나머지를 저장할 빅넘버 q, r 를 생성
+* @brief x 와 y의 부호 : NONNEGATIVE
+* @brief x 와 y의 wordlen : LOWERBOUND ~ UPPERBOUND (?)
+* @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
+*/
+void divc_test(FILE* fp) {
 	for (int i = 0; i < 100; i++) {
 		bigint* x = NULL;
 		bigint* y = NULL;
@@ -339,28 +441,79 @@ void divc_test() {
 	}
 }
 
+/**
+* @brief div_test :
+* @brief 구성 : 빅넘버 x 와 y 그리고 x / y 값의 몫 과 나머지를 저장할 빅넘버 q, r 를 생성
+* @brief x 와 y의 부호 : NONNEGATIVE
+* @brief x 와 y의 wordlen : LOWERBOUND ~ UPPERBOUND (?)
+* @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
+*/
 void div_test() {
 	for (int i = 0; i < 100; i++) {
 		bigint* x = NULL;
 		bigint* y = NULL;
 		bigint* q = NULL;
 		bigint* r = NULL;
-		bi_gen_rand(&x, NONNEGATIVE, (rand() % 6) + 1);
-		bi_gen_rand(&y, NONNEGATIVE, (rand() % 6) + 1);
+		bi_gen_rand(&x, rand() % 2, (rand() % 6) + 1);
+		bi_gen_rand(&y, rand() % 2, (rand() % 6) + 1);
 		bi_div(x, y, &q, &r);
-		bi_show_hex(x); printf("=="); printf("("); bi_show_hex(y);
-		printf(" * ");
-		bi_show_hex(q); printf(")"); printf("+");
-		bi_show_hex(r); printf("\n");
-		bi_delete(&x);
-		bi_delete(&y);
-		bi_delete(&q);
-		bi_delete(&r);
+		if (bi_is_zero(q) && bi_is_zero(r)) {
+			//printf(" Invalid Operation or X is Zero !");
+			bi_delete(&x);
+			bi_delete(&y);
+			bi_delete(&q);
+			bi_delete(&r);
+		}
+		else {
+			bi_show_hex(x); printf("=="); printf("("); bi_show_hex(y);
+			printf(" * ");
+			bi_show_hex(q); printf(")"); printf("+");
+			bi_show_hex(r); printf("\n");
+			bi_delete(&x);
+			bi_delete(&y);
+			bi_delete(&q);
+			bi_delete(&r);
+		}
 	}
 }
 
+/**
+* @brief Squaring_test : 빅넘버 제곱 연산의 구현 정확성을 테스트 하는 함수
+* @brief 구성 : 빅넘버 x 와 x^2 값을 저장할 빅넘버 z
+* @brief x의 부호 : NONNEGATIVE or NEGATIVE
+* @brief x의 wordlen : LOWERBOUND ~ UPPERBOUND 
+* @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
+*/
 void Squaring_test(FILE* fp) {
 
+	///* 원하는 배열을 확인 하고 싶을 때 사용*/
+	//bigint* x = NULL;
+	//bigint* z = NULL;
+	///*bi_gen_rand(&x, 1);
+	//word arr[7] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+	//bi_set_by_array(&x, NONNEGATIVE, arr, 7);*/
+
+	//fputs("x=", fp);
+	//File_print(x, fp);
+	//fprintf(fp, "\n");
+
+	//printf("x=");
+	//bi_show_hex(x);
+	//printf("\n");
+
+	//Squaring_Schoolbook(x, &z);
+
+	//printf("power(x,2) ==");
+	//bi_show_hex(z);
+	//printf("\n");
+
+	//fputs("print(x * x ==", fp);
+	//File_print(z, fp);
+	//fputs(")", fp);
+	//fprintf(fp, "\n");
+
+	//bi_delete(&x);
+	//bi_delete(&z);
 
 	for (int i = 0; i <= TEST; i++) {
 		bigint* x = NULL;
@@ -370,7 +523,7 @@ void Squaring_test(FILE* fp) {
 		word arr[7] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 		bi_set_by_array(&x, NONNEGATIVE, arr, 7);*/
 
-		bi_gen_rand(&x, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
+		bi_gen_rand(&x, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 
 		fputs("x=", fp);
 		File_print(x, fp);
@@ -397,6 +550,15 @@ void Squaring_test(FILE* fp) {
 	}
 }
 
+/**
+* @brief L2R_test : Left to Right 방식의 거듭제곱 연산의 구현 정확성을 테스트 하는 함수
+* @brief 구성 : 빅넘버 x , 제곱횟수를 결정하는 n , x^n 값을 저장할 빅넘버 z
+* @brief x의 부호 : NONNEGATIVE or NEGATIVE
+* @brief x의 wordlen : LOWERBOUND ~ UPPERBOUND
+* @brief n의 부호 : NONNEGATIVE
+* @brief n의 범위 : LOWERBOUND ~ UPPERBOUND
+* @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
+*/
 void L2R_test(FILE* fp) {
 	
 
@@ -416,8 +578,8 @@ void L2R_test(FILE* fp) {
 		//bi_gen_rand(&x, 3);
 		//int n = 10;
 
-		bi_gen_rand(&x, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
-		int n = ((rand() % UPPERBOUND) + LOWERBOUND);
+		bi_gen_rand(&x, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
+		int n = ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND);
 
 		fputs("x=", fp);
 		File_print(x, fp);
@@ -449,6 +611,15 @@ void L2R_test(FILE* fp) {
 	}
 }
 
+/**
+* @brief L2R_bi_test : Left to Right 방식의 빅넘버 거듭제곱 연산의 구현 정확성을 테스트 하는 함수
+* @brief 구성 : 빅넘버 x , 제곱횟수를 결정하는 빅넘버 y , x^y 값을 저장할 빅넘버 z
+* @brief x의 부호 : NONNEGATIVE or NEGATIVE
+* @brief x의 wordlen : LOWERBOUND ~ UPPERBOUND
+* @brief y의 부호 : NONNEGATIVE
+* @brief y의 범위 : 1 (2 이상은 결과 값이 너무 커져 테스트하기 한계가 있음)
+* @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
+*/
 void L2R_bi_test(FILE* fp) {
 
 
@@ -463,7 +634,7 @@ void L2R_bi_test(FILE* fp) {
 
 		//bi_gen_rand(&x, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
 		//bi_gen_rand(&y, NONNEGATIVE, (((rand() % UPPERBOUND) + LOWERBOUND) / 5));
-		bi_gen_rand(&x, rand() % 2, 5);
+		bi_gen_rand(&x, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 		bi_gen_rand(&y, NONNEGATIVE, 1);
 
 		fputs("x=", fp);
@@ -499,6 +670,17 @@ void L2R_bi_test(FILE* fp) {
 	}
 }
 
+/**
+* @brief L2R_Modular_bi_test : Left to Right 방식의 빅넘버 거듭제곱 모듈러 연산의 구현 정확성을 테스트 하는 함수
+* @brief 구성 : 빅넘버 x , 제곱횟수를 결정하는 빅넘버 y , 모듈러 기준을 결정하는 빅넘버 p ,  x^y mod p 값을 저장할 빅넘버 z
+* @brief x의 부호 : NONNEGATIVE or NEGATIVE
+* @brief x의 wordlen : LOWERBOUND ~ UPPERBOUND
+* @brief y의 부호 : NONNEGATIVE
+* @brief y의 범위 : LOWERBOUND ~ UPPERBOUND
+* @brief p의 부호 : NONNEGATIVE
+* @brief p의 범위 : LOWERBOUND ~ UPPERBOUND
+* @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
+*/
 void L2R_Modular_bi_test(FILE* fp) {
 
 
@@ -513,9 +695,9 @@ void L2R_Modular_bi_test(FILE* fp) {
 		word arr[7] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 		bi_set_by_array(&x, NONNEGATIVE, arr, 7);*/
 
-		bi_gen_rand(&x, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
-		bi_gen_rand(&y, NONNEGATIVE, ((rand() % UPPERBOUND) + LOWERBOUND));
-		bi_gen_rand(&p, NONNEGATIVE, ((rand() % UPPERBOUND) + LOWERBOUND));
+		bi_gen_rand(&x, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
+		bi_gen_rand(&y, NONNEGATIVE, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
+		bi_gen_rand(&p, NONNEGATIVE, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 		//bi_gen_rand(&y, NONNEGATIVE, 2);
 		//bi_gen_rand(&p, NONNEGATIVE, 2);
 
@@ -561,6 +743,15 @@ void L2R_Modular_bi_test(FILE* fp) {
 	}
 }
 
+/**
+* @brief R2L_test : Right to Left 방식의 거듭제곱 연산의 구현 정확성을 테스트 하는 함수
+* @brief 구성 : 빅넘버 x , 제곱횟수를 결정하는 n , x^n 값을 저장할 빅넘버 z
+* @brief x의 부호 : NONNEGATIVE or NEGATIVE
+* @brief x의 wordlen : LOWERBOUND ~ UPPERBOUND
+* @brief n의 부호 : NONNEGATIVE
+* @brief n의 범위 : LOWERBOUND ~ UPPERBOUND
+* @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
+*/
 void R2L_test(FILE* fp) {
 
 	for (int i = 0; i <= TEST; i++) {
@@ -579,8 +770,8 @@ void R2L_test(FILE* fp) {
 		//bi_gen_rand(&x, 3);
 		//int n = 10;
 
-		bi_gen_rand(&x, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
-		int n = ((rand() % UPPERBOUND) + LOWERBOUND);
+		bi_gen_rand(&x, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
+		int n = ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND);
 		//bi_gen_rand(&x, rand() % 2,2);
 		//int n = 2;
 
@@ -614,6 +805,15 @@ void R2L_test(FILE* fp) {
 	}
 }
 
+/**
+* @brief R2L_bi_test : Right to Left 방식의 빅넘버 거듭제곱 연산의 구현 정확성을 테스트 하는 함수
+* @brief 구성 : 빅넘버 x , 제곱횟수를 결정하는 빅넘버 y ,  x ^ y 값을 저장할 빅넘버 z
+* @brief x의 부호 : NONNEGATIVE or NEGATIVE
+* @brief x의 wordlen : LOWERBOUND ~ UPPERBOUND
+* @brief y의 부호 : NONNEGATIVE
+* @brief y의 범위 : 1
+* @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
+*/
 void R2L_bi_test(FILE* fp) {
 
 	for (int i = 0; i <= TEST; i++) {
@@ -627,7 +827,8 @@ void R2L_bi_test(FILE* fp) {
 
 		//bi_gen_rand(&x, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
 		//bi_gen_rand(&y, NONNEGATIVE, (((rand() % UPPERBOUND) + LOWERBOUND) / 5));
-		bi_gen_rand(&x, rand() % 2, 5);
+		
+		bi_gen_rand(&x, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 		bi_gen_rand(&y, NONNEGATIVE, 1); // y->wordlen이 1이아니면 너무 큰 값이 나와버림 
 
 		fputs("x=", fp);
@@ -663,6 +864,17 @@ void R2L_bi_test(FILE* fp) {
 	}
 }
 
+/**
+* @brief R2L_Modular_bi_test : Right to Left 방식의 빅넘버 거듭제곱 모듈러 연산의 구현 정확성을 테스트 하는 함수
+* @brief 구성 : 빅넘버 x , 제곱횟수를 결정하는 빅넘버 y , 모듈러 기준을 결정하는 빅넘버 p ,  x^y mod p 값을 저장할 빅넘버 z
+* @brief x의 부호 : NONNEGATIVE or NEGATIVE
+* @brief x의 wordlen : LOWERBOUND ~ UPPERBOUND
+* @brief y의 부호 : NONNEGATIVE
+* @brief y의 범위 : LOWERBOUND ~ UPPERBOUND
+* @brief p의 부호 : NONNEGATIVE
+* @brief p의 범위 : LOWERBOUND ~ UPPERBOUND
+* @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
+*/
 void R2L_Modular_bi_test(FILE* fp) {
 
 
@@ -677,9 +889,9 @@ void R2L_Modular_bi_test(FILE* fp) {
 		word arr[7] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 		bi_set_by_array(&x, NONNEGATIVE, arr, 7);*/
 
-		bi_gen_rand(&x, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
-		bi_gen_rand(&y, NONNEGATIVE, ((rand() % UPPERBOUND) + LOWERBOUND));
-		bi_gen_rand(&p, NONNEGATIVE, ((rand() % UPPERBOUND) + LOWERBOUND));
+		bi_gen_rand(&x, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
+		bi_gen_rand(&y, NONNEGATIVE, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
+		bi_gen_rand(&p, NONNEGATIVE, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 		//bi_gen_rand(&y, NONNEGATIVE, 2);
 		//bi_gen_rand(&p, NONNEGATIVE, 2);
 
@@ -725,6 +937,15 @@ void R2L_Modular_bi_test(FILE* fp) {
 	}
 }
 
+/**
+* @brief Mul_N_Squ_bi_test : Montgomery 방식의 빅넘버 거듭제곱 연산의 구현 정확성을 테스트 하는 함수
+* @brief 구성 : 빅넘버 x , 제곱횟수를 결정하는 빅넘버 y , x ^ y 값을 저장할 빅넘버 z
+* @brief x의 부호 : NONNEGATIVE or NEGATIVE
+* @brief x의 wordlen : LOWERBOUND ~ UPPERBOUND
+* @brief n의 부호 : NONNEGATIVE
+* @brief n의 범위 : LOWERBOUND ~ UPPERBOUND
+* @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
+*/
 void Mul_N_Squ_test(FILE* fp) {
 
 	for (int i = 0; i <= TEST; i++) {
@@ -743,8 +964,8 @@ void Mul_N_Squ_test(FILE* fp) {
 		//bi_gen_rand(&x, 3);
 		//int n = 10;
 
-		bi_gen_rand(&x, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
-		int n = ((rand() % UPPERBOUND) + LOWERBOUND);
+		bi_gen_rand(&x, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
+		int n = ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND);
 		//bi_gen_rand(&x, rand() % 2,2);
 		//int n = 3;
 
@@ -779,6 +1000,15 @@ void Mul_N_Squ_test(FILE* fp) {
 
 }
 
+/**
+* @brief Mul_N_Squ_bi_test : Montgomery 방식의 빅넘버 거듭제곱 연산의 구현 정확성을 테스트 하는 함수
+* @brief 구성 : 빅넘버 x , 제곱횟수를 결정하는 빅넘버 y , x ^ y 값을 저장할 빅넘버 z
+* @brief x의 부호 : NONNEGATIVE or NEGATIVE
+* @brief x의 wordlen : LOWERBOUND ~ UPPERBOUND
+* @brief y의 부호 : NONNEGATIVE
+* @brief y의 범위 : 1
+* @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
+*/
 void Mul_N_Squ_bi_test(FILE* fp) {
 
 	for (int i = 0; i <= TEST; i++) {
@@ -792,7 +1022,7 @@ void Mul_N_Squ_bi_test(FILE* fp) {
 
 		//bi_gen_rand(&x, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
 		//bi_gen_rand(&y, NONNEGATIVE, (((rand() % UPPERBOUND) + LOWERBOUND) / 5));
-		bi_gen_rand(&x, rand() % 2, 5);
+		bi_gen_rand(&x, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 		bi_gen_rand(&y, NONNEGATIVE, 1); // y->wordlen이 1이아니면 너무 큰 값이 나와버림 
 
 		fputs("x=", fp);
@@ -828,6 +1058,17 @@ void Mul_N_Squ_bi_test(FILE* fp) {
 	}
 }
 
+/**
+* @brief Mul_N_Squ_mod_bi_test : Montgomery 방식의 빅넘버 거듭제곱 모듈러 연산의 구현 정확성을 테스트 하는 함수
+* @brief 구성 : 빅넘버 x , 제곱횟수를 결정하는 빅넘버 y , 모듈러 기준을 결정하는 빅넘버 p ,  x^y mod p 값을 저장할 빅넘버 z
+* @brief x의 부호 : NONNEGATIVE or NEGATIVE
+* @brief x의 wordlen : LOWERBOUND ~ UPPERBOUND
+* @brief y의 부호 : NONNEGATIVE
+* @brief y의 범위 : LOWERBOUND ~ UPPERBOUND
+* @brief p의 부호 : NONNEGATIVE
+* @brief p의 범위 : LOWERBOUND ~ UPPERBOUND
+* @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
+*/
 void Mul_N_Squ_mod_bi_test(FILE* fp) {
 
 	for (int i = 0; i <= TEST; i++) {
@@ -841,9 +1082,9 @@ void Mul_N_Squ_mod_bi_test(FILE* fp) {
 		word arr[7] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 		bi_set_by_array(&x, NONNEGATIVE, arr, 7);*/
 
-		bi_gen_rand(&x, rand() % 2, ((rand() % UPPERBOUND) + LOWERBOUND));
-		bi_gen_rand(&y, NONNEGATIVE, ((rand() % UPPERBOUND) + LOWERBOUND));
-		bi_gen_rand(&p, NONNEGATIVE, ((rand() % UPPERBOUND) + LOWERBOUND));
+		bi_gen_rand(&x, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
+		bi_gen_rand(&y, NONNEGATIVE, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
+		bi_gen_rand(&p, NONNEGATIVE, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 		//bi_gen_rand(&y, NONNEGATIVE, 2);
 		//bi_gen_rand(&p, NONNEGATIVE, 2);
 
