@@ -629,8 +629,8 @@ void Squaring_Schoolbook(bigint* x, bigint** z) {
 	bi_new(z, (2 * x->wordlen));
 	printf("1111\n");
 
-	word* tmp_arr = NULL;
-	tmp_arr = (word*)calloc(sizeof(word), (1 + x->wordlen));
+	//word* tmp_arr = NULL;
+	//tmp_arr = (word*)calloc(sizeof(word), (1 + x->wordlen));
 	// c1 : 각 워드의 제곱의 연접으로 구성
 	for (j = 0; j < x->wordlen; j++) { 
 		Squaring_word(t1->a, x->a[j]);
@@ -681,6 +681,7 @@ void Squaring_Schoolbook(bigint* x, bigint** z) {
 	bi_delete(&c2);
 	bi_delete(&t1);
 	bi_delete(&t2);
+	//free(&tmp_arr);
 }
 
 
@@ -741,16 +742,26 @@ void bi_binary_long_division(bigint* a, bigint* b, bigint** q, bigint** r) {
 	bi_new(q, (a->wordlen) - (b->wordlen) + 1);
 
 	if (b->sign == NEGATIVE || bi_is_zero(b)) {
+		bi_delete(&tmp);
+		bi_delete(&q_tmp);
+		bi_delete(&one);
 		return;
 	}
 	if (a->sign == NONNEGATIVE && compareAB(b, a) == 1) {
 		bi_set_zero(q);
 		bi_assign(r, a);
+		bi_delete(&tmp);
+		bi_delete(&q_tmp);
+		bi_delete(&one);
 		return;
 	}
 	if (bi_is_one(b)) {
 		bi_assign(q, a);
 		bi_set_zero(r);
+		bi_delete(&tmp);
+		bi_delete(&q_tmp);
+		bi_delete(&one);
+		return;
 
 	}
 	else {
@@ -860,6 +871,8 @@ void divcc(bigint* x, bigint* y, bigint** q, bigint** r) {
 	bi_delete(&q_tmp);
 	bi_delete(&bq);
 	bi_delete(&one);
+	bi_delete(&a);
+	bi_delete(&b);
 
 }
 
@@ -873,6 +886,7 @@ void divc(bigint* x, bigint* y, bigint** q, bigint** r) {
 	if (compareAB(y, x) == 1) {
 		bi_set_zero(q);
 		bi_assign(r, x);
+		bi_delete(&y_tmp);
 		return;
 	}
 	while (!((y_tmp->a[y_len - 1] & ((unsigned long long)1 << (WORD_BITLEN - 1))) ? 1 : 0)) {
@@ -886,6 +900,7 @@ void divc(bigint* x, bigint* y, bigint** q, bigint** r) {
 	bi_rightshift(r, k);
 	bi_rightshift(&x, k);
 	bi_rightshift(&y, k);
+	bi_delete(&y_tmp);
 }
 
 void bi_div(bigint* x, bigint* y, bigint** q, bigint** r) {
@@ -901,17 +916,33 @@ void bi_div(bigint* x, bigint* y, bigint** q, bigint** r) {
 	if (y->sign == NEGATIVE) {
 		bi_set_zero(q);
 		bi_set_zero(r);//printf("Invalid operation!!!!");
+		bi_delete(&q_tmp);
+		bi_delete(&tmp);
+		bi_delete(&one);
+		bi_delete(&r_tmp1);
+		bi_delete(&q_tmp1);
 		return;
 	}
 	if (x->sign == NONNEGATIVE && compareAB(y, x) == 1) {
 		bi_set_zero(q);
 		bi_assign(r, x);
+		bi_delete(&q_tmp);
+		bi_delete(&tmp);
+		bi_delete(&one);
+		bi_delete(&r_tmp1);
+		bi_delete(&q_tmp1);
 		return;
 	}
 
 	if (bi_is_one(y)) {
 		bi_assign(q, x);
 		bi_set_zero(r);
+		bi_delete(&q_tmp);
+		bi_delete(&tmp);
+		bi_delete(&one);
+		bi_delete(&r_tmp1);
+		bi_delete(&q_tmp1);
+		return;
 	}
 
 	//bi_new(r, y_len1);
