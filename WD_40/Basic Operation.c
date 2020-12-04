@@ -52,6 +52,7 @@ void bi_delete(bigint** x) {
 	free(*x);
 	*x = NULL;
 }
+
 /**
 * @brief bi_new : 해당 wordlen 만큼 빅넘버 x의 메모리를 할당해주는 함수
 * @param bigint** x : 메모리를 할당받을 빅넘버 x
@@ -68,6 +69,7 @@ void bi_new(bigint** x, int wordlen) {
 	(*x)->wordlen = wordlen;
 	(*x)->a = (word*)calloc(wordlen, sizeof(word));
 }
+
 /**
 * @brief bi_set_by_array : 배열에 빅넘버 값이 있을 때, 배열을 x->a 배열에 대입시켜 주는 함수
 * @param bigint** x : 값을 대입할 빅넘버 x
@@ -212,7 +214,6 @@ void bi_assign(bigint** y, bigint* x) {
 */
 void bi_gen_rand(bigint** x, int sign,int wordlen) {
 	bi_new(x, wordlen);
-	//(*x)->sign = (rand() % 2);
 	(*x)->sign = sign;
 	array_rand((*x)->a, wordlen);
 

@@ -26,11 +26,13 @@ typedef unsigned char word;
 #define NEGATIVE 1
 
 typedef unsigned char byte;
-
+/**
+* @brief bigint
+*/
 typedef struct {
-	int sign; // NEGATIVE or NON-NEGATIVE
-	int wordlen; // wordlen >=0
-	word* a; // address for big integer(starting address)
+	int sign; /**< 빅넘버의 부호 NEGATIVE or NON-NEGATIVE */
+	int wordlen; /**< 빅넘버의 워드 길이 */
+	word* a; /**< 빅넘버의 주소*/
 }bigint;
 
 // Chapter 2.1 빅넘버를 생성하는 함수 & 삭제하는 함수

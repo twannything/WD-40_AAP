@@ -45,8 +45,4 @@ void Mul_N_Squ(bigint* x, bigint** z, int n);
 void Mul_N_Squ_bi(bigint* x, bigint* y, bigint** t);
 void Mul_N_Squ_mod_bi(bigint* x, bigint* y, bigint* b, bigint** t);
 
-
-
-
-
-void modular_bi(bigint* x, bigint* y, bigint** z);
+void bi_modular(bigint* x, bigint* y, bigint** z);

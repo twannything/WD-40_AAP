@@ -613,18 +613,18 @@ void Squaring_Schoolbook(bigint* x, bigint** z) {
 	int i, j;
 	unsigned int c = 0;
 	unsigned int cc = 0;
-
 	bigint* c1 = NULL;
 	bigint* c2 = NULL;
 	bigint* t1 = NULL;
 	bigint* t2 = NULL;
 	printf("1\n");
-	bi_new(&c1,(2 * x->wordlen));
-	printf("12\n");
-	bi_new(&c2, (2 * x->wordlen));
-	printf("11\n");
 	bi_new(&t1, 2);
+	printf("asd\n");
 	bi_new(&t2, 2);
+	printf("12\n");
+	bi_new(&c1, (2 * x->wordlen));
+	printf("11\n");
+	bi_new(&c2, (2 * x->wordlen));
 	printf("111\n");
 	bi_new(z, (2 * x->wordlen));
 	printf("1111\n");
@@ -1160,13 +1160,13 @@ void left_to_right_mod_bi(bigint* x, bigint* y, bigint* b, bigint** t) {
 	for (int i = l - 1; i >= 0; i--) {
 		bi_assign(&tmp, *t);
 		Squaring_Schoolbook(tmp, &ttmp);
-		modular_bi(ttmp, b, &tmp);
+		bi_modular(ttmp, b, &tmp);
 		bi_assign(t, tmp);
 		// y의 i번째 비트가 1일 때
 		if (bit_of_bi(y, i) == 1) {
 			bi_assign(&ttmp, *t);
 			MUL(ttmp, x, &tmp);
-			modular_bi(tmp, b, &ttmp);
+			bi_modular(tmp, b, &ttmp);
 			bi_assign(t, ttmp);
 		}
 		// y의 i번째 비트가 0일 때
@@ -1201,7 +1201,7 @@ void left_to_right_mod_bi(bigint* x, bigint* y, bigint* b, bigint** t) {
 //		printf("제곱후의 t = ");
 //		bi_show_hex(ttmp);
 //		printf("\n\n");
-//		modular_bi(ttmp, b, &tmp);
+//		bi_modular(ttmp, b, &tmp);
 //		printf("모듈러후의 t = ");
 //		bi_show_hex(tmp);
 //		printf("\n\n");
@@ -1217,7 +1217,7 @@ void left_to_right_mod_bi(bigint* x, bigint* y, bigint* b, bigint** t) {
 //			printf("t * x 후의 t = ");
 //			bi_show_hex(tmp);
 //			printf("\n\n");
-//			modular_bi(tmp, b, &ttmp);
+//			bi_modular(tmp, b, &ttmp);
 //			printf("모듈러후의 t = ");
 //			bi_show_hex(ttmp);
 //			printf("\n\n");
@@ -1338,12 +1338,12 @@ void right_to_left_mod_bi(bigint* x, bigint* y, bigint* b, bigint** z) {
 		// y의 i번째 비트가 1일 때
 		if (bit_of_bi(y, i) == 1) {
 			MUL(t1, t0, &tmp);
-			modular_bi(tmp, b, &ttmp);
+			bi_modular(tmp, b, &ttmp);
 			bi_assign(&t0, ttmp);
 		}
 		else;
 		Squaring_Schoolbook(t1, &tmp);
-		modular_bi(tmp, b, &ttmp);
+		bi_modular(tmp, b, &ttmp);
 		bi_assign(&t1, ttmp);
 	}
 	bi_assign(z, t0);
@@ -1536,19 +1536,19 @@ void Mul_N_Squ_mod_bi(bigint* x, bigint* y, bigint* b, bigint** z) {
 		// n의 i번째 비트가 1일 때
 		if (bit_of_bi(y, i) == 1) {
 			MUL(t1, t0, &tmp);
-			modular_bi(tmp, b, &ttmp);
+			bi_modular(tmp, b, &ttmp);
 			bi_assign(&t0, ttmp);
 			Squaring_Schoolbook(t1, &tmp);
-			modular_bi(tmp, b, &ttmp);
+			bi_modular(tmp, b, &ttmp);
 			bi_assign(&t1, ttmp);
 		}
 		// n의 i번째 비트가 0일 때
 		else {
 			MUL(t1, t0, &tmp);
-			modular_bi(tmp, b, &ttmp);
+			bi_modular(tmp, b, &ttmp);
 			bi_assign(&t1, ttmp);
 			Squaring_Schoolbook(t0, &tmp);
-			modular_bi(tmp, b, &ttmp);
+			bi_modular(tmp, b, &ttmp);
 			bi_assign(&t0, ttmp);
 		}
 	}
@@ -1568,7 +1568,7 @@ void Mul_N_Squ_mod_bi(bigint* x, bigint* y, bigint* b, bigint** z) {
 * @param bigint* y : mod의 기준이 되는 빅넘버 y
 * @param bigint** z : 결과를 저장할 빅넘버 z = x (mod y)
 */
-void modular_bi(bigint* x, bigint* y, bigint** z) {
+void bi_modular(bigint* x, bigint* y, bigint** z) {
 	
 	// x를 y로 나눈다음에 r만 z 에 저장
 	
@@ -1590,7 +1590,7 @@ void modular_bi(bigint* x, bigint* y, bigint** z) {
 	bi_delete(&r);
 }
 
-//void modular_bi(bigint* x, bigint* y, bigint** z) {
+//void bi_modular(bigint* x, bigint* y, bigint** z) {
 //
 //	// x를 y로 나눈다음에 r만 z 에 저장
 //
