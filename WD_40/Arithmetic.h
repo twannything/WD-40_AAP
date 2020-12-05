@@ -33,6 +33,7 @@ void bi_div(bigint* x, bigint* y, bigint** q, bigint** r);
 // Chapter 3.6 Á¦°ö ¿¬»ê
 void Squaring_word(word* dst, word a);
 void Squaring_Schoolbook(bigint* x, bigint** z);
+void SQU(bigint* x, bigint** z);
 
 // Chapter 3.7 Áö¼ö½Â ¿¬»ê
 void left_to_right(bigint* x, bigint** z, int n);

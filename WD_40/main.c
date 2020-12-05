@@ -10,7 +10,7 @@
 * @section advenced  개발목적
 * - C언어 입문자들을 위한 프로그래밍 실습 교보재
 * @version ver 1.0
-* @date 2020.12.05
+* @date 2020.12.06
 */
 
 int main() {

@@ -533,7 +533,7 @@ void Squaring_test(FILE* fp) {
 		bi_show_hex(x);
 		printf("\n");
 
-		Squaring_Schoolbook(x, &z);
+		SQU(x, &z);
 
 		printf("power(x,2) ==");
 		bi_show_hex(z);
@@ -575,8 +575,8 @@ void L2R_test(FILE* fp) {
 		*/
 
 
-		//bi_gen_rand(&x, 3);
-		//int n = 10;
+		//bi_gen_rand(&x, NONNEGATIVE,3);
+		//int n = 5;
 
 		bi_gen_rand(&x, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 		int n = ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND);
@@ -608,6 +608,7 @@ void L2R_test(FILE* fp) {
 
 		bi_delete(&x);
 		bi_delete(&z);
+
 	}
 }
 

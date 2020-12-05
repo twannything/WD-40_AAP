@@ -309,16 +309,17 @@ int bi_is_zero(bigint* x) {
 	return 1;
 }
 /**
-* @brief bi_is_one : x가 1지 확인하는 함수: x가 1이면 1을 리턴
+* @brief bi_is_one : x가 1지 확인하는 함수: x가 1이면 1, -1 이면 -1을 리턴
 * @param bigint* x : 빅넘버 x
-* @return 0 or 1
+* @return 0 or 1 or -1
 */
 int bi_is_one(bigint* x) {
-	if (x->sign == NEGATIVE || x->a[0] != 1) return 0;
+	if (x->a[0] != 1) return 0;
 	else {
 		for (int j = x->wordlen - 1; j > 0; j--)
 			if (x->a[j] != 0) return 0;
 	}
+	if (x->sign == NEGATIVE) return -1;
 	return 1;
 }
 /**
