@@ -1,9 +1,6 @@
 #pragma once
 #include "Basic Operation.h"
-
-
 #define ZERORIZE
-
 
 /**
 * @brief array_init : bi_delete 에 사용되는 함수 빅넘버 x의 메모리를 반납하기전 0으로 초기화
@@ -11,7 +8,7 @@
 * @param wordlen : 초기화 할 워드열의 길이
 */
 void array_init(word* a, int wordlen) {
-	memset(a, 0, (wordlen * sizeof(word)));
+	memset(a, 0, wordlen*sizeof(word));
 }
 
 /**
@@ -118,6 +115,10 @@ void bi_show_hex(bigint* x) {
 	}
 }
 
+/**
+* @brief word_show_hex : 1 word 값을 16진수 출력
+* @param word x : 출력할 word x
+*/
 void word_show_hex(word x) {
 	
 	
@@ -132,17 +133,6 @@ void word_show_hex(word x) {
 }
 
 /**
-* @brief bi_show_hex : 빅넘버를 WOREBITLEN에 맞게 10진수 출력
-* @param bigint* x : 출력할 빅넘버 x
-*/
-//void bi_show_dec(bigint* x) {
-//	if (x->sign == NEGATIVE)
-//		printf("-");
-//	
-//	for (int i = 0; i < x->wordlen; i++)
-//
-//}
-/**
 * @brief bi_show_bin : (*x)->a 값을 WOREBITLEN에 맞게 2진수 출력
 * @param bigint* x : 출력한 빅넘버 x
 */
@@ -155,7 +145,6 @@ void bi_show_bin(bigint* x) {
 			printf("%d", x->a[i] & mask ? 1 : 0);
 		}
 	}
-	//printf("\n");
 }
 
 /**
@@ -181,6 +170,7 @@ void File_print(bigint* x, FILE* fp) {
 #endif
 	}
 }
+
 /**
 * @brief bi_refine : x->a = 0x0000ffff 처럼 앞에 실질적으로 필요없는 메모리가 잡혀있을때 x->a = 0xffff로 줄여주는 함수
 * @param bigint* x : refine 할 빅넘버 x
@@ -207,6 +197,7 @@ void bi_refine(bigint** x) {
 		(*x)->sign = NONNEGATIVE;
 	// 0인 경우, 부호를 양수로 함
 }
+
 /**
 * @brief bi_assign : 빅넘버 y에 빅넘버x를 복사해주는 함수
 * @param bigint** y : 복사한 값을 넣을 빅넘버 y
@@ -220,6 +211,7 @@ void bi_assign(bigint** y, bigint* x) {
 	(*y)->sign = x->sign;
 	array_copy((*y)->a, x->a, x->wordlen);
 }
+
 /**
 * @brief bi_gen_rand : 부호와 값이 랜덤한 빅넘버 x를 만들어 주는 함수
 * @param bigint** x : 생성할 빅넘버 x
@@ -232,6 +224,7 @@ void bi_gen_rand(bigint** x, int sign,int wordlen) {
 
 	bi_refine(x);
 }
+
 /**
 * @brief get_word_length : 빅넘버 x의 wordlen를 리턴
 * @param bigint* x : 빅넘버 x
@@ -239,6 +232,7 @@ void bi_gen_rand(bigint** x, int sign,int wordlen) {
 int get_word_length(bigint* x) {
 	return x->wordlen;
 }
+
 /**
  * @brief get_bit_length : 빅넘버 x의 비트길이를 리턴
  * @param bigint* x : 빅넘버 x
@@ -254,6 +248,7 @@ int get_bit_length(bigint* x) {
 	}
 	return total;
 }
+
 /**
 * @brief bit_of_bi : 빅넘버 x의 j번째 비트값을 리턴
 * @param bigint* x :빅넘버 x
@@ -263,10 +258,11 @@ int get_bit_length(bigint* x) {
 int bit_of_bi(bigint* x, int j) {
 	int rem = j % WORD_BITLEN;
 	int j_word = j / WORD_BITLEN;
-	unsigned long long mask = 1 << rem;
+	unsigned long long mask = (unsigned long long)1 << rem;
 
 	return (x->a[j_word] & mask) >> rem;
 }
+
 /**
 * @brief get_sign_bi : x의 부호 리턴
 * @param bigint* x : 빅넘버 x
@@ -276,17 +272,16 @@ int get_sign_bi(bigint* x) {
 	return x->sign;
 }
 
-
 /**
 * @brief flip_sign_bi : x의 부호 반대처리하는 함수
 * @param bigint** x : 빅넘버 x
 */ 
-
 void flip_sign_bi(bigint** x) {
 	if ((*x)->sign == NONNEGATIVE)
 		(*x)->sign = NEGATIVE;
 	else (*x)->sign = NONNEGATIVE;
 }
+
 /**
 * @brief bi_set_one : x를 1로 바꿔주는 함수
 * @param bigint** x : 빅넘버 x
@@ -296,6 +291,7 @@ void bi_set_one(bigint** x) {
 	(*x)->sign = NONNEGATIVE;
 	(*x)->a[0] = 0x1;
 }
+
 /**
 * @brief bi_set_zero : x를 0으로 바꿔주는 함수
 * @param : bigint** x : 빅넘버 x
@@ -308,6 +304,7 @@ void bi_set_zero(bigint** x) {
 	(*x)->sign = NONNEGATIVE;
 	(*x)->a[0] = 0x0;
 }
+
 /**
 * @brief bi_is_zero : x가 0인지 확인하는 함수: x가 0이면 1을 리턴
 * @param bigint* x :빅넘버 x
@@ -321,6 +318,7 @@ int bi_is_zero(bigint* x) {
 	}
 	return 1;
 }
+
 /**
 * @brief bi_is_one : x가 1지 확인하는 함수: x가 1이면 1, -1 이면 -1을 리턴
 * @param bigint* x : 빅넘버 x
@@ -335,6 +333,7 @@ int bi_is_one(bigint* x) {
 	if (x->sign == NEGATIVE) return -1;
 	return 1;
 }
+
 /**
 * @brief compareABS : x 와 y의 절대값크기 비교 : x가 크면 1, 작으면 -1, 같으면 0을 리턴
 * @param bigint* x : 빅넘버 x
@@ -358,6 +357,7 @@ int compareABS(bigint* x, bigint* y)
 	}
 	return 0; // |x| = |y|
 }
+
 /**
 * @brief compareAB : x와 y의 크기 비교 : x가 크면 1, 작으면 -1, 같으면 0을 리턴
 * @param bigint* x : 빅넘버 x

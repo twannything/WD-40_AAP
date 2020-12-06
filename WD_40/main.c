@@ -22,23 +22,17 @@ int main() {
 		puts("파일 오픈 실패\n");
 		return -1;
 	}
-	//add_test(fp);
-	//sub_test(fp);
-	//mul_test(fp);
-	//Ka_mul_test(fp);
-	//bi_binary_long_division_test(fp);
-	//long_division_2word_test(fp);
-	//divcc_test(fp);
-	//divc_test(fp);
-	//div_test(fp);
-	//Squaring_test(fp);
-	//L2R_test(fp);
-	//L2R_bi_test(fp);
-	//L2R_Modular_bi_test(fp);
-	//R2L_test(fp);
-	//R2L_bi_test(fp);
-	//R2L_Modular_bi_test(fp);
-	//Mul_N_Squ_test(fp);
-	//Mul_N_Squ_bi_test(fp);
-	//Mul_N_Squ_mod_bi_test(fp);
+	add_test(fp);
+	sub_test(fp);
+	mul_test(fp);
+	bi_binary_long_division_test(fp);
+	div_test(fp);
+	Squaring_test(fp);
+	L2R_test(fp);
+	L2R_Modular_bi_test(fp);
+	R2L_test(fp);
+	R2L_Modular_bi_test(fp);
+	Mul_N_Squ_test(fp);
+	Mul_N_Squ_mod_bi_test(fp);
+	Mod_test();
 }

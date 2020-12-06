@@ -165,7 +165,7 @@ void M_ADD_print(bigint* x, bigint* y, bigint** z) {
 * @param bigint* x : 더하고자하는 빅넘버 x
 * @param bigint* y : 더하고자하는 빅넘버 y
 * @param bigint** z : 더한 값을 저장할 빅넘버 z
-* @image html 22.jpg 
+* @image html add.jpg 
 */
 void ADD(bigint* x, bigint* y, bigint** z) {
 
@@ -405,7 +405,7 @@ void SUB_C_print(bigint* x, bigint* y, bigint** z) {
 * @param bigint* y : 빼고자하는 빅넘버 y
 * @param bigint** z : 뺀 값을 저장할 빅넘버 z
 * - Pseudo Code
-* \image html 33.jpg
+* @image html sub.jpg
 */
 void SUB(bigint* x, bigint* y, bigint** z) {
 	// x = 0 이면 x - y = -y
@@ -621,7 +621,7 @@ void MULC(word x, word y, word* tmp) {
 * @param bigint* y :곱하고자하는 빅넘버 y
 * @param bigint** z : 곱한 값을 저장할 빅넘버 z
 * - Pseudo Code
-* @image html 44.jpg
+* @image html mul.jpg
 */
 void MUL(bigint* x, bigint* y, bigint** z) {
 
@@ -701,7 +701,6 @@ void MUL_print(bigint* x, bigint* y, bigint** z) {
 		return;
 	}
 
-	//karatsuba_MUL(x, y, z);
 	printf("Case : x * y = x * y\n\n");
 	Schoolbook_MUL_print(x, y, z);
 
@@ -854,87 +853,6 @@ void Schoolbook_MUL_print(bigint* x, bigint* y, bigint** z) {
 		memset(tmp_arr, 0, ((len + 1) * sizeof(word)));
 	}
 	free(tmp_arr);
-}
-/**
-* @brief karatsuba_MUL : 길이가 2이상인 두 빅넘버 x , y를 곱하는 함수
-* @param bigint* x : 곱하고자하는 빅넘버 x
-* @param bigint* y : 곱하고자하는 빅넘버 y
-* @param bigint** z : 곱한 값을 저장할 빅넘버 z
-*/
-void karatsuba_MUL(bigint* x, bigint* y, bigint** z) {
-
-	int flag = 0, m;
-	m = min(x->wordlen, y->wordlen);
-
-	if (flag >= m) {
-		Schoolbook_MUL(x, y, z);
-		return;
-	}
-	int l = 0;
-
-	l = (max(x->wordlen, y->wordlen) + 1) >> 1;
-
-	bigint* a0 = NULL;
-	bigint* a1 = NULL;
-	bigint* b0 = NULL;
-	bigint* b1 = NULL;
-	bigint* t0 = NULL;
-	bigint* t1 = NULL;
-	bigint* s0 = NULL;
-	bigint* s1 = NULL;
-	bigint* R = NULL;
-	bigint* S = NULL;
-	bigint* tmp = NULL;
-
-	bi_new(&a0, (l / 2));
-	bi_new(&a1, (l / 2));
-	bi_new(&b0, (l / 2));
-	bi_new(&b1, (l / 2));
-	bi_new(&t0, l);
-	bi_new(&t1, l);
-	bi_new(&s0, l);
-	bi_new(&s1, l);
-	bi_new(&R, (2 * l));
-	bi_new(&S, (2 * l));
-	bi_new(z, (x->wordlen + y->wordlen));
-
-
-	for (int i = 0; i < (l / 2); i++) {
-		a0->a[i] = x->a[i];
-		b0->a[i] = y->a[i];
-	}
-
-	for (int i = 0; i < (l / 2); i++) {
-		a1->a[i] = x->a[(l / 2) + i];
-		b1->a[i] = y->a[(l / 2) + i];
-	}
-
-	karatsuba_MUL(a0, b0, &t0);
-	karatsuba_MUL(a1, b1, &t1);
-	for (int i = 0; i < R->wordlen; i++) {
-		if (i < R->wordlen)
-			R->a[i] = t0->a[i];
-		else
-			R->a[i] = t1->a[i - (R->wordlen / 2)];
-	}
-
-	SUB(b1, b0, &s0);
-	SUB(a0, a1, &s1);
-
-	if (s0->sign == NEGATIVE)
-		flip_sign_bi(&s0);
-	if (s1->sign == NEGATIVE)
-		flip_sign_bi(&s1);
-	karatsuba_MUL(s0, s1, &S);
-	if (bi_is_zero(s0) == 1 || bi_is_zero(s1) == 1)
-		S->sign = NONNEGATIVE;
-	else
-		S->sign = s0->sign ^ s1->sign;
-
-	ADD(S, t1, &S);
-	ADD(S, t0, &S);
-	bi_leftshift(&S, l);
-	ADD(*z, S, z);
 }
 
 /**
@@ -1156,7 +1074,7 @@ void Squaring_Schoolbook_print(bigint* x, bigint** z) {
 * @param bigint* x  : 제곱하고자하는 빅넘버 x
 * @param bigint** z  : 제곱의 결과를 저장하는 빅넘버 z
 * - Pseudo Code
-* @image html 66.jpg
+* @image html squ.jpg
 */
 void SQU(bigint* x, bigint** z) {
 
@@ -1230,40 +1148,37 @@ void binary_long_division(int a, int b, int* q, int* r) {
 * @param bigint** q : a를 b로 나눈 몫
 * @param bigint** r : a를 b로 나눈 나머지
 */
+
+
 void bi_binary_long_division(bigint* a, bigint* b, bigint** q, bigint** r) {
 	int aj = 0;
-	bigint* tmp = NULL;
-	bigint* q_tmp = NULL;
-	bigint* one = NULL;
-	bi_set_one(&one);
-	bi_new(&tmp, b->wordlen + 1);
-	bi_new(r, b->wordlen);
-	bi_new(q, (a->wordlen) - (b->wordlen) + 1);
 
 	if (b->sign == NEGATIVE || bi_is_zero(b)) {
-		bi_delete(&tmp);
-		bi_delete(&q_tmp);
-		bi_delete(&one);
+		bi_set_zero(q);
+		bi_set_zero(r);
 		return;
 	}
 	if (a->sign == NONNEGATIVE && compareAB(b, a) == 1) {
 		bi_set_zero(q);
 		bi_assign(r, a);
-		bi_delete(&tmp);
-		bi_delete(&q_tmp);
-		bi_delete(&one);
 		return;
 	}
 	if (bi_is_one(b)) {
 		bi_assign(q, a);
 		bi_set_zero(r);
-		bi_delete(&tmp);
-		bi_delete(&q_tmp);
-		bi_delete(&one);
 		return;
 
 	}
 	else {
+		int max_len = max(a->wordlen, b->wordlen);
+		int min_len = min(a->wordlen, b->wordlen);
+		bigint* tmp = NULL;
+		bigint* q_tmp = NULL;
+		bigint* one = NULL;
+		bi_set_one(&one);
+		bi_new(&tmp, b->wordlen + 1);
+		bi_new(r, b->wordlen);
+		bi_new(q, max_len-min_len + 1);
 		for (int i = (a->wordlen) - 1; i >= 0; i--) {
 			for (int j = WORD_BITLEN - 1; j >= 0; j--) {
 				aj = a->a[i] & ((unsigned long long)1 << j) ? 1 : 0;
@@ -1287,6 +1202,67 @@ void bi_binary_long_division(bigint* a, bigint* b, bigint** q, bigint** r) {
 		bi_delete(&q_tmp);
 		bi_delete(&one);
 	}
+}
+
+void bi_binary_long_division_print(bigint* a, bigint* b, bigint** q, bigint** r) {
+
+	if (b->sign == NEGATIVE || bi_is_zero(b)) {
+		printf(" Y IS NEGATIVE OR ZERO!!\n");
+		bi_set_zero(q);
+		bi_set_zero(r);
+		return;
+	}
+	if (a->sign == NONNEGATIVE && compareAB(b, a) == 1) {
+		bi_set_zero(q);
+		bi_assign(r, a);
+		return;
+	}
+	if (bi_is_one(b)) {
+		bi_assign(q, a);
+		bi_set_zero(r);
+		return;
+
+	}
+
+	int max_len = max(a->wordlen, b->wordlen);
+	int min_len = min(a->wordlen, b->wordlen);
+	int aj = 0;
+	bigint* tmp = NULL;
+	bigint* q_tmp = NULL;
+	bigint* one = NULL;
+	bi_set_one(&one);
+	bi_new(&tmp, b->wordlen + 1);
+	bi_new(r, b->wordlen);
+	bi_new(q, max_len - min_len + 1);
+		for (int i = (a->wordlen) - 1; i >= 0; i--) {
+			for (int j = WORD_BITLEN - 1; j >= 0; j--) {
+				aj = a->a[i] & ((unsigned long long)1 << j) ? 1 : 0;
+				bi_leftshift(&tmp, (unsigned long long)1); tmp->a[0] += aj;
+				bi_leftshift(q, (unsigned long long)1);
+				if (compareAB(tmp, b) >= 0) {
+					SUB(tmp, b, r);
+					(*q)->a[0]++;
+					bi_assign(&tmp, (*r));
+					printf("remainder : ");
+					bi_show_hex(tmp);
+					printf("\n");
+					printf("quotient : ");
+					bi_show_hex(*q);
+					printf("\n");
+				}
+			}
+		}
+		bi_assign(r, tmp);
+		if (a->sign == NEGATIVE) {
+			printf("If X is NEGATIVE , X = (-Q-1)Y + (B-R)\n");
+			bi_assign(&q_tmp, *q);
+			flip_sign_bi(&q_tmp);
+			SUB(q_tmp, one, q);
+			SUB(b, tmp, r);
+		}
+		bi_delete(&tmp);
+		bi_delete(&q_tmp);
+		bi_delete(&one);
 }
 
 /**
@@ -1420,7 +1396,7 @@ void divc(bigint* x, bigint* y, bigint** q, bigint** r) {
 * @param bigint** q  : 몫을 저장하는 빅넘버 q
 * @param bigint** r  : 나머지를 저장하는 빅넘버 r
 * - Pseudo Code
-* @image html 55.jpg
+* @image html div.jpg
 */
 void bi_div(bigint* x, bigint* y, bigint** q, bigint** r) {
 	int x_len1 = x->wordlen;
@@ -1495,6 +1471,87 @@ void bi_div(bigint* x, bigint* y, bigint** q, bigint** r) {
 	bi_delete(&q_tmp1);
 }
 
+void bi_div_print(bigint* x, bigint* y, bigint** q, bigint** r) {
+
+	int x_len1 = x->wordlen;
+	int y_len1 = y->wordlen;
+	bigint* r_tmp1 = NULL;
+	bigint* q_tmp1 = NULL;
+	bigint* q_tmp = NULL;
+	bigint* one = NULL;
+	bigint* tmp = NULL;
+	bi_set_one(&one);
+
+	if (y->sign == NEGATIVE || bi_is_zero(y)) {
+		bi_set_zero(q);
+		bi_set_zero(r);
+		printf("Y IS NEGATIVE OR ZERO!!!\n");
+		bi_delete(&q_tmp);
+		bi_delete(&tmp);
+		bi_delete(&one);
+		bi_delete(&r_tmp1);
+		bi_delete(&q_tmp1);
+		return;
+	}
+	if (y->sign == NONNEGATIVE && compareAB(y, x) == 1) {
+		bi_set_zero(q);
+		bi_assign(r, x);
+		bi_delete(&q_tmp);
+		bi_delete(&tmp);
+		bi_delete(&one);
+		bi_delete(&r_tmp1);
+		bi_delete(&q_tmp1);
+		return;
+	}
+
+	if (bi_is_one(y)) {
+		bi_assign(q, x);
+		bi_set_zero(r);
+		bi_delete(&q_tmp);
+		bi_delete(&tmp);
+		bi_delete(&one);
+		bi_delete(&r_tmp1);
+		bi_delete(&q_tmp1);
+		return;
+	}
+
+	//bi_new(r, y_len1);
+	bi_new(&r_tmp1, y_len1);
+	//bi_new(q, x_len1 - y_len1 + 1);
+	bi_new(&q_tmp1, 1);
+	bi_set_zero(q);
+	bi_set_zero(r);
+
+	for (int i = x_len1 - 1; i >= 0; i--) {
+		bi_leftshift(r, WORD_BITLEN);
+		(*r)->a[0] += x->a[i];
+		bi_assign(&r_tmp1, *r);
+		divc(r_tmp1, y, &q_tmp1, r);
+		bi_leftshift(q, WORD_BITLEN);
+		(*q)->a[0] += q_tmp1->a[0];
+		printf("remainder : ");
+		bi_show_hex(r_tmp1);
+		printf("\n");
+		printf("quotient : ");
+		bi_show_hex(*q);
+		printf("\n");
+	}
+
+	if (x->sign == NEGATIVE) {
+		bi_assign(&q_tmp, *q);
+		bi_assign(&tmp, *r);
+		flip_sign_bi(&q_tmp);
+		SUB(q_tmp, one, q);
+		SUB(y, tmp, r);
+
+	}
+	bi_delete(&q_tmp);
+	bi_delete(&tmp);
+	bi_delete(&one);
+	bi_delete(&r_tmp1);
+	bi_delete(&q_tmp1);
+}
+
 
 /**
 * @brief int_to_binary : 정수형태의 수를 이진 배열로 표현해주는 함수
@@ -1523,6 +1580,8 @@ int int_to_binary(int decimal, int* binary ){
 * @param bigint* x : 거듭제곱할 빅넘버 x
 * @param bigint** t : 결과를 저장할 빅넘버 t
 * @param int n : x를 몇번 제곱할지 정해주는 정수 n
+* - Pseudo Code
+* @image html l2r.jpg
 */
 void left_to_right(bigint* x, bigint** t, int n) {
 
@@ -1701,6 +1760,8 @@ void left_to_right_bi_print(bigint* x, bigint* y, bigint** t) {
 * @param bigint* y : x를 몇번 제곱할지 정해주는 빅넘버 y
 * @param bigint* b : 모듈러 연산에 기준이 되는 빅넘버
 * @param bigint** t : 결과를 저장할 빅넘버 t
+* - Pseudo Code
+* @image html l2rmod.jpg
 */
 void left_to_right_mod_bi(bigint* x, bigint* y, bigint* b, bigint** t) {
 
@@ -1710,8 +1771,7 @@ void left_to_right_mod_bi(bigint* x, bigint* y, bigint* b, bigint** t) {
 
 	l = get_bit_length(y);
 
-	bi_new(t, 1);
-	(*t)->a[0] = 0x01;
+	bi_set_one(t);
 
 	for (int i = l - 1; i >= 0; i--) {
 		bi_assign(&tmp, *t);
@@ -1806,6 +1866,8 @@ void left_to_right_mod_bi_print(bigint* x, bigint* y, bigint* b, bigint** t) {
 * @param bigint* x : 거듭제곱할 빅넘버 x
 * @param bigint** z : 결과를 저장할 빅넘버 z
 * @param int n : x를 몇번 제곱할지 정해주는 정수 n
+* - Pseudo Code
+* @image html r2l.jpg
 */
 void right_to_left(bigint* x, bigint** z, int n) {
 
@@ -1944,70 +2006,13 @@ void right_to_left_bi(bigint* x, bigint* y, bigint** z) {
 }
 
 /**
-* @brief right_to_left_bi_print : Right to Left 방식의 빅넘버승 연산
-* @brief 중간과정을 콘솔창에 출력하여 연산 이해 및 오류 발생 시점 확인가능
-* @param bigint* x : 거듭제곱할 빅넘버 x
-* @param bigint* y : x를 몇번 제곱할지 정해주는 빅넘버 y
-* @param bigint** z : 결과를 저장할 빅넘버 z
-*/
-void right_to_left_bi_print(bigint* x, bigint* y, bigint** z) {
-
-	int l = 0;
-	bigint* tmp = NULL;
-	bigint* t0 = NULL;
-	bigint* t1 = NULL;
-
-	l = get_bit_length(y);
-
-	bi_set_one(&t0);
-	bi_assign(&t1, x);
-
-
-	for (int i = 0; i < l; i++) {
-		// y의 i번째 비트가 1일 때
-		if (bit_of_bi(y, i) == 1) {
-			printf("y의 %d번째 비트 == 1 -> t1 * t0 단계 시작\n\n", i);
-			printf("t0 = ");
-			bi_show_hex(t0);
-			printf("\n");
-			printf("t1 = ");
-			bi_show_hex(t1);
-			printf("\n");
-			MUL(t1, t0, &tmp);
-			printf("t1 * t0  = ");
-			bi_show_hex(tmp);
-			printf("\n\n");
-			bi_assign(&t0, tmp);
-		}
-		else {
-			printf("y의 %d번째 비트 == 0 PASS\n\n", i);
-		}
-		printf("%d번째 t1^2 단계 시작\n\n", i);
-		printf("t1 = ");
-		bi_show_hex(t1);
-		printf("\n");
-		SQU(t1, &tmp);
-		printf("t1^2 = ");
-		bi_show_hex(tmp);
-		printf("\n\n");
-		bi_assign(&t1, tmp);
-	}
-	bi_assign(z, t0);
-	bi_refine(z);
-
-	bi_delete(&tmp);
-	bi_delete(&t0);
-	bi_delete(&t1);
-
-}
-
-
-/**
 * @brief right_to_left_mod_bi : Right to Left 방식의 빅넘버 거듭제곱 나머지 연산
 * @param bigint* x : 거듭제곱할 빅넘버 x
 * @param bigint* y : x를 몇번 제곱할지 정해주는 빅넘버 y
 * @param bigint* b : 모듈러 연산에 기준이 되는 빅넘버
 * @param bigint** z : 결과를 저장할 빅넘버 z
+* - Pseudo Code
+* @image html r2lmod.jpg
 */
 void right_to_left_mod_bi(bigint* x, bigint* y, bigint* b, bigint** z) {
 	int l = 0;
@@ -2061,21 +2066,41 @@ void right_to_left_mod_bi_print(bigint* x, bigint* y, bigint* b, bigint** z) {
 
 	l = get_bit_length(y);
 
-	bi_new(&t0, 1);
-	t0->a[0] = 0x01;
+	bi_set_one(&t0);
 	bi_assign(&t1, x);
 
 
 	for (int i = 0; i < l; i++) {
 		// y의 i번째 비트가 1일 때
 		if (bit_of_bi(y, i) == 1) {
+			printf("y의 %d번째 비트 == 1 이므로 t0 * t1 단계 시작\n\n", i);
+			printf("t0 * t1 전의 t = ");
+			bi_show_hex(ttmp);
+			printf("\n\n");
 			MUL(t1, t0, &tmp);
-			bi_modular(tmp, b, &ttmp);
+			printf("t * x 후의 t = ");
+			bi_show_hex(tmp);
+			printf("\n\n");
+			bi_modular_print(tmp, b, &ttmp);
+			printf("모듈러후의 t = ");
+			bi_show_hex(ttmp);
+			printf("\n\n");
 			bi_assign(&t0, ttmp);
 		}
-		else;
+		else {
+			printf("y의 %d번째 비트 == 0 이므로 PASS\n\n", i);
+		}
+		printf("제곱전의 t = ");
+		bi_show_hex(t0);
+		printf("\n\n");
 		SQU(t1, &tmp);
-		bi_modular(tmp, b, &ttmp);
+		printf("제곱후의 t = ");
+		bi_show_hex(tmp);
+		printf("\n\n");
+		bi_modular_print(tmp, b, &ttmp);
+		printf("모듈러후의 t = ");
+		bi_show_hex(ttmp);
+		printf("\n\n");
 		bi_assign(&t1, ttmp);
 	}
 	bi_assign(z, t0);
@@ -2092,6 +2117,8 @@ void right_to_left_mod_bi_print(bigint* x, bigint* y, bigint* b, bigint** z) {
 * @param bigint* x : 거듭제곱할 빅넘버 x
 * @param bigint** z : 결과를 저장할 빅넘버 z
 * @param int n : x를 몇번 제곱할지 정해주는 정수 n
+* - Pseudo Code
+* @image html mns.jpg
 */
 void Mul_N_Squ(bigint* x, bigint** z, int n) {
 
@@ -2187,7 +2214,7 @@ void Mul_N_Squ_print(bigint* x, bigint** z, int n) {
 			printf("t1 = t1 * t0 = ");
 			bi_show_hex(t1);
 			printf("\n\n");
-			Squaring_Schoolbook(t0, &tmp);
+			SQU(t0, &tmp);
 			bi_assign(&t0, tmp);
 			printf("t0 = t0 ^ 2 = ");
 			bi_show_hex(t0);
@@ -2207,108 +2234,15 @@ void Mul_N_Squ_print(bigint* x, bigint** z, int n) {
 }
 
 /**
-* @brief Mul_N_Squ_bi : Montgomery Ladder 방식의 빅넘버승 연산
-* @param bigint* x : 거듭제곱할 빅넘버 x
-* @param bigint* y : x를 몇번 제곱할지 정해주는 빅넘버 y
-* @param bigint** z : 결과를 저장할 빅넘버 z
-*/
-void Mul_N_Squ_bi(bigint* x, bigint* y, bigint** z) {
-
-	int l;
-	bigint* tmp = NULL;
-	bigint* t0 = NULL;
-	bigint* t1 = NULL;
-
-	l = get_bit_length(y);
-
-	bi_set_one(&t0);
-	bi_assign(&t1, x);
-	for (int i = l - 1; i >= 0; i--) {
-		// n의 i번째 비트가 1일 때
-		if (bit_of_bi(y, i) == 1) {
-			MUL(t1, t0, &tmp);
-			bi_assign(&t0, tmp);
-			SQU(t1, &tmp);
-			bi_assign(&t1, tmp);
-		}
-		// n의 i번째 비트가 0일 때
-		else {
-			MUL(t1, t0, &tmp);
-			bi_assign(&t1, tmp);
-			SQU(t0, &tmp);
-			bi_assign(&t0, tmp);
-
-		}
-	}
-	bi_assign(z, t0);
-	bi_refine(z);
-
-
-	if (x->sign == NEGATIVE && bit_of_bi(y, 0) == 1)
-		(*z)->sign = NEGATIVE;
-
-	bi_delete(&tmp);
-	bi_delete(&t0);
-	bi_delete(&t1);
-
-}
-
-/**
-* @brief Mul_N_Squ_bi_print : Montgomery Ladder 방식의 빅넘버승 연산
-* @brief 중간과정을 콘솔창에 출력하여 연산 이해 및 오류 발생 시점 확인가능
-* @param bigint* x : 거듭제곱할 빅넘버 x
-* @param bigint* y : x를 몇번 제곱할지 정해주는 빅넘버 y
-* @param bigint** z : 결과를 저장할 빅넘버 z
-*/
-void Mul_N_Squ_bi_print(bigint* x, bigint* y, bigint** z) {
-
-	int l;
-	bigint* tmp = NULL;
-	bigint* t0 = NULL;
-	bigint* t1 = NULL;
-
-	l = get_bit_length(y);
-
-	bi_set_one(&t0);
-	bi_assign(&t1, x);
-	for (int i = l - 1; i >= 0; i--) {
-		// n의 i번째 비트가 1일 때
-		if (bit_of_bi(y, i) == 1) {
-			MUL(t1, t0, &tmp);
-			bi_assign(&t0, tmp);
-			SQU(t1, &tmp);
-			bi_assign(&t1, tmp);
-		}
-		// n의 i번째 비트가 0일 때
-		else {
-			MUL(t1, t0, &tmp);
-			bi_assign(&t1, tmp);
-			SQU(t0, &tmp);
-			bi_assign(&t0, tmp);
-
-		}
-	}
-	bi_assign(z, t0);
-	bi_refine(z);
-
-
-	if (x->sign == NEGATIVE && bit_of_bi(y, 0) == 1)
-		(*z)->sign = NEGATIVE;
-
-	bi_delete(&tmp);
-	bi_delete(&t0);
-	bi_delete(&t1);
-
-}
-
-/**
 * @brief Mul_N_Squ_mod_bi : Montgomery Ladder 방식의 빅넘버 거듭제곱 나머지 연산
 * @param bigint* x : 거듭제곱할 빅넘버 x
 * @param bigint* y : x를 몇번 제곱할지 정해주는 빅넘버 y
 * @param bigint* b : 모듈러 연산에 기준이 되는 빅넘버
 * @param bigint** z : 결과를 저장할 빅넘버 z
+* - Pseudo Code
+* @image html mnsmod.jpg
 */
-void Mul_N_Squ_mod_bi(bigint* x, bigint* y, bigint* b, bigint** z) {
+void Mul_N_Squ_mod_bi(bigint* x, bigint* y, bigint* b, bigint** z){
 
 	int l;
 	bigint* tmp = NULL;
@@ -2368,23 +2302,62 @@ void Mul_N_Squ_mod_bi_print(bigint* x, bigint* y, bigint* b, bigint** z) {
 
 	bi_set_one(&t0);
 	bi_assign(&t1, x);
+
 	for (int i = l - 1; i >= 0; i--) {
 		// n의 i번째 비트가 1일 때
 		if (bit_of_bi(y, i) == 1) {
+			printf("y의 %d번째 비트 == 1 이므로 t0 = t0*t1 & t1 = t1^2\n\n", i);
+			printf("t0 * t1 전의 t0 = ");
+			bi_show_hex(ttmp);
+			printf("\n\n");
 			MUL(t1, t0, &tmp);
-			bi_modular(tmp, b, &ttmp);
+			printf("t0 * t1 후의 t0 = ");
+			bi_show_hex(ttmp);
+			printf("\n\n");
+			bi_modular_print(tmp, b, &ttmp);
+			printf("모듈러후의 t0 = ");
+			bi_show_hex(ttmp);
+			printf("\n\n");
 			bi_assign(&t0, ttmp);
+			printf("t1^2 전의 t1 = ");
+			bi_show_hex(t1);
+			printf("\n\n");
 			SQU(t1, &tmp);
-			bi_modular(tmp, b, &ttmp);
+			printf("t1^2 후의 t1 = ");
+			bi_show_hex(tmp);
+			printf("\n\n");
+			bi_modular_print(tmp, b, &ttmp);
+			printf("모듈러후의 t1 = ");
+			bi_show_hex(ttmp);
+			printf("\n\n");
 			bi_assign(&t1, ttmp);
 		}
 		// n의 i번째 비트가 0일 때
 		else {
+			printf("y의 %d번째 비트 == 0 이므로 t1 = t0*t1 & t0 = t0^2\n\n", i);
+			printf("t0 * t1 전의 t1 = ");
+			bi_show_hex(t1);
+			printf("\n\n");
 			MUL(t1, t0, &tmp);
-			bi_modular(tmp, b, &ttmp);
+			printf("t0 * t1 후의 t1 = ");
+			bi_show_hex(tmp);
+			printf("\n\n");
+			bi_modular_print(tmp, b, &ttmp);
+			printf("모듈러후의 t1 = ");
+			bi_show_hex(ttmp);
+			printf("\n\n");
 			bi_assign(&t1, ttmp);
+			printf("t0^2 전의 t0 = ");
+			bi_show_hex(t1);
+			printf("\n\n");
 			SQU(t0, &tmp);
-			bi_modular(tmp, b, &ttmp);
+			printf("t0^2 후의 t0 = ");
+			bi_show_hex(t1);
+			printf("\n\n");
+			bi_modular_print(tmp, b, &ttmp);
+			printf("모듈러후의 t0 = ");
+			bi_show_hex(ttmp);
+			printf("\n\n");
 			bi_assign(&t0, ttmp);
 		}
 	}
@@ -2450,7 +2423,7 @@ void bi_modular_print(bigint* x, bigint* y, bigint** z) {
 	printf("z 초기화 \n\n");
 
 	printf("나눗셈 시작\n\n");
-	bi_binary_long_division(x, y, &q, &r);
+	bi_div(x, y, &q, &r);
 	printf("모듈러 연산한 나머지 값 = ");
 	bi_show_hex(r);
 	printf("\n\n");

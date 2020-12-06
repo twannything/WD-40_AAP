@@ -41,9 +41,7 @@ void bi_new(bigint** x, int wordlen);
 
 // Chapter 2.2 배열과 문자열로 받은 입력을 빅넘버에 저장하는 함수 & 빅넘버를 출력하는 함수 
 void bi_set_by_array(bigint** x, int sign, word* a, int wordlen);
-//void bi_set_by_stirng(bigint** x, int sign, char* str, word base);
 void bi_show_hex(bigint* x);
-//void bi_show_dec(bigint* x);
 void bi_show_bin(bigint* x);
 void word_show_hex(word x);
 void File_print(bigint* x, FILE* fp);
