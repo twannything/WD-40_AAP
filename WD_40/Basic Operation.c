@@ -18,7 +18,7 @@ void array_init(word* a, int wordlen) {
 * @param int wordlen : 복사할 길이
 */
 void array_copy(word* a, word* b, int wordlen) {
-	for (unsigned int i = 0; i < wordlen; i++)
+	for (int i = 0; i < wordlen; i++)
 		a[i] = b[i];
 }
 /**
@@ -258,7 +258,7 @@ int get_bit_length(bigint* x) {
 int bit_of_bi(bigint* x, int j) {
 	int rem = j % WORD_BITLEN;
 	int j_word = j / WORD_BITLEN;
-	unsigned long long mask = (unsigned long long)1 << rem;
+	int mask = (unsigned long long)1 << rem;
 
 	return (x->a[j_word] & mask) >> rem;
 }
@@ -384,7 +384,7 @@ int compareAB(bigint* x, bigint* y)
 */
 void bi_leftshift(bigint** x, int r)
 {
-	unsigned long long k, rp, a;
+	int k, rp, a;
 	k = r / WORD_BITLEN;
 	rp = r % WORD_BITLEN;
 	word tmp = 0;
@@ -466,8 +466,8 @@ void bi_rightshift(bigint** x, int r)
 * @param int r : mod r
 */
 void bi_reduction(bigint** y, bigint* x, int r) {
-	long long k = r / WORD_BITLEN;
-	long long rem = r % WORD_BITLEN;
+	int k = r / WORD_BITLEN;
+	int rem = r % WORD_BITLEN;
 	if (r > x->wordlen * WORD_BITLEN) {
 		bi_assign(y, x); return;
 	}

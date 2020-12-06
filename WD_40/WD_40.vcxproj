@@ -146,6 +146,7 @@
     <ClInclude Include="Arithmetic.h" />
     <ClInclude Include="Basic Operation.h" />
     <ClInclude Include="conf.h" />
+    <ClInclude Include="test.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Arithmetic.c" />

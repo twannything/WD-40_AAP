@@ -1348,7 +1348,7 @@ void divc(bigint* x, bigint* y, bigint** q, bigint** r) {
 	bigint* y_tmp = NULL;
 	bi_new(r, y_len);
 	bi_assign(&y_tmp, y);
-	unsigned long long k = 0;
+	int k = 0;
 	if (compareAB(y, x) == 1) {
 		bi_set_zero(q);
 		bi_assign(r, x);
@@ -2256,7 +2256,7 @@ void Mul_N_Squ_mod_bi(bigint* x, bigint* y, bigint* b, bigint** z){
 	}
 	bi_assign(z, t0);
 	bi_refine(z);
-
+	bi_delete(&ttmp);
 	bi_delete(&tmp);
 	bi_delete(&t0);
 	bi_delete(&t1);

@@ -1,5 +1,7 @@
 #pragma once
 #include "Arithmetic.h"
+#include "test.h"
+#include <time.h>
 
 /**
 * @brief add_test : 덧셈 연산의 구현 정확성 테스트 하는 함수
@@ -17,8 +19,8 @@ void add_test(FILE* fp) {
 
 		bi_gen_rand(&x, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 		bi_gen_rand(&y, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
-
 		ADD(x, y, &z);
+
 		//ADD_print(x, y, &z);
 
 		
@@ -151,7 +153,6 @@ void  mul_test(FILE* fp) {
 * @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
 */
 void bi_binary_long_division_test(FILE* fp) {
-
 	for (int i = 0; i <= TEST; i++) {
 		bigint* x = NULL;
 		bigint* y = NULL;
@@ -163,7 +164,11 @@ void bi_binary_long_division_test(FILE* fp) {
 
 		printf("x = "); bi_show_hex(x); printf("\n");
 		printf("y = "); bi_show_hex(y); printf("\n");
+
+
 		bi_binary_long_division(x, y, &q, &r);
+	
+
 		if (bi_is_zero(q) && bi_is_zero(r)) {
 			bi_delete(&x);
 			bi_delete(&y);
@@ -214,19 +219,21 @@ void bi_binary_long_division_test(FILE* fp) {
 * @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
 */
 void div_test(FILE* fp) {
-	
+
 	for (int i = 0; i <= TEST; i++) {
 
 		bigint* x = NULL;
 		bigint* y = NULL;
 		bigint* q = NULL;
 		bigint* r = NULL;
-
+		
 		bi_gen_rand(&x, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 		bi_gen_rand(&y, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 		printf("x = "); bi_show_hex(x); printf("\n");
 		printf("y = "); bi_show_hex(y); printf("\n");
+
 		bi_div(x, y, &q, &r);
+
 		//bi_div_print(x, y, &q, &r);
 		if (bi_is_zero(q) && bi_is_zero(r)) {
 			bi_delete(&x);
@@ -362,6 +369,8 @@ void L2R_test(FILE* fp) {
 * @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
 */
 void L2R_Modular_bi_test(FILE* fp) {
+
+
 	for (int i = 0; i <= TEST; i++) {
 		bigint* x = NULL; // 거듭제곱 할 수
 		bigint* y = NULL; // 거듭제곱 횟 수
@@ -371,6 +380,7 @@ void L2R_Modular_bi_test(FILE* fp) {
 		bi_gen_rand(&x, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 		bi_gen_rand(&y, NONNEGATIVE, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 		bi_gen_rand(&p, NONNEGATIVE, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
+
 		left_to_right_mod_bi(x, y, p, &z);
 
 		printf("x=");
@@ -405,6 +415,7 @@ void L2R_Modular_bi_test(FILE* fp) {
 		bi_delete(&p);
 		bi_delete(&z);
 	}
+
 }
 
 /**
@@ -463,6 +474,7 @@ void R2L_test(FILE* fp) {
 * @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
 */
 void R2L_Modular_bi_test(FILE* fp) {
+
 	for (int i = 0; i <= TEST; i++) {
 		bigint* x = NULL; // 거듭제곱 할 수
 		bigint* y = NULL; // 거듭제곱 횟 수
@@ -472,7 +484,9 @@ void R2L_Modular_bi_test(FILE* fp) {
 		bi_gen_rand(&x, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 		bi_gen_rand(&y, NONNEGATIVE, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 		bi_gen_rand(&p, NONNEGATIVE, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
+
 		right_to_left_mod_bi(x, y, p, &z);
+
 
 		printf("x=");
 		bi_show_hex(x);
@@ -506,6 +520,7 @@ void R2L_Modular_bi_test(FILE* fp) {
 		bi_delete(&p);
 		bi_delete(&z);
 	}
+
 }
 
 /**
@@ -569,7 +584,6 @@ void Mul_N_Squ_test(FILE* fp) {
 * @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
 */
 void Mul_N_Squ_mod_bi_test(FILE* fp) {
-
 	for (int i = 0; i <= TEST; i++) {
 		bigint* x = NULL; // 거듭제곱 할 수
 		bigint* y = NULL; // 거듭제곱 횟 수
@@ -579,7 +593,9 @@ void Mul_N_Squ_mod_bi_test(FILE* fp) {
 		bi_gen_rand(&x, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 		bi_gen_rand(&y, NONNEGATIVE, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 		bi_gen_rand(&p, NONNEGATIVE, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
+
 		Mul_N_Squ_mod_bi(x, y, p, &z);
+
 
 		printf("x=");
 		bi_show_hex(x);
