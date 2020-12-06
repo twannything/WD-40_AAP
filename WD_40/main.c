@@ -13,6 +13,13 @@
 * @date 2020.12.06
 */
 
+/*When you use Linux*/
+
+#ifdef __unix
+#define fopen_s(pFile,filename,mode) ((*(pFile))=fopen((filename),  (mode)))==NULL
+#endif
+typedef int erron_t;
+
 int main() {
 
 	errno_t err;
@@ -34,5 +41,5 @@ int main() {
 	R2L_Modular_bi_test(fp);
 	Mul_N_Squ_test(fp);
 	Mul_N_Squ_mod_bi_test(fp);
-	Mod_test();
+	Mod_test(fp);
 }

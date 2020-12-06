@@ -33,7 +33,7 @@ void add_test(FILE* fp) {
 		bi_show_hex(z);
 		printf("\n\n");
 
-		/*fputs("x=", fp);
+		fputs("x=", fp);
 		File_print(x, fp);
 		fprintf(fp, "\n");
 		fputs("y=", fp);
@@ -42,7 +42,7 @@ void add_test(FILE* fp) {
 		fputs("print(x + y ==",fp);
 		File_print(z,fp);
 		fputs(")", fp);
-		fprintf(fp, "\n");*/
+		fprintf(fp, "\n");
 		
 		bi_delete(&x);
 		bi_delete(&y);
@@ -79,7 +79,7 @@ void sub_test(FILE* fp) {
 		bi_show_hex(z);
 		printf("\n\n");
 
-		/*fputs("x=", fp);
+		fputs("x=", fp);
 		File_print(x, fp);
 		fprintf(fp, "\n");
 		fputs("y=", fp);
@@ -88,7 +88,7 @@ void sub_test(FILE* fp) {
 		fputs("print(x - y ==", fp);
 		File_print(z, fp);
 		fputs(")", fp);
-		fprintf(fp, "\n");*/
+		fprintf(fp, "\n");
 
 		bi_delete(&x);
 		bi_delete(&y);
@@ -126,7 +126,7 @@ void  mul_test(FILE* fp) {
 		bi_show_hex(z);
 		printf("\n\n");
 
-		/*fputs("x=", fp);
+		fputs("x=", fp);
 		File_print(x, fp);
 		fprintf(fp, "\n");
 		fputs("y=", fp);
@@ -135,7 +135,7 @@ void  mul_test(FILE* fp) {
 		fputs("print(x * y ==", fp);
 		File_print(z, fp);
 		fputs(")", fp);
-		fprintf(fp, "\n");*/
+		fprintf(fp, "\n");
 
 		bi_delete(&x);
 		bi_delete(&y);
@@ -176,27 +176,27 @@ void bi_binary_long_division_test(FILE* fp) {
 			bi_show_hex(q); printf(")"); printf("+");
 			bi_show_hex(r); printf("\n");
 
-			//fputs("x=", fp);
-			//File_print(x, fp);
-			//fprintf(fp, "\n");
-			//fputs("y=", fp);
-			//File_print(y, fp);
-			//fprintf(fp, "\n");
-			//fputs("q=", fp);
-			//File_print(q, fp);
-			//fprintf(fp, "\n");
-			//fputs("r=", fp);
-			//File_print(r, fp);
-			//fprintf(fp, "\n");
+			fputs("x=", fp);
+			File_print(x, fp);
+			fprintf(fp, "\n");
+			fputs("y=", fp);
+			File_print(y, fp);
+			fprintf(fp, "\n");
+			fputs("q=", fp);
+			File_print(q, fp);
+			fprintf(fp, "\n");
+			fputs("r=", fp);
+			File_print(r, fp);
+			fprintf(fp, "\n");
 
-			////print(x//y==q,x%y==r)
-			//fputs("print(x", fp);
-			//fputs("//y", fp);
-			//fputs("==q", fp);
-			//fputs(",x", fp);
-			//fputs("%y", fp);
-			//fputs("==r", fp);
-			//fputs(")\n", fp);
+			//print(x//y==q,x%y==r)
+			fputs("print(x", fp);
+			fputs("//y", fp);
+			fputs("==q", fp);
+			fputs(",x", fp);
+			fputs("%y", fp);
+			fputs("==r", fp);
+			fputs(")\n", fp);
 
 			bi_delete(&x);
 			bi_delete(&y);
@@ -240,7 +240,7 @@ void div_test(FILE* fp) {
 			bi_show_hex(q); printf(")"); printf("+");
 			bi_show_hex(r); printf("\n");
 
-			/*fputs("x=", fp);
+			fputs("x=", fp);
 			File_print(x, fp);
 			fprintf(fp, "\n");
 			fputs("y=", fp);
@@ -259,7 +259,7 @@ void div_test(FILE* fp) {
 			fputs(",x", fp); 
 			fputs("%y", fp); 
 			fputs("==r", fp);
-			fputs(")\n", fp);*/
+			fputs(")\n", fp);
 
 			bi_delete(&x);
 			bi_delete(&y);
@@ -294,13 +294,13 @@ void Squaring_test(FILE* fp) {
 		bi_show_hex(z);
 		printf("\n\n");
 		
-		/*fputs("x=", fp);
+		fputs("x=", fp);
 		File_print(x, fp);
 		fprintf(fp, "\n");
 		fputs("print(x * x ==", fp);
 		File_print(z, fp);
 		fputs(")", fp);
-		fprintf(fp, "\n");*/
+		fprintf(fp, "\n");
 
 		bi_delete(&x);
 		bi_delete(&z);
@@ -334,7 +334,7 @@ void L2R_test(FILE* fp) {
 		bi_show_hex(z);
 		printf("\n");
 
-		/*fputs("x=", fp);
+		fputs("x=", fp);
 		File_print(x, fp);
 		fprintf(fp, "\n");
 		fputs("n=", fp);
@@ -343,7 +343,7 @@ void L2R_test(FILE* fp) {
 		fputs("print(power(x,n) ==", fp);
 		File_print(z, fp);
 		fputs(")", fp);
-		fprintf(fp, "\n");*/
+		fprintf(fp, "\n");
 
 		bi_delete(&x);
 		bi_delete(&z);
@@ -386,7 +386,7 @@ void L2R_Modular_bi_test(FILE* fp) {
 		bi_show_hex(z);
 		printf("\n");
 
-		/*fputs("x=", fp);
+		fputs("x=", fp);
 		File_print(x, fp);
 		fprintf(fp, "\n");
 		fputs("y=", fp);
@@ -398,7 +398,7 @@ void L2R_Modular_bi_test(FILE* fp) {
 		fputs("print(power_mod(x,y,p) ==", fp);
 		File_print(z, fp);
 		fputs(")", fp);
-		fprintf(fp, "\n");*/
+		fprintf(fp, "\n");
 
 		bi_delete(&x);
 		bi_delete(&y);
@@ -435,7 +435,7 @@ void R2L_test(FILE* fp) {
 		bi_show_hex(z);
 		printf("\n\n");
 
-		/*fputs("x=", fp);
+		fputs("x=", fp);
 		File_print(x, fp);
 		fprintf(fp, "\n");
 		fputs("n=", fp);
@@ -444,7 +444,7 @@ void R2L_test(FILE* fp) {
 		fputs("print(power(x,n) ==", fp);
 		File_print(z, fp);
 		fputs(")", fp);
-		fprintf(fp, "\n");*/
+		fprintf(fp, "\n");
 
 		bi_delete(&x);
 		bi_delete(&z);
@@ -487,7 +487,7 @@ void R2L_Modular_bi_test(FILE* fp) {
 		bi_show_hex(z);
 		printf("\n");
 		
-		/*fputs("x=", fp);
+		fputs("x=", fp);
 		File_print(x, fp);
 		fprintf(fp, "\n");
 		fputs("y=", fp);
@@ -499,7 +499,7 @@ void R2L_Modular_bi_test(FILE* fp) {
 		fputs("print(power_mod(x,y,p) ==", fp);
 		File_print(z, fp);
 		fputs(")", fp);
-		fprintf(fp, "\n");*/
+		fprintf(fp, "\n");
 
 		bi_delete(&x);
 		bi_delete(&y);
@@ -540,7 +540,7 @@ void Mul_N_Squ_test(FILE* fp) {
 		bi_show_hex(z);
 		printf("\n");
 
-		/*fputs("x=", fp);
+		fputs("x=", fp);
 		File_print(x, fp);
 		fprintf(fp, "\n");
 		fputs("n=", fp);
@@ -549,7 +549,7 @@ void Mul_N_Squ_test(FILE* fp) {
 		fputs("print(power(x,n) ==", fp);
 		File_print(z, fp);
 		fputs(")", fp);
-		fprintf(fp, "\n");*/
+		fprintf(fp, "\n");
 
 		bi_delete(&x);
 		bi_delete(&z);
@@ -594,7 +594,7 @@ void Mul_N_Squ_mod_bi_test(FILE* fp) {
 		bi_show_hex(z);
 		printf("\n");
 
-		/*fputs("x=", fp);
+		fputs("x=", fp);
 		File_print(x, fp);
 		fprintf(fp, "\n");
 		fputs("y=", fp);
@@ -606,7 +606,7 @@ void Mul_N_Squ_mod_bi_test(FILE* fp) {
 		fputs("print(power_mod(x,y,p) ==", fp);
 		File_print(z, fp);
 		fputs(")", fp);
-		fprintf(fp, "\n");*/
+		fprintf(fp, "\n");
 
 		bi_delete(&x);
 		bi_delete(&y);
@@ -646,7 +646,7 @@ void Mod_test(FILE* fp) {
 		bi_show_hex(z);
 		printf("\n");
 
-		/*fputs("x=", fp);
+		fputs("x=", fp);
 		File_print(x, fp);
 		fprintf(fp, "\n");
 		fputs("y=", fp);
@@ -655,7 +655,7 @@ void Mod_test(FILE* fp) {
 		fputs("print(mod(x,y) ==", fp);
 		File_print(z, fp);
 		fputs(")", fp);
-		fprintf(fp, "\n");*/
+		fprintf(fp, "\n");
 
 		bi_delete(&x);
 		bi_delete(&y);
