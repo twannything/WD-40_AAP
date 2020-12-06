@@ -18,7 +18,7 @@
 #ifdef __unix
 #define fopen_s(pFile,filename,mode) ((*(pFile))=fopen((filename),  (mode)))==NULL
 #endif
-typedef int erron_t;
+typedef int errno_t;
 
 int main() {
 
