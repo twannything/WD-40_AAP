@@ -1,8 +1,6 @@
 #pragma once
 #include "Basic Operation.h"
  
-// Chapter 3.1 ¸ðµâ·¯ ¿¬»ê
-void bi_reduction(bigint** y, bigint* x, int r);
 
 // Chapter 3.2 µ¡¼À ¿¬»ê
 int S_ADDABc(word x, word y, bigint** z, int carry, int r);

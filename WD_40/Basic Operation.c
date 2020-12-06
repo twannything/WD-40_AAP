@@ -459,3 +459,32 @@ void bi_rightshift(bigint** x, int r)
 	bi_refine(x);
 }
 
+/**
+* @brief bi_reduction : function of x mod r = y
+* @param bigint** y : 결과값을 저장할 빅넘버 y
+* @param bigint* x : 모듈러 연산을 취할 빅넘버 x
+* @param int r : mod r
+*/
+void bi_reduction(bigint** y, bigint* x, int r) {
+	long long k = r / WORD_BITLEN;
+	long long rem = r % WORD_BITLEN;
+	if (r > x->wordlen * WORD_BITLEN) {
+		bi_assign(y, x); return;
+	}
+	else if (rem == 0) {
+		bi_new(y, k);
+		for (int i = 0; i < k; i++) {
+			(*y)->a[i] = x->a[i] & MASK;
+			return;
+		}
+	}
+	else {
+		bi_new(y, k + 1);
+		for (int i = 0; i < k; i++) {
+			(*y)->a[i] = x->a[i] & ((1 << sizeof(word)) - 1);
+		}
+		(*y)->a[k] = x->a[k] & MASK;
+		return;
+	}
+}
+

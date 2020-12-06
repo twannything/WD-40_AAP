@@ -77,3 +77,6 @@ int compareAB(bigint* x, bigint* y);
 // Chapter 2.10 빅넘버를 r비트 left 또는 right로 shift 해주는 함수 
 void bi_leftshift(bigint** x, int r);
 void bi_rightshift(bigint** x, int r);
+
+// Chapter 3.1 모듈러 연산
+void bi_reduction(bigint** y, bigint* x, int r);

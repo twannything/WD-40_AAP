@@ -1,34 +1,6 @@
 #pragma once
 #include "Arithmetic.h"
 
-/**
-* @brief bi_reduction : function of x mod r = y
-* @param bigint** y : 결과값을 저장할 빅넘버 y
-* @param bigint* x : 모듈러 연산을 취할 빅넘버 x
-* @param int r : mod r
-*/
-void bi_reduction(bigint** y, bigint* x, int r){
-		long long k = r / WORD_BITLEN;
-		long long rem = r % WORD_BITLEN;
-		if (r > x->wordlen * WORD_BITLEN) {
-			bi_assign(y, x); return;
-		}
-		else if (rem == 0) {
-			bi_new(y, k);
-			for (int i = 0; i < k; i++) {
-				(*y)->a[i] = x->a[i] & MASK; 
-				return;
-			}
-		}
-		else {
-			bi_new(y, k + 1);
-			for (int i = 0; i < k; i++) {
-				(*y)->a[i] = x->a[i] & ((1 << sizeof(word)) - 1);
-			}
-			(*y)->a[k] = x->a[k] & MASK;
-			return;
-		}
-}
 
 /**
 * @brief S_ADDABc : 한 워드 끼리의 덧셈 연산후 carry값 = d를 리턴하는 함수
@@ -39,6 +11,14 @@ void bi_reduction(bigint** y, bigint* x, int r){
 * @param int r : 더한 값을 z의 r번째 배열에 저장
 * return d (carry 값)
 */
+
+int maxlen(int a, int b) {
+	return a >= b ? a : b;
+}
+
+int minlen(int a, int b) {
+	return a < b ? a : b;
+}
 int S_ADDABc(word x, word y, bigint** z, int carry, int r) {
 
 	int d = 0;
@@ -1170,8 +1150,8 @@ void bi_binary_long_division(bigint* a, bigint* b, bigint** q, bigint** r) {
 
 	}
 	else {
-		int max_len = max(a->wordlen, b->wordlen);
-		int min_len = min(a->wordlen, b->wordlen);
+		int max_len = maxlen(a->wordlen, b->wordlen);
+		int min_len = minlen(a->wordlen, b->wordlen);
 		bigint* tmp = NULL;
 		bigint* q_tmp = NULL;
 		bigint* one = NULL;
@@ -1224,8 +1204,8 @@ void bi_binary_long_division_print(bigint* a, bigint* b, bigint** q, bigint** r)
 
 	}
 
-	int max_len = max(a->wordlen, b->wordlen);
-	int min_len = min(a->wordlen, b->wordlen);
+	int max_len = maxlen(a->wordlen, b->wordlen);
+	int min_len = minlen(a->wordlen, b->wordlen);
 	int aj = 0;
 	bigint* tmp = NULL;
 	bigint* q_tmp = NULL;
