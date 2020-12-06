@@ -15,30 +15,19 @@
 
 int main() {
 
-	errno_t err;
-	FILE* fp = NULL;
-	err = fopen_s(&fp, "C:\\Users\\user\\Desktop\\data.sage", "w");//나온 출력값이 맞는지 확인하는 함수이다.
-	if (fp == NULL) {
-		puts("파일 오픈 실패\n");
-		return -1;
-	}
-	//add_test(fp);
-	//sub_test(fp);
-	//mul_test(fp);
-	//Ka_mul_test(fp);
-	//bi_binary_long_division_test(fp);
-	//long_division_2word_test(fp);
-	//divcc_test(fp);
-	//divc_test(fp);
-	//div_test(fp);
-	//Squaring_test(fp);
-	//L2R_test(fp);
-	//L2R_bi_test(fp);
-	//L2R_Modular_bi_test(fp);
-	//R2L_test(fp);
-	//R2L_bi_test(fp);
-	//R2L_Modular_bi_test(fp);
-	//Mul_N_Squ_test(fp);
-	//Mul_N_Squ_bi_test(fp);
-	//Mul_N_Squ_mod_bi_test(fp);
+	add_test();
+	sub_test();
+	mul_test();
+	bi_binary_long_division_test();
+	div_test();
+	Squaring_test();
+	L2R_test();
+	L2R_bi_test();
+	L2R_Modular_bi_test();
+	R2L_test();
+	R2L_bi_test();
+	R2L_Modular_bi_test();
+	Mul_N_Squ_test();
+	Mul_N_Squ_bi_test();
+	Mul_N_Squ_mod_bi_test();
 }
