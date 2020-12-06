@@ -6,7 +6,7 @@
 /** @mainpage BIGINT LIBRARY : WD-40
 * @section devleoper 개발자
 * - 김태완, 유현도
-* @image html 1.jpg
+* @image html 11.jpg
 * @section advenced  개발목적
 * - C언어 입문자들을 위한 프로그래밍 실습 교보재
 * @version ver 1.0
@@ -28,11 +28,11 @@ int main() {
 	//Ka_mul_test(fp);
 	//bi_binary_long_division_test(fp);
 	//long_division_2word_test(fp);
-	//divcc_test();
-	//div_test();
-	//divc_test();
+	//divcc_test(fp);
+	//divc_test(fp);
+	//div_test(fp);
 	//Squaring_test(fp);
-	L2R_test(fp);
+	//L2R_test(fp);
 	//L2R_bi_test(fp);
 	//L2R_Modular_bi_test(fp);
 	//R2L_test(fp);

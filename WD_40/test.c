@@ -43,28 +43,27 @@ void add_test(FILE* fp) {
 		bi_gen_rand(&x, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 		bi_gen_rand(&y, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 
-		fputs("x=", fp);
-		File_print(x, fp);
-		fprintf(fp, "\n");
+		ADD(x, y, &z);
+		//ADD_print(x, y, &z);
+
+		
 
 		printf("x=");
 		bi_show_hex(x);
 		printf("\n");
+		printf("y=");
+		bi_show_hex(y);
+		printf("\n\n");	
+		printf("x + y ==");
+		bi_show_hex(z);
+		printf("\n\n");
 
+		fputs("x=", fp);
+		File_print(x, fp);
+		fprintf(fp, "\n");
 		fputs("y=", fp);
 		File_print(y, fp);
 		fprintf(fp, "\n");
-
-		printf("y=");
-		bi_show_hex(y);
-		printf("\n");
-
-		ADD(x, y, &z);
-	
-		printf("x + y ==");
-		bi_show_hex(z);
-		printf("\n");
-
 		fputs("print(x + y ==",fp);
 		File_print(z,fp);
 		fputs(")", fp);
@@ -119,28 +118,25 @@ void sub_test(FILE* fp) {
 		bi_gen_rand(&x, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 		bi_gen_rand(&y, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 
-		fputs("x=", fp);
-		File_print(x, fp);
-		fprintf(fp, "\n");
+		SUB(x, y, &z);
+		//SUB_print(x, y, &z);	
 
 		printf("x=");
 		bi_show_hex(x);
 		printf("\n");
+		printf("y=");
+		bi_show_hex(y);
+		printf("\n\n");
+		printf("x - y ==");
+		bi_show_hex(z);
+		printf("\n\n");
 
+		fputs("x=", fp);
+		File_print(x, fp);
+		fprintf(fp, "\n");
 		fputs("y=", fp);
 		File_print(y, fp);
 		fprintf(fp, "\n");
-
-		printf("y=");
-		bi_show_hex(y);
-		printf("\n");
-
-		SUB(x, y, &z);
-
-		printf("x - y ==");
-		bi_show_hex(z);
-		printf("\n");
-
 		fputs("print(x - y ==", fp);
 		File_print(z, fp);
 		fputs(")", fp);
@@ -222,28 +218,25 @@ void  mul_test(FILE* fp) {
 		bi_gen_rand(&x, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 		bi_gen_rand(&y, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 
-		fputs("x=", fp);
-		File_print(x, fp);
-		fprintf(fp, "\n");
+		MUL(x, y, &z);
+		//MUL_print(x, y, &z);		
 
 		printf("x=");
 		bi_show_hex(x);
 		printf("\n");
-
-		fputs("y=", fp);
-		File_print(y, fp);
-		fprintf(fp, "\n");
-
 		printf("y=");
 		bi_show_hex(y);
 		printf("\n");
-
-		MUL(x, y, &z);
-
 		printf("x * y ==");
 		bi_show_hex(z);
-		printf("\n");
+		printf("\n\n");
 
+		fputs("x=", fp);
+		File_print(x, fp);
+		fprintf(fp, "\n");
+		fputs("y=", fp);
+		File_print(y, fp);
+		fprintf(fp, "\n");
 		fputs("print(x * y ==", fp);
 		File_print(z, fp);
 		fputs(")", fp);
@@ -263,8 +256,6 @@ void  mul_test(FILE* fp) {
 * @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
 */
 void Ka_mul_test(FILE* fp) {
-
-	
 	for (int i = 0; i <= TEST; i++) {
 		bigint* x = NULL;
 		bigint* y = NULL;
@@ -273,28 +264,24 @@ void Ka_mul_test(FILE* fp) {
 		bi_gen_rand(&x, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 		bi_gen_rand(&y, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 
-		fputs("x=", fp);
-		File_print(x, fp);
-		fprintf(fp, "\n");
+		karatsuba_MUL(x, y, &z);
 
 		printf("x=");
 		bi_show_hex(x);
 		printf("\n");
-
-		fputs("y=", fp);
-		File_print(y, fp);
-		fprintf(fp, "\n");
-
 		printf("y=");
 		bi_show_hex(y);
 		printf("\n");
-
-		karatsuba_MUL(x, y, &z);
-
 		printf("x * y ==");
 		bi_show_hex(z);
 		printf("\n");
 
+		fputs("x=", fp);
+		File_print(x, fp);
+		fprintf(fp, "\n");
+		fputs("y=", fp);
+		File_print(y, fp);
+		fprintf(fp, "\n");
 		fputs("print(x * y ==", fp);
 		File_print(z, fp);
 		fputs(")", fp);
@@ -337,6 +324,28 @@ void bi_binary_long_division_test(FILE* fp) {
 			bi_show_hex(q); printf(")"); printf("+");
 			bi_show_hex(r); printf("\n");
 
+			fputs("x=", fp);
+			File_print(x, fp);
+			fprintf(fp, "\n");
+			fputs("y=", fp);
+			File_print(y, fp);
+			fprintf(fp, "\n");
+			fputs("q=", fp);
+			File_print(q, fp);
+			fprintf(fp, "\n");
+			fputs("r=", fp);
+			File_print(r, fp);
+			fprintf(fp, "\n");
+
+			//print(x//y==q,x%y==r)
+			fputs("print(x", fp);
+			fputs("//y", fp);
+			fputs("==q", fp);
+			fputs(",x", fp);
+			fputs("%y", fp);
+			fputs("==r", fp);
+			fputs(")\n", fp);
+
 			bi_delete(&x);
 			bi_delete(&y);
 			bi_delete(&q);
@@ -356,7 +365,7 @@ void bi_binary_long_division_test(FILE* fp) {
 * @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
 */
 void long_division_2word_test(FILE* fp) {
-	for (int i = 0; i < 100; i++) {
+	for (int i = 0; i < TEST; i++) {
 		bigint* x = NULL;
 		bigint* y = NULL;
 		bigint* q = NULL;
@@ -371,6 +380,28 @@ void long_division_2word_test(FILE* fp) {
 			printf(" * ");
 			bi_show_hex(q); printf(")"); printf("+");
 			bi_show_hex(r); printf("\n");
+
+			fputs("x=", fp);
+			File_print(x, fp);
+			fprintf(fp, "\n");
+			fputs("y=", fp);
+			File_print(y, fp);
+			fprintf(fp, "\n");
+			fputs("q=", fp);
+			File_print(q, fp);
+			fprintf(fp, "\n");
+			fputs("r=", fp);
+			File_print(r, fp);
+			fprintf(fp, "\n");
+
+			//print(x//y==q,x%y==r)
+			fputs("print(x", fp);
+			fputs("//y", fp);
+			fputs("==q", fp);
+			fputs(",x", fp);
+			fputs("%y", fp);
+			fputs("==r", fp);
+			fputs(")\n", fp);
 		}
 		bi_delete(&x);
 		bi_delete(&y);
@@ -387,13 +418,13 @@ void long_division_2word_test(FILE* fp) {
 * @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
 */
 void divcc_test(FILE* fp) {
-	for (int i = 0; i < 100; i++) {
+	for (int i = 0; i < TEST; i++) {
 		bigint* x = NULL;
 		bigint* y = NULL;
 		bigint* q = NULL;
 		bigint* r = NULL;
 		bi_gen_rand(&x, NONNEGATIVE, 2);
-		bi_gen_rand(&y, NONNEGATIVE, 2);
+		bi_gen_rand(&y, NONNEGATIVE, 1);
 		if (x->a[1] >= y->a[0]/* || (y->a[y->wordlen-1] < (unsigned long long)1 <<(WORD_BITLEN-1))||compareAB(x,y)<1*/) {
 		}
 		else {
@@ -402,6 +433,28 @@ void divcc_test(FILE* fp) {
 			printf(" * ");
 			bi_show_hex(q); printf(")"); printf("+");
 			bi_show_hex(r); printf("\n");
+
+			fputs("x=", fp);
+			File_print(x, fp);
+			fprintf(fp, "\n");
+			fputs("y=", fp);
+			File_print(y, fp);
+			fprintf(fp, "\n");
+			fputs("q=", fp);
+			File_print(q, fp);
+			fprintf(fp, "\n");
+			fputs("r=", fp);
+			File_print(r, fp);
+			fprintf(fp, "\n");
+
+			//print(x//y==q,x%y==r)
+			fputs("print(x", fp);
+			fputs("//y", fp);
+			fputs("==q", fp);
+			fputs(",x", fp);
+			fputs("%y", fp);
+			fputs("==r", fp);
+			fputs(")\n", fp);
 		}
 		bi_delete(&x);
 		bi_delete(&y);
@@ -418,7 +471,7 @@ void divcc_test(FILE* fp) {
 * @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
 */
 void divc_test(FILE* fp) {
-	for (int i = 0; i < 100; i++) {
+	for (int i = 0; i < TEST; i++) {
 		bigint* x = NULL;
 		bigint* y = NULL;
 		bigint* q = NULL;
@@ -433,6 +486,28 @@ void divc_test(FILE* fp) {
 			printf(" * ");
 			bi_show_hex(q); printf(")"); printf("+");
 			bi_show_hex(r); printf("\n");
+
+			fputs("x=", fp);
+			File_print(x, fp);
+			fprintf(fp, "\n");
+			fputs("y=", fp);
+			File_print(y, fp);
+			fprintf(fp, "\n");
+			fputs("q=", fp);
+			File_print(q, fp);
+			fprintf(fp, "\n");
+			fputs("r=", fp);
+			File_print(r, fp);
+			fprintf(fp, "\n");
+
+			//print(x//y==q,x%y==r)
+			fputs("print(x", fp);
+			fputs("//y", fp);
+			fputs("==q", fp);
+			fputs(",x", fp);
+			fputs("%y", fp);
+			fputs("==r", fp);
+			fputs(")\n", fp);
 		}
 		bi_delete(&x);
 		bi_delete(&y);
@@ -448,8 +523,8 @@ void divc_test(FILE* fp) {
 * @brief x 와 y의 wordlen : LOWERBOUND ~ UPPERBOUND (?)
 * @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
 */
-void div_test() {
-	for (int i = 0; i < 100; i++) {
+void div_test(FILE* fp) {
+	for (int i = 0; i < TEST; i++) {
 		bigint* x = NULL;
 		bigint* y = NULL;
 		bigint* q = NULL;
@@ -469,6 +544,29 @@ void div_test() {
 			printf(" * ");
 			bi_show_hex(q); printf(")"); printf("+");
 			bi_show_hex(r); printf("\n");
+
+			fputs("x=", fp);
+			File_print(x, fp);
+			fprintf(fp, "\n");
+			fputs("y=", fp);
+			File_print(y, fp);
+			fprintf(fp, "\n");
+			fputs("q=", fp);
+			File_print(q, fp);
+			fprintf(fp, "\n");
+			fputs("r=", fp);
+			File_print(r, fp);
+			fprintf(fp, "\n");
+
+			//print(x//y==q,x%y==r)
+			fputs("print(x", fp);
+			fputs("//y", fp); 
+			fputs("==q", fp);
+			fputs(",x", fp); 
+			fputs("%y", fp); 
+			fputs("==r", fp);
+			fputs(")\n", fp);
+
 			bi_delete(&x);
 			bi_delete(&y);
 			bi_delete(&q);
@@ -525,20 +623,19 @@ void Squaring_test(FILE* fp) {
 
 		bi_gen_rand(&x, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 
-		fputs("x=", fp);
-		File_print(x, fp);
-		fprintf(fp, "\n");
-
+		SQU(x, &z);
+		//SQU_print(x, &z); /* 중간과정을 콘솔창에서 확인하고 싶을때 사용 */
+		
 		printf("x=");
 		bi_show_hex(x);
 		printf("\n");
-
-		SQU(x, &z);
-
 		printf("power(x,2) ==");
 		bi_show_hex(z);
-		printf("\n");
-
+		printf("\n\n");
+		
+		fputs("x=", fp);
+		File_print(x, fp);
+		fprintf(fp, "\n");
 		fputs("print(x * x ==", fp);
 		File_print(z, fp);
 		fputs(")", fp);
@@ -546,7 +643,6 @@ void Squaring_test(FILE* fp) {
 
 		bi_delete(&x);
 		bi_delete(&z);
-
 	}
 }
 
@@ -560,8 +656,6 @@ void Squaring_test(FILE* fp) {
 * @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
 */
 void L2R_test(FILE* fp) {
-	
-
 	for (int i = 0; i <= TEST; i++) {
 		
 		bigint* x = NULL;
@@ -574,33 +668,29 @@ void L2R_test(FILE* fp) {
 		bi_set_by_array(&x, NONNEGATIVE, arr, 1);
 		*/
 
-
 		//bi_gen_rand(&x, NONNEGATIVE,3);
 		//int n = 5;
 
 		bi_gen_rand(&x, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 		int n = ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND);
 
-		fputs("x=", fp);
-		File_print(x, fp);
-		fprintf(fp, "\n");
+		//left_to_right(x, &z, n);
+		left_to_right_print(x, &z, n);
 
 		printf("x=");
 		bi_show_hex(x);
 		printf("\n");
-
-		fputs("n=", fp);
-		fprintf(fp, "%d", n);
-		fprintf(fp, "\n");
-
 		printf("n=%d\n", n);
-
-		left_to_right(x, &z, n);
-
 		printf("power(x,n) ==");
 		bi_show_hex(z);
 		printf("\n");
 
+		fputs("x=", fp);
+		File_print(x, fp);
+		fprintf(fp, "\n");
+		fputs("n=", fp);
+		fprintf(fp, "%d", n);
+		fprintf(fp, "\n");
 		fputs("print(power(x,n) ==", fp);
 		File_print(z, fp);
 		fputs(")", fp);
@@ -608,7 +698,6 @@ void L2R_test(FILE* fp) {
 
 		bi_delete(&x);
 		bi_delete(&z);
-
 	}
 }
 
@@ -638,28 +727,25 @@ void L2R_bi_test(FILE* fp) {
 		bi_gen_rand(&x, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 		bi_gen_rand(&y, NONNEGATIVE, 1);
 
-		fputs("x=", fp);
-		File_print(x, fp);
-		fprintf(fp, "\n");
+		left_to_right_bi(x, y, &z);
+		//left_to_right_bi_print(x, y, &z);
 
 		printf("x=");
 		bi_show_hex(x);
 		printf("\n");
-
-		fputs("y=", fp);
-		File_print(y, fp);
-		fprintf(fp, "\n");
-
 		printf("y=");
 		bi_show_hex(y);
 		printf("\n");
-
-		left_to_right_bi(x, y, &z);
-
 		printf("power(x,y) ==");
 		bi_show_hex(z);
 		printf("\n");
 
+		fputs("x=", fp);
+		File_print(x, fp);
+		fprintf(fp, "\n");
+		fputs("y=", fp);
+		File_print(y, fp);
+		fprintf(fp, "\n");
 		fputs("print(power(x,y) ==", fp);
 		File_print(z, fp);
 		fputs(")", fp);
@@ -702,36 +788,33 @@ void L2R_Modular_bi_test(FILE* fp) {
 		//bi_gen_rand(&y, NONNEGATIVE, 2);
 		//bi_gen_rand(&p, NONNEGATIVE, 2);
 
-		fputs("x=", fp);
-		File_print(x, fp);
-		fprintf(fp, "\n");
+		left_to_right_mod_bi(x, y, p, &z);
+		//left_to_right_mod_bi_print(x, y, p, &z);
+
+		
 
 		printf("x=");
 		bi_show_hex(x);
 		printf("\n");
-
-		fputs("y=", fp);
-		File_print(y, fp);
-		fprintf(fp, "\n");
-
 		printf("y=");
 		bi_show_hex(y);
 		printf("\n");
-
-		fputs("p=", fp);
-		File_print(p, fp);
-		fprintf(fp, "\n");
-
 		printf("p=");
 		bi_show_hex(p);
 		printf("\n");
-		
-		left_to_right_mod_bi(x, y, p, &z);
-
 		printf("power_mod(x,y,p) ==");
 		bi_show_hex(z);
 		printf("\n");
 
+		fputs("x=", fp);
+		File_print(x, fp);
+		fprintf(fp, "\n");
+		fputs("y=", fp);
+		File_print(y, fp);
+		fprintf(fp, "\n");
+		fputs("p=", fp);
+		File_print(p, fp);
+		fprintf(fp, "\n");
 		fputs("print(power_mod(x,y,p) ==", fp);
 		File_print(z, fp);
 		fputs(")", fp);
@@ -776,26 +859,23 @@ void R2L_test(FILE* fp) {
 		//bi_gen_rand(&x, rand() % 2,2);
 		//int n = 2;
 
-		fputs("x=", fp);
-		File_print(x, fp);
-		fprintf(fp, "\n");
+		right_to_left_print(x, &z, n);
+		//right_to_left(x, &z, n);
 
 		printf("x=");
 		bi_show_hex(x);
 		printf("\n");
+		printf("n=%d\n", n);
+		printf("power(x,n) ==");
+		bi_show_hex(z);
+		printf("\n\n");
 
+		fputs("x=", fp);
+		File_print(x, fp);
+		fprintf(fp, "\n");
 		fputs("n=", fp);
 		fprintf(fp, "%d", n);
 		fprintf(fp, "\n");
-
-		printf("n=%d\n", n);
-
-		right_to_left(x, &z, n);
-
-		printf("power(x,n) ==");
-		bi_show_hex(z);
-		printf("\n");
-
 		fputs("print(power(x,n) ==", fp);
 		File_print(z, fp);
 		fputs(")", fp);
@@ -832,28 +912,25 @@ void R2L_bi_test(FILE* fp) {
 		bi_gen_rand(&x, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 		bi_gen_rand(&y, NONNEGATIVE, 1); // y->wordlen이 1이아니면 너무 큰 값이 나와버림 
 
-		fputs("x=", fp);
-		File_print(x, fp);
-		fprintf(fp, "\n");
-
+		right_to_left_bi(x, y, &z);
+		//right_to_left_bi_print(x, y, &z);
+		
 		printf("x=");
 		bi_show_hex(x);
 		printf("\n");
-
-		fputs("y=", fp);
-		File_print(y, fp);
-		fprintf(fp, "\n");
-
 		printf("y=");
 		bi_show_hex(y);
 		printf("\n");
-
-		right_to_left_bi(x, y, &z);
-
 		printf("power(x,y) ==");
 		bi_show_hex(z);
 		printf("\n");
 
+		fputs("x=", fp);
+		File_print(x, fp);
+		fprintf(fp, "\n");
+		fputs("y=", fp);
+		File_print(y, fp);
+		fprintf(fp, "\n");
 		fputs("print(power(x,y) ==", fp);
 		File_print(z, fp);
 		fputs(")", fp);
@@ -877,8 +954,6 @@ void R2L_bi_test(FILE* fp) {
 * @param FILE* fp : sage로 정확성을 검증하기 위해 파일 fp에 결과 프린트
 */
 void R2L_Modular_bi_test(FILE* fp) {
-
-
 	for (int i = 0; i <= TEST; i++) {
 		bigint* x = NULL; // 거듭제곱 할 수
 		bigint* y = NULL; // 거듭제곱 횟 수
@@ -896,36 +971,31 @@ void R2L_Modular_bi_test(FILE* fp) {
 		//bi_gen_rand(&y, NONNEGATIVE, 2);
 		//bi_gen_rand(&p, NONNEGATIVE, 2);
 
-		fputs("x=", fp);
-		File_print(x, fp);
-		fprintf(fp, "\n");
+		right_to_left_mod_bi(x, y, p, &z);
+		//right_to_left_mod_bi_print(x, y, p, &z);
 
 		printf("x=");
 		bi_show_hex(x);
 		printf("\n");
-
-		fputs("y=", fp);
-		File_print(y, fp);
-		fprintf(fp, "\n");
-
 		printf("y=");
 		bi_show_hex(y);
 		printf("\n");
-
-		fputs("p=", fp);
-		File_print(p, fp);
-		fprintf(fp, "\n");
-
 		printf("p=");
 		bi_show_hex(p);
 		printf("\n");
-
-		right_to_left_mod_bi(x, y, p, &z);
-
 		printf("power_mod(x,y,p) ==");
 		bi_show_hex(z);
 		printf("\n");
-
+		
+		fputs("x=", fp);
+		File_print(x, fp);
+		fprintf(fp, "\n");
+		fputs("y=", fp);
+		File_print(y, fp);
+		fprintf(fp, "\n");
+		fputs("p=", fp);
+		File_print(p, fp);
+		fprintf(fp, "\n");
 		fputs("print(power_mod(x,y,p) ==", fp);
 		File_print(z, fp);
 		fputs(")", fp);
@@ -969,27 +1039,24 @@ void Mul_N_Squ_test(FILE* fp) {
 		int n = ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND);
 		//bi_gen_rand(&x, rand() % 2,2);
 		//int n = 3;
-
-		fputs("x=", fp);
-		File_print(x, fp);
-		fprintf(fp, "\n");
+		
+		Mul_N_Squ(x, &z, n);
+		//Mul_N_Squ_print(x, &z, n);
 
 		printf("x=");
 		bi_show_hex(x);
 		printf("\n");
-
-		fputs("n=", fp);
-		fprintf(fp, "%d", n);
-		fprintf(fp, "\n");
-
 		printf("n=%d\n", n);
-
-		Mul_N_Squ(x, &z, n);
-
 		printf("power(x,n) ==");
 		bi_show_hex(z);
 		printf("\n");
 
+		fputs("x=", fp);
+		File_print(x, fp);
+		fprintf(fp, "\n");
+		fputs("n=", fp);
+		fprintf(fp, "%d", n);
+		fprintf(fp, "\n");
 		fputs("print(power(x,n) ==", fp);
 		File_print(z, fp);
 		fputs(")", fp);
@@ -1026,28 +1093,25 @@ void Mul_N_Squ_bi_test(FILE* fp) {
 		bi_gen_rand(&x, rand() % 2, ((rand() % (UPPERBOUND + 1 - LOWERBOUND)) + LOWERBOUND));
 		bi_gen_rand(&y, NONNEGATIVE, 1); // y->wordlen이 1이아니면 너무 큰 값이 나와버림 
 
-		fputs("x=", fp);
-		File_print(x, fp);
-		fprintf(fp, "\n");
+		Mul_N_Squ_bi(x, y, &z);
+		//Mul_N_Squ_bi_print(x, y, &z);
 
 		printf("x=");
 		bi_show_hex(x);
 		printf("\n");
-
-		fputs("y=", fp);
-		File_print(y, fp);
-		fprintf(fp, "\n");
-
 		printf("y=");
 		bi_show_hex(y);
 		printf("\n");
-
-		Mul_N_Squ_bi(x, y, &z);
-
 		printf("power(x,y) ==");
 		bi_show_hex(z);
 		printf("\n");
 
+		fputs("x=", fp);
+		File_print(x, fp);
+		fprintf(fp, "\n");
+		fputs("y=", fp);
+		File_print(y, fp);
+		fprintf(fp, "\n");
 		fputs("print(power(x,y) ==", fp);
 		File_print(z, fp);
 		fputs(")", fp);
@@ -1089,36 +1153,31 @@ void Mul_N_Squ_mod_bi_test(FILE* fp) {
 		//bi_gen_rand(&y, NONNEGATIVE, 2);
 		//bi_gen_rand(&p, NONNEGATIVE, 2);
 
-		fputs("x=", fp);
-		File_print(x, fp);
-		fprintf(fp, "\n");
+		Mul_N_Squ_mod_bi(x, y, p, &z);
+		//Mul_N_Squ_mod_bi_print(x, y, p, &z);
 
 		printf("x=");
 		bi_show_hex(x);
-		printf("\n");
-
-		fputs("y=", fp);
-		File_print(y, fp);
-		fprintf(fp, "\n");
-
+		printf("\n");	
 		printf("y=");
 		bi_show_hex(y);
 		printf("\n");
-
-		fputs("p=", fp);
-		File_print(p, fp);
-		fprintf(fp, "\n");
-
 		printf("p=");
 		bi_show_hex(p);
 		printf("\n");
-
-		Mul_N_Squ_mod_bi(x, y, p, &z);
-
 		printf("power_mod(x,y,p) ==");
 		bi_show_hex(z);
 		printf("\n");
 
+		fputs("x=", fp);
+		File_print(x, fp);
+		fprintf(fp, "\n");
+		fputs("y=", fp);
+		File_print(y, fp);
+		fprintf(fp, "\n");
+		fputs("p=", fp);
+		File_print(p, fp);
+		fprintf(fp, "\n");
 		fputs("print(power_mod(x,y,p) ==", fp);
 		File_print(z, fp);
 		fputs(")", fp);

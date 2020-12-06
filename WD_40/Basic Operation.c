@@ -21,7 +21,7 @@ void array_init(word* a, int wordlen) {
 * @param int wordlen : 복사할 길이
 */
 void array_copy(word* a, word* b, int wordlen) {
-	for (unsigned int i = 0; i < wordlen * sizeof(word); i++)
+	for (unsigned int i = 0; i < wordlen; i++)
 		a[i] = b[i];
 }
 /**
@@ -116,6 +116,19 @@ void bi_show_hex(bigint* x) {
 		printf("%016llx", x->a[i]);
 #endif
 	}
+}
+
+void word_show_hex(word x) {
+	
+	
+#if (WORD_BITLEN == 8)
+		printf("%02x", x);
+#elif (WORD_BITLEN == 32)
+		printf("%08x", x);
+#else
+		printf("%016llx", x);
+#endif
+	
 }
 
 /**

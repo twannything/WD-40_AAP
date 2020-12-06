@@ -45,6 +45,7 @@ void bi_set_by_array(bigint** x, int sign, word* a, int wordlen);
 void bi_show_hex(bigint* x);
 //void bi_show_dec(bigint* x);
 void bi_show_bin(bigint* x);
+void word_show_hex(word x);
 void File_print(bigint* x, FILE* fp);
 
 // Chapter 2.3 빅넘버 0000017398213 -> 17398213 으로 만들어 주는 함수
